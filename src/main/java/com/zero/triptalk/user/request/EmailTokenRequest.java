@@ -9,15 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
-
-    private String name;
-
-    private String nickname;
-
-    private String email ;
-
-    private String password;
+public class EmailTokenRequest {
+    private String email;
 
 }
-
