@@ -51,8 +51,6 @@ public class AuthenticationController {
         }
     }
 
-
-
     /**
      * 로그인
      * @param request
