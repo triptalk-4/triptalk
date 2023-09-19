@@ -27,7 +27,7 @@ public class PlannerDetailService {
 
         // file 검증
 
-        UserEntity user = userRepository.findById(Integer.valueOf(request.getUserId().toString())).orElseThrow(RuntimeException::new);
+        UserEntity user = userRepository.findById(request.getUserId()).orElseThrow(RuntimeException::new);
 
         PlannerDetail plannerDetail = PlannerDetail.builder()
                 .plannerId(planId)
@@ -48,7 +48,7 @@ public class PlannerDetailService {
 
         // file 검증
 
-        UserEntity user = userRepository.findById(Integer.valueOf(requests.get(0).getUserId().toString())).orElseThrow(RuntimeException::new);
+        UserEntity user = userRepository.findById(requests.get(0).getUserId()).orElseThrow(RuntimeException::new);
 
         List<PlannerDetail> detailList = new ArrayList<>();
         for (PlannerDetailRequest x : requests) {
@@ -72,7 +72,7 @@ public class PlannerDetailService {
 
         // file 검증
 
-        UserEntity user = userRepository.findById(Integer.valueOf(request.getUserId().toString())).orElseThrow(RuntimeException::new);
+        UserEntity user = userRepository.findById(request.getUserId()).orElseThrow(RuntimeException::new);
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(request.getId()).orElseThrow(RuntimeException::new);
 
@@ -88,7 +88,7 @@ public class PlannerDetailService {
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(detailId).orElseThrow(RuntimeException::new);
 
-        if (!user.getUserId().equals(Integer.valueOf(plannerDetail.getUserId().toString()))) {
+        if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new RuntimeException();
         }
 
