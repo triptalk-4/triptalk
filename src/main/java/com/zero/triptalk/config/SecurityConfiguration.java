@@ -18,11 +18,12 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
-    protected SecurityFilterChain sequrityFilterChain(HttpSecurity http) throws Exception {
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/users/**").permitAll()
+                .antMatchers("/api/plans/**").hasAuthority("USER")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
