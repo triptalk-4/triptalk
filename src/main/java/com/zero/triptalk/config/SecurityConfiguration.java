@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/users/**").permitAll()
+                .antMatchers("/api/plans/**").hasAuthority("USER")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
