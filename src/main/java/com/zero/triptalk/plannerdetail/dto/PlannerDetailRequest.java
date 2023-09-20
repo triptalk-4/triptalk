@@ -1,4 +1,4 @@
-package com.zero.triptalk.plannerdetail;
+package com.zero.triptalk.plannerdetail.dto;
 
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
