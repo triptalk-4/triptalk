@@ -1,5 +1,6 @@
-package com.zero.triptalk.plannerdetail;
+package com.zero.triptalk.plannerdetail.dto;
 
+import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
 import lombok.Builder;
 
 import java.util.ArrayList;

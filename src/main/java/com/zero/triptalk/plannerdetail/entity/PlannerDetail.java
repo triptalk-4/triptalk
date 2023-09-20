@@ -1,5 +1,6 @@
-package com.zero.triptalk.plannerdetail;
+package com.zero.triptalk.plannerdetail.entity;
 
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
