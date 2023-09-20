@@ -1,5 +1,8 @@
-package com.zero.triptalk.plannerdetail;
+package com.zero.triptalk.plannerdetail.controller;
 
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
+import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

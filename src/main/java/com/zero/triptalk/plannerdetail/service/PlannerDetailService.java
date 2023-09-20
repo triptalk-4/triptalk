@@ -1,5 +1,9 @@
-package com.zero.triptalk.plannerdetail;
+package com.zero.triptalk.plannerdetail.service;
 
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
+import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
+import com.zero.triptalk.plannerdetail.repository.PlannerDetailRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
