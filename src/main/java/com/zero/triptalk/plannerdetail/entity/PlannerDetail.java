@@ -37,8 +37,10 @@ public class PlannerDetail {
     private Long views;
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdAt;
     @LastModifiedDate
+    @Column(insertable = false)
     private LocalDateTime modifiedAt;
 
     @Builder
