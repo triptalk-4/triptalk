@@ -9,7 +9,6 @@ import java.time.LocalTime;
 @Getter
 public class PlannerDetailRequest {
     private Long id;
-    private Long userId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
