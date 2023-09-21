@@ -1,5 +1,6 @@
 package com.zero.triptalk.user.entity;
 
+import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +39,9 @@ public class UserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserTypeRole UserType;
+
+    @Enumerated(EnumType.STRING)
+    private UserLoginRole userLoginRole;
 
     public static boolean isValidEmail(String email) {
         // 이메일 형식을 정규표현식으로 확인
