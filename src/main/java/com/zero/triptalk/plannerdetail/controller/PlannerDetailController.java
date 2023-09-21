@@ -1,5 +1,6 @@
 package com.zero.triptalk.plannerdetail.controller;
 
+import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
 import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
@@ -29,28 +30,27 @@ public class PlannerDetailController {
     }
 
     //세부일정 요청이 한개 들어올 때
-    /*
     @PostMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> createPlannerDetail(@PathVariable Long planId,
-                                                 @RequestPart List<MultipartFile> files,
-                                                 @RequestPart PlannerDetailDto request
-                                                 Principle principle) {
+                                                 @RequestPart("files") List<MultipartFile> files,
+                                                 @RequestPart PlannerDetailRequest request,
+                                                 Principal principle) {
 
         return ResponseEntity.ok(plannerDetailService.createPlannerDetail(planId, files, request, principle.getName()));
     }
 
-    */
-    //세부일정 요청이 bulk 로 들어올 때
-    @PostMapping("/{planId}/detail")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> createPlannerDetailList(@PathVariable Long planId,
-                                                     @RequestPart List<MultipartFile> files,
-                                                     @RequestPart List<PlannerDetailRequest> requests,
-                                                     Principal principal) {
-
-        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, files, requests, principal.getName()));
-    }
+//
+//    //세부일정 요청이 bulk 로 들어올 때
+//    @PostMapping("/{planId}/detail")
+//    @PreAuthorize("hasAuthority('USER')")
+//    public ResponseEntity<?> createPlannerDetailList(@PathVariable Long planId,
+//                                                     @RequestPart List<MultipartFile> files,
+//                                                     @RequestPart List<PlannerDetailRequest> requests,
+//                                                     Principal principal) {
+//
+//        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, files, requests, principal.getName()));
+//    }
 
     @PatchMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER')")

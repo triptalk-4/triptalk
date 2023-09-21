@@ -1,5 +1,7 @@
 package com.zero.triptalk.plannerdetail.entity;
 
+import com.zero.triptalk.place.entity.Place;
+import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,6 +15,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,10 +34,18 @@ public class PlannerDetail {
     private LocalTime time;
     private String image;
 
-    private String location;
+//    private String location;
 
     private String description;
     private Long views;
+
+    @OneToOne
+    @JoinColumn(name = "place_id")
+    private Place place;
+
+    @OneToMany(mappedBy = "plannerDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Images> images;
+
 
     @CreatedDate
     @Column(updatable = false)
@@ -44,21 +55,20 @@ public class PlannerDetail {
     private LocalDateTime modifiedAt;
 
     @Builder
-    public PlannerDetail(Long plannerId, Long userId, LocalDate date, LocalTime time, String image, String location, String description) {
+    public PlannerDetail(Long plannerId, Long userId, LocalDate date, LocalTime time, String image, String description,Place place,List<Images> images) {
         this.plannerId = plannerId;
         this.userId = userId;
         this.date = date;
         this.time = time;
         this.image = image;
-        this.location = location;
         this.description = description;
+        this.place = place;
     }
 
     public void updatePlannerDetail(PlannerDetailRequest request) {
         this.date = request.getDate();
         this.time = request.getTime();
         this.image = request.getImage();
-        this.location = request.getLocation();
         this.description = request.getDescription();
     }
 }

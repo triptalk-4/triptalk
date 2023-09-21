@@ -1,5 +1,6 @@
 package com.zero.triptalk.plannerdetail.dto;
 
+import com.zero.triptalk.place.entity.PlaceRequest;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,9 +15,11 @@ public class PlannerDetailRequest {
     private LocalDate date;
     @DateTimeFormat(pattern = "hh:mm")
     private LocalTime time;
-
-    private String image;
-    private String location;
     private String description;
+    private String image;
+    private PlaceRequest placeInfo;
+
+//    private String location;
+//    private List<ImageRequest> images;
 
 }
