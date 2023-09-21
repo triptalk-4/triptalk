@@ -2,6 +2,7 @@ package com.zero.triptalk.user.service;
 
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.user.entity.UserEntity;
+import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
 import com.zero.triptalk.user.request.AuthenticationRequest;
@@ -103,6 +104,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(password))
                 .nickname(nickname)
                 .UserType(UserTypeRole.USER)
+                .userLoginRole(UserLoginRole.GENERAL_USER_LOGIN)
                 .registerAt(currentTime)
                 .updateAt(currentTime)
                 .build();
