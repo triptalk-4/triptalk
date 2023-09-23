@@ -3,6 +3,7 @@ package com.zero.triptalk.plannerdetail.entity;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
+import com.zero.triptalk.user.entity.UserEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,45 +32,49 @@ public class PlannerDetail {
     private Long plannerId;
     private Long userId;
 
-    private LocalDate date;
-    private LocalTime time;
     private String image;
 
-//    private String location;
-
     private String description;
+
     private Long views;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "place_id")
     private Place place;
-
-    @OneToMany(mappedBy = "plannerDetail", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Images> images;
 
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime modifiedAt;
 
     @Builder
-    public PlannerDetail(Long plannerId, Long userId, LocalDate date, LocalTime time, String image, String description,Place place,List<Images> images) {
+    public PlannerDetail(Long plannerId, Long userId, String image, String description,Place place,List<Images> images) {
         this.plannerId = plannerId;
         this.userId = userId;
-        this.date = date;
-        this.time = time;
         this.image = image;
         this.description = description;
         this.place = place;
     }
 
     public void updatePlannerDetail(PlannerDetailRequest request) {
-        this.date = request.getDate();
-        this.time = request.getTime();
-        this.image = request.getImage();
+        this.modifiedAt = request.getDate();
         this.description = request.getDescription();
+    }
+
+    public void updatePlannerDetailPlace(Place place){
+        this.place = place;
+    }
+
+    public static PlannerDetail buildPlannerDetail(Long planId, PlannerDetailRequest request, UserEntity user, Place place) {
+        return PlannerDetail.builder()
+                .plannerId(planId)
+                .userId(user.getUserId())
+                .description(request.getDescription())
+                .place(place)
+                .build();
     }
 }

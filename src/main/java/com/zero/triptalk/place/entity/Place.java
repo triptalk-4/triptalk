@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -38,14 +39,5 @@ public class Place {
     private double longitude;
 
     private Long PlaceLike;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plannerDetail_id")
-    private PlannerDetail plannerDetail;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "userEntity_id")
-//    private UserEntity userEntity;
-
 
 }

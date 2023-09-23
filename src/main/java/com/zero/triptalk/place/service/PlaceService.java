@@ -41,14 +41,6 @@ public class PlaceService {
         return placeRepository.save(place);
     }
 
-    //장소 리스트 추가
-
-    public boolean addPlaceList(List<PlaceRequest> placeRequests) {
-
-        return true;
-    }
-
-    //장소 삭제
 
 
 }

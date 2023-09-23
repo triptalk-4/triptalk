@@ -1,25 +1,18 @@
 package com.zero.triptalk.plannerdetail.dto;
 
 import com.zero.triptalk.place.entity.PlaceRequest;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Getter
+@Builder
 public class PlannerDetailRequest {
     private Long id;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-    @DateTimeFormat(pattern = "hh:mm")
-    private LocalTime time;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime date;
     private String description;
-    private String image;
     private PlaceRequest placeInfo;
-
-//    private String location;
-//    private List<ImageRequest> images;
-
 }

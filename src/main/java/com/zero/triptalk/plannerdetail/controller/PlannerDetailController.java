@@ -1,8 +1,7 @@
 package com.zero.triptalk.plannerdetail.controller;
 
-import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
 import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +22,7 @@ public class PlannerDetailController {
     @GetMapping("/detail")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAllPlannerDetail() {
-
-        List<PlannerDetailResponse> list = plannerDetailService.getAllPlannerDetail();
+        List<PlannerDetailListResponse> list = plannerDetailService.getAllPlannerDetail();
 
         return ResponseEntity.ok(list);
     }
@@ -32,7 +30,7 @@ public class PlannerDetailController {
     //세부일정 요청이 한개 들어올 때
     @PostMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> createPlannerDetail(@PathVariable Long planId,
+    public ResponseEntity<Boolean> createPlannerDetail(@PathVariable Long planId,
                                                  @RequestPart("files") List<MultipartFile> files,
                                                  @RequestPart PlannerDetailRequest request,
                                                  Principal principle) {
