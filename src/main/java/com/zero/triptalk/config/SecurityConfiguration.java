@@ -24,6 +24,7 @@ public class SecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers("/api/users/**").permitAll()
                 .antMatchers("/api/plans/**").hasAuthority("USER")
+                .antMatchers("/kakao/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

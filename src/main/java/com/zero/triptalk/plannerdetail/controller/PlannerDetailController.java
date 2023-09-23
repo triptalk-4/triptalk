@@ -1,5 +1,8 @@
-package com.zero.triptalk.plannerdetail;
+package com.zero.triptalk.plannerdetail.controller;
 
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
+import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,9 +34,10 @@ public class PlannerDetailController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> createPlannerDetail(@PathVariable Long planId,
                                                  @RequestPart List<MultipartFile> files,
-                                                 @RequestPart PlannerDetailDto request) {
+                                                 @RequestPart PlannerDetailDto request
+                                                 Principle principle) {
 
-        return ResponseEntity.ok(plannerDetailService.createPlannerDetail(planId, files, request));
+        return ResponseEntity.ok(plannerDetailService.createPlannerDetail(planId, files, request, principle.getName()));
     }
 
     */
@@ -41,19 +45,21 @@ public class PlannerDetailController {
     @PostMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> createPlannerDetailList(@PathVariable Long planId,
-                                                    @RequestPart List<MultipartFile> files,
-                                                    @RequestPart List<PlannerDetailRequest> requests) {
+                                                     @RequestPart List<MultipartFile> files,
+                                                     @RequestPart List<PlannerDetailRequest> requests,
+                                                     Principal principal) {
 
-        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, files, requests));
+        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, files, requests, principal.getName()));
     }
 
     @PatchMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> updatePlannerDetail(@PathVariable Long planId,
                                                  @RequestPart List<MultipartFile> files,
-                                                 @RequestPart PlannerDetailRequest request) {
+                                                 @RequestPart PlannerDetailRequest request,
+                                                 Principal principal) {
 
-        return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(planId, files, request));
+        return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
     }
 
     @DeleteMapping("/{planId}/detail/{detailId}")
@@ -62,6 +68,6 @@ public class PlannerDetailController {
                                                  @PathVariable Long detailId,
                                                  Principal principal) {
 
-        return ResponseEntity.ok(plannerDetailService.deletePlannerDetail(planId, detailId, principal.getName()));
+        return ResponseEntity.ok(plannerDetailService.deletePlannerDetail(detailId, principal.getName()));
     }
 }

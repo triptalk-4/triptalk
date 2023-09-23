@@ -1,4 +1,4 @@
-package com.zero.triptalk.plannerdetail;
+package com.zero.triptalk.plannerdetail.dto;
 
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,7 +9,6 @@ import java.time.LocalTime;
 @Getter
 public class PlannerDetailRequest {
     private Long id;
-    private Long userId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
