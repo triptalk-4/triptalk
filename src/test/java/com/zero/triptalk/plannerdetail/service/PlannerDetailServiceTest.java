@@ -1,5 +1,6 @@
 package com.zero.triptalk.plannerdetail.service;
 
+import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,7 @@ class PlannerDetailServiceTest {
 
     @Test
     @DisplayName("상세 일정 만들기")
-    void createPlannerDetail() {
+    void createPlannerDetail() throws IOException {
 
         //given
         Long planId = 1L;
@@ -83,17 +85,27 @@ class PlannerDetailServiceTest {
                 .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "남산상세", 10, 10))
                 .build();
 
+        List<Images> images = List.of(
+                        new Images("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg")
+                );
+        System.out.println(images);
+
+
         ArgumentCaptor<PlannerDetail> captor = ArgumentCaptor.forClass(PlannerDetail.class);
 
         //when
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(placeService.savePlace(any())).thenReturn(place);
+        when(imageService.uploadFiles(any())).thenReturn(images);
+        System.out.println(images);
         boolean result = plannerDetailService.createPlannerDetail(planId, files, request, email);
 
         //then
         verify(plannerDetailRepository).save(captor.capture());
         PlannerDetail saved = captor.getValue();
 
+        System.out.println(saved.getImages());
+        Assertions.assertThat(saved.getImages()).isEqualTo(images);
         Assertions.assertThat(result).isTrue();
         Assertions.assertThat(saved.getPlace()).isEqualTo(place);
     }

@@ -56,12 +56,15 @@ public class PlannerDetail {
     private LocalDateTime modifiedAt;
 
     @Builder
-    public PlannerDetail(Long plannerId, Long userId, String image, String description, Place place, List<Images> images) {
+    public PlannerDetail(
+            Long plannerId, Long userId, String image,
+            String description, Place place, List<Images> images) {
         this.plannerId = plannerId;
         this.userId = userId;
         this.image = image;
         this.description = description;
         this.place = place;
+        this.images = images;
     }
 
     public void updatePlannerDetail(PlannerDetailRequest request) {
