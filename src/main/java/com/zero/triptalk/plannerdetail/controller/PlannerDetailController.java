@@ -2,6 +2,7 @@ package com.zero.triptalk.plannerdetail.controller;
 
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
 import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,22 @@ public class PlannerDetailController {
 
     private final PlannerDetailService plannerDetailService;
 
+
     @GetMapping("/detail")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<PlannerDetailResponse> getPlannerDetail(Long plannerDetailId){
+//        return ResponseEntity.ok(plannerDetailService.getPlannerDetail(plannerDetailId));
+        return null;
+    }
+
+
+    @GetMapping("/detailList")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAllPlannerDetail() {
         List<PlannerDetailListResponse> list = plannerDetailService.getAllPlannerDetail();
-
         return ResponseEntity.ok(list);
     }
+
 
     //세부일정 요청이 한개 들어올 때
     @PostMapping("/{planId}/detail")

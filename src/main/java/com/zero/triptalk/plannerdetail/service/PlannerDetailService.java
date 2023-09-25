@@ -2,9 +2,11 @@ package com.zero.triptalk.plannerdetail.service;
 
 import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.exception.type.UserException;
+import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
@@ -17,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.PLANNER_DETAIL_NOT_FOUNT;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUNT_PLANNER_DETAIL;
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_USER_PLANNER;
 import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
@@ -27,6 +30,7 @@ import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 public class PlannerDetailService {
 
     private final PlannerDetailRepository plannerDetailRepository;
+
     private final UserRepository userRepository;
     private final PlaceService placeService;
     private final ImageService imageService;
@@ -39,6 +43,18 @@ public class PlannerDetailService {
         return PlannerDetailListResponse.of(detailList);
     }
 
+    public PlannerDetailDto getPlannerDetail(Long plannerDetailId) {
+        PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId).orElseThrow(
+                () -> new PlannerDetailException(NOT_FOUNT_PLANNER_DETAIL)
+        );
+        //사진 리포지토리에서 가져오는 거 제거
+//        List<String> imagesUrls = imagesList.stream()
+//                .map(Images::getUrl).collect(Collectors.toList());
+//
+//        return PlannerDetailDto.ofEntity(plannerDetail, imagesUrls);
+        return null;
+    }
+
     @Transactional
     public boolean createPlannerDetail(Long planId, List<MultipartFile> files,
                                        PlannerDetailRequest request, String email) {
@@ -46,16 +62,13 @@ public class PlannerDetailService {
                 () -> new UserException(USER_NOT_FOUND));
         //place 저장
         Place place = placeService.savePlace(request.getPlaceInfo());
-
+        //S3 -> url 리스트 변환
+        List<Images> images = imageService.uploadFiles(files);
         //상세 일정 저장
         PlannerDetail plannerDetail = PlannerDetail.buildPlannerDetail(
-                planId, request, user, place);
-
-        //사진 저장
-        if (!files.isEmpty()) {
-            imageService.uploadFiles(files, plannerDetail);
-        }
+                planId, request, user, place, images);
         plannerDetailRepository.save(plannerDetail);
+
         return true;
     }
 
@@ -94,7 +107,7 @@ public class PlannerDetailService {
                 new UserException(USER_NOT_FOUND));
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(request.getId()).orElseThrow(() ->
-                new PlannerDetailException(PLANNER_DETAIL_NOT_FOUNT));
+                new PlannerDetailException(NOT_FOUNT_PLANNER_DETAIL));
 
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
@@ -115,7 +128,7 @@ public class PlannerDetailService {
                 new UserException(USER_NOT_FOUND));
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(detailId)
-                .orElseThrow(() -> new PlannerDetailException(PLANNER_DETAIL_NOT_FOUNT));
+                .orElseThrow(() -> new PlannerDetailException(NOT_FOUNT_PLANNER_DETAIL));
 
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);

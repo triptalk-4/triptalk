@@ -1,10 +1,11 @@
 package com.zero.triptalk.place.entity;
 
-import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
 import lombok.*;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Getter
 @Entity
@@ -22,13 +23,8 @@ public class Images {
     private String url;
 
 
-    //plannerDetail id 저장
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plannerDetail_id")
-    private PlannerDetail plannerDetail;
-
-    public Images(String fileUrl,PlannerDetail plannerDetail) {
+    public Images(String fileUrl) {
         this.url = fileUrl;
-        this.plannerDetail = plannerDetail;
+
     }
 }

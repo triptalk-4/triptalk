@@ -1,7 +1,7 @@
 package com.zero.triptalk.plannerdetail.entity;
 
-import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.Images;
+import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.AccessLevel;
@@ -13,10 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,6 +35,13 @@ public class PlannerDetail {
 
     private Long views;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "plannerDetail_id")
+    private List<Images> images;
+
+//    @ElementCollection
+//    private List<String> Images;
+
     @ManyToOne
     @JoinColumn(name = "place_id")
     private Place place;
@@ -52,7 +56,7 @@ public class PlannerDetail {
     private LocalDateTime modifiedAt;
 
     @Builder
-    public PlannerDetail(Long plannerId, Long userId, String image, String description,Place place,List<Images> images) {
+    public PlannerDetail(Long plannerId, Long userId, String image, String description, Place place, List<Images> images) {
         this.plannerId = plannerId;
         this.userId = userId;
         this.image = image;
@@ -65,16 +69,19 @@ public class PlannerDetail {
         this.description = request.getDescription();
     }
 
-    public void updatePlannerDetailPlace(Place place){
+    public void updatePlannerDetailPlace(Place place) {
         this.place = place;
     }
 
-    public static PlannerDetail buildPlannerDetail(Long planId, PlannerDetailRequest request, UserEntity user, Place place) {
+    public static PlannerDetail buildPlannerDetail(
+            Long planId, PlannerDetailRequest request, UserEntity user, Place place, List<Images> images) {
         return PlannerDetail.builder()
                 .plannerId(planId)
                 .userId(user.getUserId())
                 .description(request.getDescription())
                 .place(place)
+                .images(images)
                 .build();
     }
+
 }

@@ -39,3 +39,5 @@ out/
 **/application.properties
 application-dev.yml
 application-oauth.yml
+application.yml
+application-local.yml
