@@ -41,7 +41,11 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	//S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	//S3 테스트용
+	testImplementation 'io.findify:s3mock_2.12:0.2.4'
 
 	annotationProcessor 'org.projectlombok:lombok'
 
