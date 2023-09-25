@@ -35,11 +35,11 @@ public class AuthenticationController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @PostMapping("/register/email/check")
+    @GetMapping("/register/email/check")
     public ResponseEntity<?> registerEmailCheck(@RequestBody EmailTokenRequest request) {
         try {
             EmailCheckResponse response = service.emailCheck(request);
