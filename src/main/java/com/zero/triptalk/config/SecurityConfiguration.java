@@ -22,7 +22,7 @@ public class SecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/users/**").permitAll()
+                .antMatchers("/api/users/**","/api/auth/**").permitAll()
                 .antMatchers("/api/plans/**").hasAuthority("USER")
                 .antMatchers("/kakao/**").permitAll()
                 .anyRequest().authenticated()

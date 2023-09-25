@@ -1,6 +1,5 @@
 package com.zero.triptalk.exception.type;
 
-import com.zero.triptalk.exception.code.PlannerDetailErrorCode;
 import com.zero.triptalk.exception.code.UserErrorCode;
 import lombok.Getter;
 

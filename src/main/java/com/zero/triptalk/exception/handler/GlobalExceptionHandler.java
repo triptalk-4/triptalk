@@ -11,17 +11,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(PlannerDetailException.class)
-    protected ResponseEntity<?> handlePlannerDetailException(PlannerDetailException e) {
+    protected GlobalExceptionResponse handlePlannerDetailException(PlannerDetailException e) {
 
-        return ResponseEntity.status(e.getErrorCode().getStatus())
-                                .body(new GlobalExceptionResponse(e.getMessage()));
+        return new GlobalExceptionResponse(e.getErrorCode().getStatus(), e.getMessage());
     }
 
     @ExceptionHandler(UserException.class)
-    protected ResponseEntity<?> handleUserException(UserException e) {
+    protected GlobalExceptionResponse handleUserException(UserException e) {
 
-        return ResponseEntity.status(e.getErrorCode().getStatus())
-                .body(new GlobalExceptionResponse(e.getMessage()));
+        return new GlobalExceptionResponse(e.getErrorCode().getStatus(), e.getMessage());
     }
 
 }
