@@ -38,3 +38,4 @@ out/
 
 **/application.properties
 application-dev.yml
+application-oauth.yml

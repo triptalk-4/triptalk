@@ -1,13 +1,14 @@
 package com.zero.triptalk.exception.response;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class GlobalExceptionResponse {
-    private final boolean result;
+    private final HttpStatus status;
     private final String errorMessage;
-    public GlobalExceptionResponse(String errorMessage) {
-        this.result = false;
+    public GlobalExceptionResponse(HttpStatus status, String errorMessage) {
+        this.status = status;
         this.errorMessage = errorMessage;
     }
 }
