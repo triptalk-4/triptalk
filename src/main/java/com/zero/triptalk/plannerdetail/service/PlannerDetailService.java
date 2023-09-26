@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUNT_PLANNER_DETAIL;
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_USER_PLANNER;
@@ -72,31 +72,29 @@ public class PlannerDetailService {
         return true;
     }
 
-//
-//    public boolean createPlannerDetailList(Long planId, List<MultipartFile> files,
-//                                           List<PlannerDetailRequest> requests, String email) {
-//
-//        // file 검증
-//
-//        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-//                new UserException(USER_NOT_FOUND));
-//
-//        List<PlannerDetail> detailList = new ArrayList<>();
-//        for (PlannerDetailRequest x : requests) {
-//
-//            PlannerDetail plannerDetail = PlannerDetail.builder()
-//                    .plannerId(planId)
-//                    .userId(user.getUserId())
-//                    .date(x.getDate())
-//                    .time(x.getTime())
-//                    .description(x.getDescription())
-//                    .build();
-//            detailList.add(plannerDetail);
-//        }
-//        plannerDetailRepository.saveAll(detailList);
-//
-//        return true;
-//    }
+
+    public boolean createPlannerDetailList(Long planId, List<MultipartFile> files,
+                                           List<PlannerDetailRequest> requests, String email) {
+
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserException(USER_NOT_FOUND));
+
+
+
+        List<PlannerDetail> detailList = new ArrayList<>();
+        for (PlannerDetailRequest x : requests) {
+
+            PlannerDetail plannerDetail = PlannerDetail.builder()
+                    .plannerId(planId)
+                    .userId(user.getUserId())
+                    .description(x.getDescription())
+                    .build();
+            detailList.add(plannerDetail);
+        }
+        plannerDetailRepository.saveAll(detailList);
+
+        return true;
+    }
 
     public boolean updatePlannerDetail(List<MultipartFile> files,
                                        PlannerDetailRequest request, String email) {

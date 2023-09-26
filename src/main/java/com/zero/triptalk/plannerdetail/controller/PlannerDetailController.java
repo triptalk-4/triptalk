@@ -48,8 +48,13 @@ public class PlannerDetailController {
         return ResponseEntity.ok(plannerDetailService.createPlannerDetail(planId, files, request, principle.getName()));
     }
 
+    /**
+     세부일정 요청이 bulk 로 들어올 때
+     1. 화면에서 일정 저장 submit
+     2. S3를 통해 사진 리스트를 -> url 리스트로
+     3. 응답을 보내주고 상세 일정을 저장하는 request에 이미지 주소를 전달
+    **/
 
-    //세부일정 요청이 bulk 로 들어올 때
     @PostMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Boolean> createPlannerDetailList(@PathVariable Long planId,
