@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PlannerDetailDto {
 
+    private Long userId;
     private LocalDateTime createAt;
     private Place place;
     private String description;
@@ -24,6 +25,7 @@ public class PlannerDetailDto {
 
     public static PlannerDetailDto ofEntity(PlannerDetail plannerDetail){
         return PlannerDetailDto.builder()
+                .userId(plannerDetail.getUserId())
                 .createAt(plannerDetail.getCreatedAt())
                 .place(plannerDetail.getPlace())
                 .description(plannerDetail.getDescription())

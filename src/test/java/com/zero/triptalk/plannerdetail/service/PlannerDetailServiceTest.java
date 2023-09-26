@@ -1,17 +1,19 @@
 package com.zero.triptalk.plannerdetail.service;
 
+import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
 import com.zero.triptalk.plannerdetail.repository.PlannerDetailRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUND_PLANNER_DETAIL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,8 +89,8 @@ class PlannerDetailServiceTest {
                 .build();
 
         List<Images> images = List.of(
-                        new Images("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg")
-                );
+                new Images("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg")
+        );
         System.out.println(images);
 
 
@@ -105,8 +108,49 @@ class PlannerDetailServiceTest {
         PlannerDetail saved = captor.getValue();
 
         System.out.println(saved.getImages());
-        Assertions.assertThat(saved.getImages()).isEqualTo(images);
-        Assertions.assertThat(result).isTrue();
-        Assertions.assertThat(saved.getPlace()).isEqualTo(place);
+        Assertions.assertEquals(saved.getImages(), images);
+        Assertions.assertTrue(result);
+        Assertions.assertEquals(saved.getPlace(), place);
+
+    }
+
+    @Test
+    @DisplayName("상세 일정 조회 - 해당 일정이 없는 경우")
+    void getPlannerDetailNotFound() {
+        //given
+        Long plannerDetailId = 1L;
+        //when
+        when(plannerDetailRepository.findById(plannerDetailId)).thenReturn(Optional.empty());
+        //then
+
+        PlannerDetailException e = Assertions.assertThrows(PlannerDetailException.class, () ->
+                plannerDetailService.getPlannerDetail(plannerDetailId));
+        Assertions.assertEquals(e.getErrorCode(), NOT_FOUND_PLANNER_DETAIL);
+    }
+
+    @Test
+    @DisplayName("상세 일정 조회 - 정상")
+    void getPlannerDetail() {
+        //given
+        Long plannerDetailId = 1L;
+        List<Images> images = new ArrayList<>();
+        Place place = new Place();
+        PlannerDetail result = PlannerDetail.builder()
+                .plannerId(1L)
+                .userId(1L)
+                .image("TT")
+                .description("TT")
+                .images(images)
+                .place(place).build();
+
+        //when
+        when(plannerDetailRepository.findById(plannerDetailId)).thenReturn(Optional.ofNullable(result));
+        //then
+        PlannerDetailDto plannerDetail = plannerDetailService.getPlannerDetail(plannerDetailId);
+        Assertions.assertDoesNotThrow(
+                () -> plannerDetailService.getPlannerDetail(plannerDetailId)
+        );
+        assert result != null;
+        Assertions.assertEquals(plannerDetail.getUserId(),result.getUserId());
     }
 }

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class PlannerDetailResponse {
 
+    private Long userId;
     private LocalDateTime createAt;
     private PlaceResponse placeResponse;
     private String description;
@@ -31,6 +32,7 @@ public class PlannerDetailResponse {
                 .collect(Collectors.toList());
 
         return PlannerDetailResponse.builder()
+                .userId(dto.getUserId())
                 .createAt(dto.getCreateAt())
                 .placeResponse(PlaceResponse.from(place))
                 .description(dto.getDescription())
