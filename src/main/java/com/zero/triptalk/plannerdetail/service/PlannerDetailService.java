@@ -63,7 +63,7 @@ public class PlannerDetailService {
         //place 저장
         Place place = placeService.savePlace(request.getPlaceInfo());
         //S3 -> url 리스트 변환
-        List<Images> images = imageService.uploadFiles(files);
+        List<String> images = imageService.uploadFiles(files);
         //상세 일정 저장
         PlannerDetail plannerDetail = PlannerDetail.buildPlannerDetail(
                 planId, request, user, place, images);
