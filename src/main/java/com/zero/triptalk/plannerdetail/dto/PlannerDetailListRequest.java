@@ -21,8 +21,7 @@ public class PlannerDetailListRequest {
     private List<String> images;
 
 
-    public PlannerDetail toEntity(Long planId, Long userId) {
-        Place place = placeInfo.toEntity();
+    public PlannerDetail toEntity(Long planId,Place place,Long userId) {
         return PlannerDetail.builder()
                 .planId(planId)
                 .userId(userId)

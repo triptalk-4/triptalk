@@ -71,7 +71,7 @@ public class PlannerDetailController {
     @PostMapping("/{planId}/detailList")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Boolean> createPlannerDetailList(@PathVariable Long planId,
-                                                     @RequestPart List<PlannerDetailListRequest> requests,
+                                                     @RequestBody List<PlannerDetailListRequest> requests,
                                                      Principal principal) {
 
         return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, requests, principal.getName()));

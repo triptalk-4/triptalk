@@ -3,6 +3,7 @@ package com.zero.triptalk.plannerdetail.service;
 import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
+import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
@@ -84,9 +85,11 @@ public class PlannerDetailService {
             UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
                     new UserException(USER_NOT_FOUND));
 
-            List<PlannerDetail> detailList = requests.stream().map(
-                            request -> request.toEntity(planId, user.getUserId()))
-                    .collect(Collectors.toList());
+            List<PlannerDetail> detailList = requests.stream().map( request -> {
+
+                Place place = placeService.savePlace(request.getPlaceInfo());
+                return request.toEntity(planId,place, user.getUserId());
+                    }).collect(Collectors.toList());
 
             plannerDetailRepository.saveAll(detailList);
 
