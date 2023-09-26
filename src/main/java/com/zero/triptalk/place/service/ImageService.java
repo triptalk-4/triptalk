@@ -7,8 +7,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.zero.triptalk.exception.code.ImageUploadErrorCode;
 import com.zero.triptalk.exception.type.ImageException;
 import com.zero.triptalk.place.entity.Images;
-import com.zero.triptalk.place.repository.ImageRepository;
-import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,13 +23,13 @@ import java.util.UUID;
 public class ImageService {
 
     private final AmazonS3Client amazonS3Client;
-    private final ImageRepository imageRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     //사진 저장
-    public void uploadFiles(List<MultipartFile> multipartFiles, PlannerDetail plannerDetail) {
+    public List<Images> uploadFiles(List<MultipartFile> multipartFiles) {
+        ArrayList<Images> imagesList = new ArrayList<>();
 
         for (MultipartFile file : multipartFiles) {
             String fileName = generateFileName(file.getOriginalFilename());
@@ -45,13 +44,14 @@ public class ImageService {
                 amazonS3Client.putObject(putObjectRequest);
 
                 String fileUrl = generateS3FileUrl(fileName);
-                Images images = new Images(fileUrl, plannerDetail);
-                imageRepository.save(images);
+                Images images = new Images(fileUrl);
+                imagesList.add(images);
                 inputStream.close();
             } catch (IOException e) {
                 throw new ImageException(ImageUploadErrorCode.IMAGE_UPLOAD_FAILED);
             }
         }
+        return imagesList;
     }
 
     private String generateFileName(String originalFileName) {
