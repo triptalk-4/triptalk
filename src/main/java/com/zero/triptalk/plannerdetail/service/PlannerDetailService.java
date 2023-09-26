@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUNT_PLANNER_DETAIL;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUND_PLANNER_DETAIL;
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_USER_PLANNER;
 import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
@@ -45,14 +45,9 @@ public class PlannerDetailService {
 
     public PlannerDetailDto getPlannerDetail(Long plannerDetailId) {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId).orElseThrow(
-                () -> new PlannerDetailException(NOT_FOUNT_PLANNER_DETAIL)
+                () -> new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL)
         );
-        //사진 리포지토리에서 가져오는 거 제거
-//        List<String> imagesUrls = imagesList.stream()
-//                .map(Images::getUrl).collect(Collectors.toList());
-//
-//        return PlannerDetailDto.ofEntity(plannerDetail, imagesUrls);
-        return null;
+        return PlannerDetailDto.ofEntity(plannerDetail);
     }
 
     @Transactional
@@ -107,7 +102,7 @@ public class PlannerDetailService {
                 new UserException(USER_NOT_FOUND));
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(request.getId()).orElseThrow(() ->
-                new PlannerDetailException(NOT_FOUNT_PLANNER_DETAIL));
+                new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL));
 
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
@@ -128,7 +123,7 @@ public class PlannerDetailService {
                 new UserException(USER_NOT_FOUND));
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(detailId)
-                .orElseThrow(() -> new PlannerDetailException(NOT_FOUNT_PLANNER_DETAIL));
+                .orElseThrow(() -> new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL));
 
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
