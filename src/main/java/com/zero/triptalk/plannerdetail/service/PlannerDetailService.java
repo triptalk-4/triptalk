@@ -2,11 +2,11 @@ package com.zero.triptalk.plannerdetail.service;
 
 import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.exception.type.UserException;
-import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailListRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
@@ -18,11 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUNT_PLANNER_DETAIL;
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_USER_PLANNER;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.*;
 import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
 @Service
@@ -72,27 +71,28 @@ public class PlannerDetailService {
         return true;
     }
 
-
-    public boolean createPlannerDetailList(Long planId, List<MultipartFile> files,
-                                           List<PlannerDetailRequest> requests, String email) {
-
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserException(USER_NOT_FOUND));
+    public List<String> uploadImages(List<MultipartFile> files) {
+        return imageService.uploadFiles(files);
+    }
 
 
+    @Transactional
+    public boolean createPlannerDetailList(Long planId, List<PlannerDetailListRequest> requests, String email) {
 
-        List<PlannerDetail> detailList = new ArrayList<>();
-        for (PlannerDetailRequest x : requests) {
+        try {
 
-            PlannerDetail plannerDetail = PlannerDetail.builder()
-                    .plannerId(planId)
-                    .userId(user.getUserId())
-                    .description(x.getDescription())
-                    .build();
-            detailList.add(plannerDetail);
+            UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+                    new UserException(USER_NOT_FOUND));
+
+            List<PlannerDetail> detailList = requests.stream().map(
+                            request -> request.toEntity(planId, user.getUserId()))
+                    .collect(Collectors.toList());
+
+            plannerDetailRepository.saveAll(detailList);
+
+        } catch (PlannerDetailException e) {
+            throw new PlannerDetailException(CREATE_PLANNER_DETAIL_FAILED);
         }
-        plannerDetailRepository.saveAll(detailList);
-
         return true;
     }
 
@@ -136,4 +136,6 @@ public class PlannerDetailService {
 
         return true;
     }
+
+
 }

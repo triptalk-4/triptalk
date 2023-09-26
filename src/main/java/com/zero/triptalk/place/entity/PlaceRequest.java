@@ -27,5 +27,17 @@ public class PlaceRequest {
 
     private double longitude;
 
+    public Place toEntity(){
+        return Place.builder()
+                .name(name)
+                .region(region)
+                .si(si)
+                .gun(gun)
+                .gu(gu)
+                .address(address)
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
+    }
 
 }

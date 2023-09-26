@@ -1,5 +1,6 @@
 package com.zero.triptalk.plannerdetail.controller;
 
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailListRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
@@ -49,20 +50,31 @@ public class PlannerDetailController {
     }
 
     /**
-     세부일정 요청이 bulk 로 들어올 때
+     상세일정 저장(리스트)
      1. 화면에서 일정 저장 submit
-     2. S3를 통해 사진 리스트를 -> url 리스트로
-     3. 응답을 보내주고 상세 일정을 저장하는 request에 이미지 주소를 전달
+     2. S3를 통해 사진 파일 리스트를 url 리스트로 변환하고 response
+     3. 사진의 갯수가 맞는지 검증한 뒤
+     4. 상세 일정을 저장하는 request에 이미지 주소를 같이 담아서 전달
     **/
 
-    @PostMapping("/{planId}/detail")
+    //사진 리스트 저장
+    @PostMapping("/{planId}/images")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<List<String>> uploadImages(@PathVariable Long planId,
+                                                     @RequestPart("files") List<MultipartFile> files,
+                                                     Principal principal){
+        return ResponseEntity.ok(plannerDetailService.uploadImages(files));
+    }
+
+
+    //상세 일정 리스트 저장
+    @PostMapping("/{planId}/detailList")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Boolean> createPlannerDetailList(@PathVariable Long planId,
-                                                     @RequestPart List<MultipartFile> files,
-                                                     @RequestPart List<PlannerDetailRequest> requests,
+                                                     @RequestPart List<PlannerDetailListRequest> requests,
                                                      Principal principal) {
 
-        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, files, requests, principal.getName()));
+        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, requests, principal.getName()));
     }
 
     @PatchMapping("/{planId}/detail")

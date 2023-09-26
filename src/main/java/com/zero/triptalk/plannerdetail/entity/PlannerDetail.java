@@ -1,6 +1,5 @@
 package com.zero.triptalk.plannerdetail.entity;
 
-import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.user.entity.UserEntity;
@@ -26,7 +25,7 @@ public class PlannerDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long plannerId;
+    private Long planId;
     private Long userId;
 
     private String description;
@@ -55,9 +54,9 @@ public class PlannerDetail {
 
     @Builder
     public PlannerDetail(
-            Long plannerId, Long userId,
+            Long planId, Long userId,
             String description, Place place, List<String> images) {
-        this.plannerId = plannerId;
+        this.planId = planId;
         this.userId = userId;
         this.description = description;
         this.place = place;
@@ -77,7 +76,7 @@ public class PlannerDetail {
             Long planId, PlannerDetailRequest request,
             UserEntity user, Place place, List<String> images) {
         return PlannerDetail.builder()
-                .plannerId(planId)
+                .planId(planId)
                 .userId(user.getUserId())
                 .description(request.getDescription())
                 .place(place)

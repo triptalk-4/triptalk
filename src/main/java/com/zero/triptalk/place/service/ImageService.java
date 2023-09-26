@@ -28,7 +28,6 @@ public class ImageService {
 
     //사진 저장
     public List<String> uploadFiles(List<MultipartFile> multipartFiles) {
-//        ArrayList<Images> imagesList = new ArrayList<>();
         ArrayList<String> urlList = new ArrayList<>();
 
         for (MultipartFile file : multipartFiles) {
@@ -44,8 +43,6 @@ public class ImageService {
                 amazonS3Client.putObject(putObjectRequest);
 
                 String fileUrl = generateS3FileUrl(fileName);
-//                Images images = new Images(fileUrl);
-//                imagesList.add(images);
                 urlList.add(fileUrl);
                 inputStream.close();
             } catch (IOException e) {
