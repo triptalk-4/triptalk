@@ -48,17 +48,17 @@ public class PlannerDetailController {
         return ResponseEntity.ok(plannerDetailService.createPlannerDetail(planId, files, request, principle.getName()));
     }
 
-//
-//    //세부일정 요청이 bulk 로 들어올 때
-//    @PostMapping("/{planId}/detail")
-//    @PreAuthorize("hasAuthority('USER')")
-//    public ResponseEntity<?> createPlannerDetailList(@PathVariable Long planId,
-//                                                     @RequestPart List<MultipartFile> files,
-//                                                     @RequestPart List<PlannerDetailRequest> requests,
-//                                                     Principal principal) {
-//
-//        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, files, requests, principal.getName()));
-//    }
+
+    //세부일정 요청이 bulk 로 들어올 때
+    @PostMapping("/{planId}/detail")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Boolean> createPlannerDetailList(@PathVariable Long planId,
+                                                     @RequestPart List<MultipartFile> files,
+                                                     @RequestPart List<PlannerDetailRequest> requests,
+                                                     Principal principal) {
+
+        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, files, requests, principal.getName()));
+    }
 
     @PatchMapping("/{planId}/detail")
     @PreAuthorize("hasAuthority('USER')")
