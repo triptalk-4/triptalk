@@ -1,7 +1,6 @@
 package com.zero.triptalk.plannerdetail.service;
 
 import com.zero.triptalk.exception.type.PlannerDetailException;
-import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
@@ -26,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -135,12 +135,12 @@ class PlannerDetailServiceTest {
     void getPlannerDetail() {
         //given
         Long plannerDetailId = 1L;
-        List<Images> images = new ArrayList<>();
+        List<String> images = new ArrayList<>();
         Place place = new Place();
         PlannerDetail result = PlannerDetail.builder()
-                .plannerId(1L)
+                .planId(1L)
                 .userId(1L)
-                .image("TT")
+                .images(Arrays.asList("aa","bb"))
                 .description("TT")
                 .images(images)
                 .place(place).build();
