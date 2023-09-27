@@ -4,7 +4,6 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.config.MockS3Config;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
@@ -157,10 +156,11 @@ class PlannerDetailControllerTest {
 
         String contentAsString = mvcResult.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
-        List<String> actualUrls = objectMapper.readValue(contentAsString, new TypeReference<List<String>>(){});
+        List<String> urlList = objectMapper.readValue(contentAsString, new TypeReference<List<String>>() {
+        });
 
-        assertEquals(2, actualUrls.size());
-        assertTrue(actualUrls.containsAll(Arrays.asList(
+        assertEquals(2, urlList.size());
+        assertTrue(urlList.containsAll(Arrays.asList(
                 "http://127.0.0.1:8001/bucket-name/cat.jpg",
                 "http://127.0.0.1:8001/bucket-name/cat.jpg"
         )));

@@ -20,9 +20,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,9 +34,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUND_PLANNER_DETAIL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PlannerDetailServiceTest {
@@ -102,7 +107,6 @@ class PlannerDetailServiceTest {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(placeService.savePlace(any())).thenReturn(place);
         when(imageService.uploadFiles(any())).thenReturn(images);
-        System.out.println(images);
         boolean result = plannerDetailService.createPlannerDetail(planId, files, request, email);
 
         //then
@@ -140,7 +144,7 @@ class PlannerDetailServiceTest {
         PlannerDetail result = PlannerDetail.builder()
                 .planId(1L)
                 .userId(1L)
-                .images(Arrays.asList("aa","bb"))
+                .images(Arrays.asList("aa", "bb"))
                 .description("TT")
                 .images(images)
                 .place(place).build();
@@ -153,6 +157,34 @@ class PlannerDetailServiceTest {
                 () -> plannerDetailService.getPlannerDetail(plannerDetailId)
         );
         assert result != null;
-        Assertions.assertEquals(plannerDetail.getUserId(),result.getUserId());
+        Assertions.assertEquals(plannerDetail.getUserId(), result.getUserId());
+    }
+
+    @Test
+    @DisplayName("상세 일정 리스트 추가를 위한 이미지 리스트 업로드")
+    void uploadImages() throws IOException {
+        //given
+        Long planId = 1L;
+        Path path = Paths.get("src/test/resources/cat.jpg");
+        byte[] imageBytes = Files.readAllBytes(path);
+        List<MultipartFile> images = List.of(
+                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes),
+                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes)
+        );
+
+        //when
+        doReturn(Arrays.asList("http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"))
+                .when(imageService)
+                .uploadFiles(images);
+
+        //then
+        List<String> urlList = plannerDetailService.uploadImages(images);
+        assertEquals(2, urlList.size());
+        assertTrue(urlList.containsAll(Arrays.asList(
+                "http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"
+        )));
+        verify(imageService).uploadFiles(images);
     }
 }
