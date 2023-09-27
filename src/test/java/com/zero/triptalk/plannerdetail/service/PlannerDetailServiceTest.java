@@ -59,7 +59,7 @@ class PlannerDetailServiceTest {
 
     @Test
     @DisplayName("상세 일정 만들기")
-    void createPlannerDetail() throws IOException {
+    void createPlannerDetail() {
 
         //given
         Long planId = 1L;
@@ -164,7 +164,6 @@ class PlannerDetailServiceTest {
     @DisplayName("상세 일정 리스트 추가를 위한 이미지 리스트 업로드")
     void uploadImages() throws IOException {
         //given
-        Long planId = 1L;
         Path path = Paths.get("src/test/resources/cat.jpg");
         byte[] imageBytes = Files.readAllBytes(path);
         List<MultipartFile> images = List.of(
