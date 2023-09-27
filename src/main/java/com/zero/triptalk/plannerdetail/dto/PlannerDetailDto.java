@@ -16,17 +16,19 @@ import java.util.List;
 @NoArgsConstructor
 public class PlannerDetailDto {
 
+    private Long userId;
     private LocalDateTime createAt;
     private Place place;
     private String description;
     private List<String> imagesUrl;
 
-    public static PlannerDetailDto ofEntity(PlannerDetail plannerDetail, List<String> imagesUrl) {
+    public static PlannerDetailDto ofEntity(PlannerDetail plannerDetail) {
         return PlannerDetailDto.builder()
+                .userId(plannerDetail.getUserId())
                 .createAt(plannerDetail.getCreatedAt())
                 .place(plannerDetail.getPlace())
                 .description(plannerDetail.getDescription())
-                .imagesUrl(imagesUrl)
+                .imagesUrl(plannerDetail.getImages())
                 .build();
     }
 }

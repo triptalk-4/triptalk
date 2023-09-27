@@ -2,7 +2,6 @@ package com.zero.triptalk.plannerdetail.service;
 
 import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.exception.type.UserException;
-import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
