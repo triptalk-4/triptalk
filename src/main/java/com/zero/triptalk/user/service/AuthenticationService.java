@@ -1,5 +1,6 @@
 package com.zero.triptalk.user.service;
 
+import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.user.entity.UserEntity;
@@ -7,9 +8,11 @@ import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
 import com.zero.triptalk.user.request.AuthenticationRequest;
+import com.zero.triptalk.user.request.EmailCheckRequest;
 import com.zero.triptalk.user.request.EmailTokenRequest;
 import com.zero.triptalk.user.request.RegisterRequest;
 import com.zero.triptalk.user.response.AuthenticationResponse;
+import com.zero.triptalk.user.response.EmailCheckOkResponse;
 import com.zero.triptalk.user.response.EmailCheckResponse;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,6 +25,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.zero.triptalk.exception.code.UserErrorCode.*;
 
@@ -37,22 +41,41 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender mailSender; // Spring MailSender
 
+    private final RedisUtil redisUtil;
+
     private static  String senderMail= "juhun104@naver.com";
-    public AuthenticationService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender) {
+    public AuthenticationService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, RedisUtil redisUtil) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.mailSender = mailSender;
+        this.redisUtil = redisUtil;
     }
 
-    static int createNumber(){
-      int number = (int)(Math.random() * (90000)) + 100000;// (int) Math.random() * (최댓값-최소값+1) + 최소값
-      return number;
+
+
+    public static String createRandomString() {
+        // 사용할 문자셋
+        String charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder randomString = new StringBuilder();
+
+        // 랜덤 객체 생성
+        Random random = new Random();
+
+        // 6글자의 랜덤 문자열 생성
+        for (int i = 0; i < 6; i++) {
+            int index = random.nextInt(charset.length());
+            char randomChar = charset.charAt(index);
+            randomString.append(randomChar);
+        }
+
+        return randomString.toString();
     }
 
-    public int sendMail(String toEmail) throws MessagingException {
-        int number = createNumber();
+
+    public String sendMail(String toEmail) throws MessagingException {
+        String number = createRandomString();
         System.out.println("number = " + number);
         MimeMessage m = mailSender.createMimeMessage();
         MimeMessageHelper h = new MimeMessageHelper(m, "UTF-8");
@@ -128,13 +151,30 @@ public class AuthenticationService {
     }
 
 
-    public EmailCheckResponse emailCheck(EmailTokenRequest request) throws MessagingException {
+    public EmailCheckResponse emailSend(EmailCheckRequest request) throws MessagingException {
         String email = request.getEmail();
-        int token = sendMail(email); // createMail 메서드에서 토큰 생성 및 이메일 전송(email);
+        String token = sendMail(email); // createMail 메서드에서 토큰 생성 및 이메일 전송(email);
+
+        redisUtil.setDataExpire(String.valueOf(token),email,60*5L);
 
         return EmailCheckResponse.builder()
-                .PostMailOk("이메일이 전송 완료되었습니다.")
+                .PostMailOk("이메일이 전송 완료되었습니다. 이메일 인증 유효 시간은 5분입니다!")
                 .emailToken(token)
+                .build();
+    }
+
+    public EmailCheckOkResponse registerEmailCheckToken(EmailTokenRequest request) {
+        String emailSendToken = request.getToken();
+        String storedToken = redisUtil.getData(emailSendToken);
+
+        if (storedToken != null && !storedToken.isEmpty()) {
+               return EmailCheckOkResponse.builder()
+                       .emailVerificationCompleted("이메일 인증이 완료 되었습니다. ")
+                       .build();
+        }
+
+        return EmailCheckOkResponse.builder()
+                .emailVerificationFailed("이메일 인증이 완료 되었습니다.")
                 .build();
     }
 }

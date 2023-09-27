@@ -1,6 +1,5 @@
 package com.zero.triptalk.user.response;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailCheckResponse {
-   private String PostMailOk;
-
-   private String emailToken;
-
-   public EmailCheckResponse(String message) {
-   }
+public class EmailCheckOkResponse {
+    private String emailVerificationCompleted;
+    private String emailVerificationFailed;
 }
