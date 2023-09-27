@@ -1,7 +1,10 @@
 package com.zero.triptalk.plannerdetail.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zero.triptalk.config.JwtService;
+import com.zero.triptalk.config.MockS3Config;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
@@ -17,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
@@ -27,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,6 +57,10 @@ class PlannerDetailControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private AmazonS3Client amazonS3Client;
+
 
     @Test
     @DisplayName("상세 일정 만들기")
@@ -131,16 +141,29 @@ class PlannerDetailControllerTest {
         );
 
         //when
-        doReturn(Arrays.asList("aa", "bb"))
+        doReturn(Arrays.asList("http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"))
                 .when(plannerDetailService)
                 .uploadImages(images);
 
         //then
-        mockMvc.perform(multipart("/api/plans/{planId}/images", planId)
+        MvcResult mvcResult = mockMvc.perform(multipart("/api/plans/{planId}/images", planId)
                         .file((MockMultipartFile) images.get(0))
                         .file((MockMultipartFile) images.get(1))
                         .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> actualUrls = objectMapper.readValue(contentAsString, new TypeReference<List<String>>(){});
+
+        assertEquals(2, actualUrls.size());
+        assertTrue(actualUrls.containsAll(Arrays.asList(
+                "http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"
+        )));
 
     }
 
