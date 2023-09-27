@@ -21,11 +21,11 @@ public class PlannerDetailController {
     private final PlannerDetailService plannerDetailService;
 
 
-    @GetMapping("/detail")
+    @GetMapping("/{plannerDetailId}/detail")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<PlannerDetailResponse> getPlannerDetail(Long plannerDetailId){
-//        return ResponseEntity.ok(plannerDetailService.getPlannerDetail(plannerDetailId));
-        return null;
+    public ResponseEntity<PlannerDetailResponse> getPlannerDetail(@PathVariable Long plannerDetailId){
+        return ResponseEntity.ok(
+                PlannerDetailResponse.from(plannerDetailService.getPlannerDetail(plannerDetailId)));
     }
 
 
