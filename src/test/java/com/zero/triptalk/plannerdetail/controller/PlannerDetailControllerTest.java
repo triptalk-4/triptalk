@@ -1,8 +1,9 @@
 package com.zero.triptalk.plannerdetail.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
@@ -25,8 +27,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,6 +57,10 @@ class PlannerDetailControllerTest {
     @MockBean
     private JwtService jwtService;
 
+    @MockBean
+    private AmazonS3Client amazonS3Client;
+
+
     @Test
     @DisplayName("상세 일정 만들기")
     void createPlannerDetail() throws Exception {
@@ -74,10 +83,10 @@ class PlannerDetailControllerTest {
 //        when(plannerDetailService.createPlannerDetail(1L, files, request, "1"))
 //                .thenReturn(true);
 
+        //when
         doReturn(true)
                 .when(plannerDetailService)
                 .createPlannerDetail(1L, files, request, "postrel63@gmail");
-        //when
         //then
 
         mockMvc.perform(multipart("/api/plans/{planId}/detail", planId)
@@ -99,12 +108,12 @@ class PlannerDetailControllerTest {
         Long PlannerDetailId = 1L;
         String description = "TT";
         Place place = new Place();
-        List<Images> images = new ArrayList<>();
+        List<String> images = new ArrayList<>();
 
         //when
         doReturn(PlannerDetailDto.builder()
                 .createAt(LocalDateTime.now())
-                .images(images)
+                .imagesUrl(images)
                 .description(description)
                 .place(place)
                 .build()).when(plannerDetailService)
@@ -116,6 +125,46 @@ class PlannerDetailControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.description").value(description));
+    }
+
+    @Test
+    @DisplayName("상세 일정 리스트 추가를 위한 이미지 리스트 업로드")
+    void uploadImages() throws Exception {
+        //given
+        Long planId = 1L;
+        Path path = Paths.get("src/test/resources/cat.jpg");
+        byte[] imageBytes = Files.readAllBytes(path);
+        List<MultipartFile> images = List.of(
+                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes),
+                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes)
+        );
+
+        //when
+        doReturn(Arrays.asList("http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"))
+                .when(plannerDetailService)
+                .uploadImages(images);
+
+        //then
+        MvcResult mvcResult = mockMvc.perform(multipart("/api/plans/{planId}/images", planId)
+                        .file((MockMultipartFile) images.get(0))
+                        .file((MockMultipartFile) images.get(1))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> urlList = objectMapper.readValue(contentAsString, new TypeReference<List<String>>() {
+        });
+
+        assertEquals(2, urlList.size());
+        assertTrue(urlList.containsAll(Arrays.asList(
+                "http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"
+        )));
+
     }
 
 }

@@ -26,7 +26,6 @@ public class PlannerDetailListResponse {
         List<PlannerDetailListResponse> list = new ArrayList<>();
         for (PlannerDetail x : plannerDetails) {
             list.add(PlannerDetailListResponse.builder()
-                                            .image(x.getImage())
                                             .location(x.getPlace().getName())
                                             .build());
         }

@@ -1,13 +1,9 @@
 package com.zero.triptalk.plannerdetail.entity;
 
-import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.user.entity.UserEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,27 +16,26 @@ import java.util.List;
 @Getter
 @EntityListeners(value = {AuditingEntityListener.class})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class PlannerDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long plannerId;
+    private Long planId;
     private Long userId;
-
-    private String image;
 
     private String description;
 
     private Long views;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "plannerDetail_id")
-    private List<Images> images;
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "plannerDetail_id")
+//    private List<Images> images;
 
-//    @ElementCollection
-//    private List<String> Images;
+    @ElementCollection
+    private List<String> images;
 
     @ManyToOne
     @JoinColumn(name = "place_id")
@@ -57,11 +52,10 @@ public class PlannerDetail {
 
     @Builder
     public PlannerDetail(
-            Long plannerId, Long userId, String image,
-            String description, Place place, List<Images> images) {
-        this.plannerId = plannerId;
+            Long planId, Long userId,
+            String description, Place place, List<String> images) {
+        this.planId = planId;
         this.userId = userId;
-        this.image = image;
         this.description = description;
         this.place = place;
         this.images = images;
@@ -77,9 +71,10 @@ public class PlannerDetail {
     }
 
     public static PlannerDetail buildPlannerDetail(
-            Long planId, PlannerDetailRequest request, UserEntity user, Place place, List<Images> images) {
+            Long planId, PlannerDetailRequest request,
+            UserEntity user, Place place, List<String> images) {
         return PlannerDetail.builder()
-                .plannerId(planId)
+                .planId(planId)
                 .userId(user.getUserId())
                 .description(request.getDescription())
                 .place(place)

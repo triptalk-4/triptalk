@@ -1,7 +1,6 @@
 package com.zero.triptalk.plannerdetail.service;
 
 import com.zero.triptalk.exception.type.PlannerDetailException;
-import com.zero.triptalk.place.entity.Images;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
@@ -21,18 +20,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUND_PLANNER_DETAIL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PlannerDetailServiceTest {
@@ -54,7 +59,7 @@ class PlannerDetailServiceTest {
 
     @Test
     @DisplayName("상세 일정 만들기")
-    void createPlannerDetail() throws IOException {
+    void createPlannerDetail() {
 
         //given
         Long planId = 1L;
@@ -88,10 +93,12 @@ class PlannerDetailServiceTest {
                 .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "남산상세", 10, 10))
                 .build();
 
-        List<Images> images = List.of(
-                new Images("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg")
-        );
-        System.out.println(images);
+        List<String> images =
+                List.of("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg");
+
+//        List<Images> images = List.of(
+//                        new Images("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg")
+//                );
 
 
         ArgumentCaptor<PlannerDetail> captor = ArgumentCaptor.forClass(PlannerDetail.class);
@@ -100,7 +107,6 @@ class PlannerDetailServiceTest {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(placeService.savePlace(any())).thenReturn(place);
         when(imageService.uploadFiles(any())).thenReturn(images);
-        System.out.println(images);
         boolean result = plannerDetailService.createPlannerDetail(planId, files, request, email);
 
         //then
@@ -133,12 +139,12 @@ class PlannerDetailServiceTest {
     void getPlannerDetail() {
         //given
         Long plannerDetailId = 1L;
-        List<Images> images = new ArrayList<>();
+        List<String> images = new ArrayList<>();
         Place place = new Place();
         PlannerDetail result = PlannerDetail.builder()
-                .plannerId(1L)
+                .planId(1L)
                 .userId(1L)
-                .image("TT")
+                .images(Arrays.asList("aa", "bb"))
                 .description("TT")
                 .images(images)
                 .place(place).build();
@@ -151,6 +157,33 @@ class PlannerDetailServiceTest {
                 () -> plannerDetailService.getPlannerDetail(plannerDetailId)
         );
         assert result != null;
-        Assertions.assertEquals(plannerDetail.getUserId(),result.getUserId());
+        Assertions.assertEquals(plannerDetail.getUserId(), result.getUserId());
+    }
+
+    @Test
+    @DisplayName("상세 일정 리스트 추가를 위한 이미지 리스트 업로드")
+    void uploadImages() throws IOException {
+        //given
+        Path path = Paths.get("src/test/resources/cat.jpg");
+        byte[] imageBytes = Files.readAllBytes(path);
+        List<MultipartFile> images = List.of(
+                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes),
+                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes)
+        );
+
+        //when
+        doReturn(Arrays.asList("http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"))
+                .when(imageService)
+                .uploadFiles(images);
+
+        //then
+        List<String> urlList = plannerDetailService.uploadImages(images);
+        assertEquals(2, urlList.size());
+        assertTrue(urlList.containsAll(Arrays.asList(
+                "http://127.0.0.1:8001/bucket-name/cat.jpg",
+                "http://127.0.0.1:8001/bucket-name/cat.jpg"
+        )));
+        verify(imageService).uploadFiles(images);
     }
 }

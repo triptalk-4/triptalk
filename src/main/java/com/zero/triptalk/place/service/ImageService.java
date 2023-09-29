@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.zero.triptalk.exception.code.ImageUploadErrorCode;
 import com.zero.triptalk.exception.type.ImageException;
-import com.zero.triptalk.place.entity.Images;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,8 +27,8 @@ public class ImageService {
     private String bucket;
 
     //사진 저장
-    public List<Images> uploadFiles(List<MultipartFile> multipartFiles) {
-        ArrayList<Images> imagesList = new ArrayList<>();
+    public List<String> uploadFiles(List<MultipartFile> multipartFiles) {
+        ArrayList<String> urlList = new ArrayList<>();
 
         for (MultipartFile file : multipartFiles) {
             String fileName = generateFileName(file.getOriginalFilename());
@@ -44,14 +43,13 @@ public class ImageService {
                 amazonS3Client.putObject(putObjectRequest);
 
                 String fileUrl = generateS3FileUrl(fileName);
-                Images images = new Images(fileUrl);
-                imagesList.add(images);
+                urlList.add(fileUrl);
                 inputStream.close();
             } catch (IOException e) {
                 throw new ImageException(ImageUploadErrorCode.IMAGE_UPLOAD_FAILED);
             }
         }
-        return imagesList;
+        return urlList;
     }
 
     private String generateFileName(String originalFileName) {
