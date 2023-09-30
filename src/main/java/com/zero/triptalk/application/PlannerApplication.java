@@ -1,9 +1,12 @@
 package com.zero.triptalk.application;
 
+import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
+import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.service.PlannerDetailService;
@@ -15,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.CREATE_PLANNER_DETAIL_FAILED;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +52,27 @@ public class PlannerApplication {
                 planner, request, user, place, images);
         plannerDetailService.savePlannerDetail(plannerDetail);
 
+        return true;
+    }
+
+    //일정 생성(일정 정보와 상세일정 리스트 모두 저장)
+    @Transactional
+    public boolean createPlanner(PlannerRequest plannerRequest, List<PlannerDetailListRequest> requests, String email) {
+
+        try {
+            UserEntity user = plannerDetailService.findByEmail(email);
+            Planner planner = plannerService.createPlanner(plannerRequest);
+
+            List<PlannerDetail> detailList = requests.stream().map(request -> {
+                Place place = placeService.savePlace(request.getPlaceInfo());
+                return request.toEntity(planner, place, user.getUserId());
+            }).collect(Collectors.toList());
+
+            plannerDetailService.savePlannerDetailList(detailList);
+
+        } catch (PlannerDetailException e) {
+            throw new PlannerDetailException(CREATE_PLANNER_DETAIL_FAILED);
+        }
         return true;
     }
 }

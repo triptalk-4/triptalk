@@ -60,7 +60,6 @@ public class PlannerDetailService {
                 () -> new UserException(USER_NOT_FOUND));
     }
 
-
     public List<String> uploadImages(List<MultipartFile> files) {
         return imageService.uploadFiles(files);
     }
@@ -69,33 +68,8 @@ public class PlannerDetailService {
         plannerDetailRepository.save(plannerDetail);
     }
 
-    @Transactional
-    public boolean createPlannerDetailList(Long plannerId, List<PlannerDetailListRequest> requests, String email) {
-
-        try {
-
-            UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                    new UserException(USER_NOT_FOUND));
-
-            Planner planner = plannerRepository.findById(plannerId).orElseThrow(
-                    () -> new PlannerException(PlannerErrorCode.NOT_FOUND_PLANNER)
-            );
-
-            List<PlannerDetail> detailList = requests.stream().map(request -> {
-                Place place = placeService.savePlace(request.getPlaceInfo());
-                return request.toEntity(planner, place, user.getUserId());
-            }).collect(Collectors.toList());
-
-            if (requests.size() != detailList.size()) {
-                throw new PlannerDetailException(CREATE_PLANNER_DETAIL_FAILED);
-            }
-
-            plannerDetailRepository.saveAll(detailList);
-
-        } catch (PlannerDetailException e) {
-            throw new PlannerDetailException(CREATE_PLANNER_DETAIL_FAILED);
-        }
-        return true;
+    public void savePlannerDetailList(List<PlannerDetail> plannerDetailList){
+        plannerDetailRepository.saveAll(plannerDetailList);
     }
 
     public boolean updatePlannerDetail(List<MultipartFile> files,
