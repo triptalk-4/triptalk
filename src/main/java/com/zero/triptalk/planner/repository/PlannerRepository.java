@@ -1,6 +1,6 @@
-package com.zero.triptalk.plannerdetail.repository;
+package com.zero.triptalk.planner.repository;
 
-import com.zero.triptalk.plannerdetail.entity.Planner;
+import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

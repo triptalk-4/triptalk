@@ -1,14 +1,15 @@
-package com.zero.triptalk.plannerdetail.controller;
+package com.zero.triptalk.planner.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zero.triptalk.application.PlannerApplication;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
-import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
+import com.zero.triptalk.planner.dto.PlannerDetailDto;
+import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.service.PlannerDetailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(PlannerDetailController.class)
+@WebMvcTest(PlannerController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @WithMockUser(username = "testUser", roles = "USER")
 class PlannerDetailControllerTest {
@@ -50,6 +51,9 @@ class PlannerDetailControllerTest {
 
     @MockBean
     private PlannerDetailService plannerDetailService;
+
+    @MockBean
+    private PlannerApplication plannerApplication;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -85,7 +89,7 @@ class PlannerDetailControllerTest {
 
         //when
         doReturn(true)
-                .when(plannerDetailService)
+                .when(plannerApplication)
                 .createPlannerDetail(plannerId, files, request, "postrel63@gmail");
         //then
 

@@ -1,7 +1,7 @@
-package com.zero.triptalk.plannerdetail.repository;
+package com.zero.triptalk.planner.repository;
 
-import com.zero.triptalk.plannerdetail.entity.Planner;
-import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
+import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.entity.PlannerDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

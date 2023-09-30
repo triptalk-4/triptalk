@@ -1,4 +1,4 @@
-package com.zero.triptalk.plannerdetail.dto;
+package com.zero.triptalk.planner.dto;
 
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceResponse;

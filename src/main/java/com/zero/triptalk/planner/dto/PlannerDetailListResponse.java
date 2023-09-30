@@ -1,6 +1,6 @@
-package com.zero.triptalk.plannerdetail.dto;
+package com.zero.triptalk.planner.dto;
 
-import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
+import com.zero.triptalk.planner.entity.PlannerDetail;
 import lombok.Builder;
 import lombok.Getter;
 

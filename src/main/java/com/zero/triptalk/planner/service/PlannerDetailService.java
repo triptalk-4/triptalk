@@ -1,4 +1,4 @@
-package com.zero.triptalk.plannerdetail.service;
+package com.zero.triptalk.planner.service;
 
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerDetailException;
@@ -7,14 +7,14 @@ import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailListRequest;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
-import com.zero.triptalk.plannerdetail.entity.Planner;
-import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
-import com.zero.triptalk.plannerdetail.repository.PlannerDetailRepository;
-import com.zero.triptalk.plannerdetail.repository.PlannerRepository;
+import com.zero.triptalk.planner.dto.PlannerDetailDto;
+import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
+import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
+import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.entity.PlannerDetail;
+import com.zero.triptalk.planner.repository.PlannerDetailRepository;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

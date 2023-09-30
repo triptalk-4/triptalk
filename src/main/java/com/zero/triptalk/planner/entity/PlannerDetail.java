@@ -1,7 +1,7 @@
-package com.zero.triptalk.plannerdetail.entity;
+package com.zero.triptalk.planner.entity;
 
 import com.zero.triptalk.place.entity.Place;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

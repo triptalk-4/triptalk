@@ -1,10 +1,10 @@
-package com.zero.triptalk.plannerdetail.service;
+package com.zero.triptalk.planner.service;
 
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerException;
-import com.zero.triptalk.plannerdetail.dto.PlannerRequest;
-import com.zero.triptalk.plannerdetail.entity.Planner;
-import com.zero.triptalk.plannerdetail.repository.PlannerRepository;
+import com.zero.triptalk.planner.dto.PlannerRequest;
+import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
