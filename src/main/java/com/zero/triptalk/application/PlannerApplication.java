@@ -1,8 +1,5 @@
 package com.zero.triptalk.application;
 
-import com.zero.triptalk.exception.code.PlannerErrorCode;
-import com.zero.triptalk.exception.type.PlannerException;
-import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
@@ -18,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
-import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

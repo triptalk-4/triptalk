@@ -1,5 +1,6 @@
 package com.zero.triptalk.plannerdetail.controller;
 
+import com.zero.triptalk.application.PlannerApplication;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
@@ -17,9 +18,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/plans")
-public class PlannerDetailController {
+public class PlannerController {
 
     private final PlannerDetailService plannerDetailService;
+    private final PlannerApplication plannerApplication;
 
 
     @GetMapping("/{plannerDetailId}/detail")
@@ -46,7 +48,7 @@ public class PlannerDetailController {
                                                        @RequestPart PlannerDetailRequest request,
                                                        Principal principle) {
 
-        return ResponseEntity.ok(plannerDetailService.createPlannerDetail(plannerId, files, request, principle.getName()));
+        return ResponseEntity.ok(plannerApplication.createPlannerDetail(plannerId, files, request, principle.getName()));
     }
 
     /**
