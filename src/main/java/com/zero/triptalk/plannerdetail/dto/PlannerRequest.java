@@ -33,7 +33,7 @@ public class PlannerRequest {
                 .description(description)
                 .startDate(startDate)
                 .endDate(endDate)
-                .planStatus(plannerStatus)
+                .plannerStatus(plannerStatus)
                 .build();
     }
 

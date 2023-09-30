@@ -31,7 +31,7 @@ public class Planner {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    private PlannerStatus planStatus;
+    private PlannerStatus plannerStatus;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
