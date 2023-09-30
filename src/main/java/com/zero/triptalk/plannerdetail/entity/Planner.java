@@ -1,6 +1,6 @@
 package com.zero.triptalk.plannerdetail.entity;
 
-import com.zero.triptalk.plannerdetail.dto.PlanStatus;
+import com.zero.triptalk.plannerdetail.dto.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Plan {
+public class Planner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Plan {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    private PlanStatus planStatus;
+    private PlannerStatus planStatus;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
