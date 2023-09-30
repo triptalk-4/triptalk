@@ -1,6 +1,7 @@
 package com.zero.triptalk.plannerdetail.service;
 
 import com.zero.triptalk.plannerdetail.dto.PlannerRequest;
+import com.zero.triptalk.plannerdetail.entity.Planner;
 import com.zero.triptalk.plannerdetail.repository.PlannerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,8 @@ public class PlannerService {
 
     private final PlannerRepository plannerRepository;
 
-    public void createPlanner(PlannerRequest request) {
-        plannerRepository.save(request.toEntity());
+    public Planner createPlanner(PlannerRequest request) {
+       return plannerRepository.save(request.toEntity());
     }
 
 }
