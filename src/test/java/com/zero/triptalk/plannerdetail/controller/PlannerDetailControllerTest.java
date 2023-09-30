@@ -62,11 +62,11 @@ class PlannerDetailControllerTest {
 
 
     @Test
-    @DisplayName("상세 일정 만들기")
+    @DisplayName("상세 일정 한개 만들기")
     void createPlannerDetail() throws Exception {
 
         //given
-        Long planId = 1L;
+        Long plannerId = 1L;
         PlannerDetailRequest request = PlannerDetailRequest.builder()
                 .id(1L)
                 .date(LocalDateTime.now())
@@ -86,10 +86,10 @@ class PlannerDetailControllerTest {
         //when
         doReturn(true)
                 .when(plannerDetailService)
-                .createPlannerDetail(1L, files, request, "postrel63@gmail");
+                .createPlannerDetail(plannerId, files, request, "postrel63@gmail");
         //then
 
-        mockMvc.perform(multipart("/api/plans/{planId}/detail", planId)
+        mockMvc.perform(multipart("/api/plans/{plannerId}/detail", plannerId)
                 .file((MockMultipartFile) files.get(0))
                 .file((MockMultipartFile) files.get(1))
                 .file(new MockMultipartFile("request",
@@ -131,7 +131,7 @@ class PlannerDetailControllerTest {
     @DisplayName("상세 일정 리스트 추가를 위한 이미지 리스트 업로드")
     void uploadImages() throws Exception {
         //given
-        Long planId = 1L;
+        Long plannerId = 1L;
         Path path = Paths.get("src/test/resources/cat.jpg");
         byte[] imageBytes = Files.readAllBytes(path);
         List<MultipartFile> images = List.of(
@@ -146,7 +146,7 @@ class PlannerDetailControllerTest {
                 .uploadImages(images);
 
         //then
-        MvcResult mvcResult = mockMvc.perform(multipart("/api/plans/{planId}/images", planId)
+        MvcResult mvcResult = mockMvc.perform(multipart("/api/plans/{plannerId}/images", plannerId)
                         .file((MockMultipartFile) images.get(0))
                         .file((MockMultipartFile) images.get(1))
                         .with(csrf()))

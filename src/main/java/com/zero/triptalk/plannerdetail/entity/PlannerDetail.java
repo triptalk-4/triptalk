@@ -23,7 +23,6 @@ public class PlannerDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long planId;
     private Long userId;
 
     private String description;
@@ -41,6 +40,10 @@ public class PlannerDetail {
     @JoinColumn(name = "place_id")
     private Place place;
 
+    @ManyToOne
+    @JoinColumn(name = "planner_id")
+    private Planner planner;
+
 
     @CreatedDate
     @Column(updatable = false)
@@ -52,9 +55,9 @@ public class PlannerDetail {
 
     @Builder
     public PlannerDetail(
-            Long planId, Long userId,
-            String description, Place place, List<String> images) {
-        this.planId = planId;
+            Long userId, String description, Place place,
+            List<String> images, Planner planner) {
+        this.planner = planner;
         this.userId = userId;
         this.description = description;
         this.place = place;
@@ -71,10 +74,10 @@ public class PlannerDetail {
     }
 
     public static PlannerDetail buildPlannerDetail(
-            Long planId, PlannerDetailRequest request,
+            Planner planner, PlannerDetailRequest request,
             UserEntity user, Place place, List<String> images) {
         return PlannerDetail.builder()
-                .planId(planId)
+                .planner(planner)
                 .userId(user.getUserId())
                 .description(request.getDescription())
                 .place(place)

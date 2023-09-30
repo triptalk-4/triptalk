@@ -2,11 +2,14 @@ package com.zero.triptalk.plannerdetail.dto;
 
 import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Getter
+@Builder
 public class PlannerDetailListResponse {
     private String image;
     private String location;
@@ -26,8 +29,8 @@ public class PlannerDetailListResponse {
         List<PlannerDetailListResponse> list = new ArrayList<>();
         for (PlannerDetail x : plannerDetails) {
             list.add(PlannerDetailListResponse.builder()
-                                            .location(x.getPlace().getName())
-                                            .build());
+                    .location(x.getPlace().getName())
+                    .build());
         }
 
         return list;

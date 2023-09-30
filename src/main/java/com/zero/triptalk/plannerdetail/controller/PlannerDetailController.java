@@ -1,8 +1,8 @@
 package com.zero.triptalk.plannerdetail.controller;
 
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListRequest;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
+import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailResponse;
 import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class PlannerDetailController {
 
     @GetMapping("/{plannerDetailId}/detail")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<PlannerDetailResponse> getPlannerDetail(@PathVariable Long plannerDetailId){
+    public ResponseEntity<PlannerDetailResponse> getPlannerDetail(@PathVariable Long plannerDetailId) {
         return ResponseEntity.ok(
                 PlannerDetailResponse.from(plannerDetailService.getPlannerDetail(plannerDetailId)));
     }
@@ -39,47 +39,47 @@ public class PlannerDetailController {
 
 
     //세부일정 요청이 한개 들어올 때
-    @PostMapping("/{planId}/detail")
+    @PostMapping("/{plannerId}/detail")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Boolean> createPlannerDetail(@PathVariable Long planId,
-                                                 @RequestPart("files") List<MultipartFile> files,
-                                                 @RequestPart PlannerDetailRequest request,
-                                                 Principal principle) {
+    public ResponseEntity<Boolean> createPlannerDetail(@PathVariable Long plannerId,
+                                                       @RequestPart("files") List<MultipartFile> files,
+                                                       @RequestPart PlannerDetailRequest request,
+                                                       Principal principle) {
 
-        return ResponseEntity.ok(plannerDetailService.createPlannerDetail(planId, files, request, principle.getName()));
+        return ResponseEntity.ok(plannerDetailService.createPlannerDetail(plannerId, files, request, principle.getName()));
     }
 
     /**
-     상세일정 저장(리스트)
-     1. 화면에서 일정 저장 submit
-     2. S3를 통해 사진 파일 리스트를 url 리스트로 변환하고 response
-     3. 사진의 갯수가 맞는지 검증한 뒤
-     4. 상세 일정을 저장하는 request에 이미지 주소를 같이 담아서 전달
-    **/
+     * 상세일정 저장(리스트)
+     * 1. 화면에서 일정 저장 submit
+     * 2. S3를 통해 사진 파일 리스트를 url 리스트로 변환하고 response
+     * 3. 사진의 갯수가 맞는지 검증한 뒤
+     * 4. 상세 일정을 저장하는 request에 이미지 주소를 같이 담아서 전달
+     **/
 
     //사진 리스트 저장
-    @PostMapping("/{planId}/images")
+    @PostMapping("/{plannerId}/images")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<List<String>> uploadImages(@PathVariable Long planId,
+    public ResponseEntity<List<String>> uploadImages(@PathVariable Long plannerId,
                                                      @RequestPart("files") List<MultipartFile> files,
-                                                     Principal principal){
+                                                     Principal principal) {
         return ResponseEntity.ok(plannerDetailService.uploadImages(files));
     }
 
 
     //상세 일정 리스트 저장
-    @PostMapping("/{planId}/detailList")
+    @PostMapping("/{plannerId}/detailList")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Boolean> createPlannerDetailList(@PathVariable Long planId,
-                                                     @RequestBody List<PlannerDetailListRequest> requests,
-                                                     Principal principal) {
+    public ResponseEntity<Boolean> createPlannerDetailList(@PathVariable Long plannerId,
+                                                           @RequestBody List<PlannerDetailListRequest> requests,
+                                                           Principal principal) {
 
-        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(planId, requests, principal.getName()));
+        return ResponseEntity.ok(plannerDetailService.createPlannerDetailList(plannerId, requests, principal.getName()));
     }
 
-    @PatchMapping("/{planId}/detail")
+    @PatchMapping("/{plannerId}/detail")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> updatePlannerDetail(@PathVariable Long planId,
+    public ResponseEntity<?> updatePlannerDetail(@PathVariable Long plannerId,
                                                  @RequestPart List<MultipartFile> files,
                                                  @RequestPart PlannerDetailRequest request,
                                                  Principal principal) {
@@ -87,9 +87,9 @@ public class PlannerDetailController {
         return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
     }
 
-    @DeleteMapping("/{planId}/detail/{detailId}")
+    @DeleteMapping("/{plannerId}/detail/{detailId}")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> deletePlannerDetail(@PathVariable Long planId,
+    public ResponseEntity<?> deletePlannerDetail(@PathVariable Long plannerId,
                                                  @PathVariable Long detailId,
                                                  Principal principal) {
 

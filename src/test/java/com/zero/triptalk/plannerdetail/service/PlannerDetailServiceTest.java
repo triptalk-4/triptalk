@@ -7,8 +7,10 @@ import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
 import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
+import com.zero.triptalk.plannerdetail.entity.Planner;
 import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
 import com.zero.triptalk.plannerdetail.repository.PlannerDetailRepository;
+import com.zero.triptalk.plannerdetail.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
@@ -51,18 +53,23 @@ class PlannerDetailServiceTest {
     @Mock
     private ImageService imageService;
 
+
+    @Mock
+    private PlannerRepository plannerRepository;
+
     @Mock
     private PlannerDetailRepository plannerDetailRepository;
+
 
     @InjectMocks
     private PlannerDetailService plannerDetailService;
 
     @Test
-    @DisplayName("상세 일정 만들기")
+    @DisplayName("상세 일정 한개 만들기")
     void createPlannerDetail() {
 
         //given
-        Long planId = 1L;
+        Long plannerId = 1L;
         String email = "test@exam.com";
         List<MultipartFile> files = new ArrayList<>();
 
@@ -86,6 +93,10 @@ class PlannerDetailServiceTest {
                 .longitude(10)
                 .build();
 
+        Planner planner = Planner.builder()
+                .title("11")
+                .build();
+
         PlannerDetailRequest request = PlannerDetailRequest.builder()
                 .id(1L)
                 .date(LocalDateTime.now())
@@ -105,9 +116,10 @@ class PlannerDetailServiceTest {
 
         //when
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(plannerRepository.findById(plannerId)).thenReturn(Optional.of(planner));
         when(placeService.savePlace(any())).thenReturn(place);
         when(imageService.uploadFiles(any())).thenReturn(images);
-        boolean result = plannerDetailService.createPlannerDetail(planId, files, request, email);
+        boolean result = plannerDetailService.createPlannerDetail(plannerId, files, request, email);
 
         //then
         verify(plannerDetailRepository).save(captor.capture());
@@ -142,7 +154,7 @@ class PlannerDetailServiceTest {
         List<String> images = new ArrayList<>();
         Place place = new Place();
         PlannerDetail result = PlannerDetail.builder()
-                .planId(1L)
+                .planner(new Planner())
                 .userId(1L)
                 .images(Arrays.asList("aa", "bb"))
                 .description("TT")
@@ -186,4 +198,6 @@ class PlannerDetailServiceTest {
         )));
         verify(imageService).uploadFiles(images);
     }
+
+
 }

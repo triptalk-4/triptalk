@@ -2,6 +2,7 @@ package com.zero.triptalk.plannerdetail.dto;
 
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
+import com.zero.triptalk.plannerdetail.entity.Planner;
 import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,9 +22,9 @@ public class PlannerDetailListRequest {
     private List<String> images;
 
 
-    public PlannerDetail toEntity(Long planId,Place place,Long userId) {
+    public PlannerDetail toEntity(Planner planner, Place place, Long userId) {
         return PlannerDetail.builder()
-                .planId(planId)
+                .planner(planner)
                 .userId(userId)
                 .description(description)
                 .images(images)
