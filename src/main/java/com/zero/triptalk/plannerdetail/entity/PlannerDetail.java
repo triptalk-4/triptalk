@@ -41,6 +41,10 @@ public class PlannerDetail {
     @JoinColumn(name = "place_id")
     private Place place;
 
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    private Plan plan;
+
 
     @CreatedDate
     @Column(updatable = false)
