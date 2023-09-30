@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Builder
 public class PlannerDetailListResponse {
     private String image;
     private String location;
