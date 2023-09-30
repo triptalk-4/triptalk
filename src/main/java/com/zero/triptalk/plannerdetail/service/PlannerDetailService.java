@@ -54,6 +54,11 @@ public class PlannerDetailService {
         return PlannerDetailDto.ofEntity(plannerDetail);
     }
 
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new UserException(USER_NOT_FOUND));
+    }
+
     @Transactional
     public boolean createPlannerDetail(Long plannerId, List<MultipartFile> files,
                                        PlannerDetailRequest request, String email) {
