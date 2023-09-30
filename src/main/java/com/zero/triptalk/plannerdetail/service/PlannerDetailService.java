@@ -54,38 +54,20 @@ public class PlannerDetailService {
         return PlannerDetailDto.ofEntity(plannerDetail);
     }
 
+    //userService 에서 합칠예정
     public UserEntity findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new UserException(USER_NOT_FOUND));
     }
 
-    @Transactional
-    public boolean createPlannerDetail(Long plannerId, List<MultipartFile> files,
-                                       PlannerDetailRequest request, String email) {
-
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(
-                () -> new UserException(USER_NOT_FOUND));
-
-        Planner planner = plannerRepository.findById(plannerId).orElseThrow(
-                () -> new PlannerException(PlannerErrorCode.NOT_FOUND_PLANNER)
-        );
-
-        //place 저장
-        Place place = placeService.savePlace(request.getPlaceInfo());
-        //S3 -> url 리스트 변환
-        List<String> images = imageService.uploadFiles(files);
-        //상세 일정 저장
-        PlannerDetail plannerDetail = PlannerDetail.buildPlannerDetail(
-                planner, request, user, place, images);
-        plannerDetailRepository.save(plannerDetail);
-
-        return true;
-    }
 
     public List<String> uploadImages(List<MultipartFile> files) {
         return imageService.uploadFiles(files);
     }
 
+    public void savePlannerDetail(PlannerDetail plannerDetail){
+        plannerDetailRepository.save(plannerDetail);
+    }
 
     @Transactional
     public boolean createPlannerDetailList(Long plannerId, List<PlannerDetailListRequest> requests, String email) {
