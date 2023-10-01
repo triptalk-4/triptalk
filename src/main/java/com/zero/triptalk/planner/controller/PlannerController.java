@@ -51,19 +51,17 @@ public class PlannerController {
     @PostMapping("/{plannerId}/images")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<String>> uploadImages(@PathVariable Long plannerId,
-                                                     @RequestPart("files") List<MultipartFile> files,
-                                                     Principal principal) {
+                                                     @RequestPart("files") List<MultipartFile> files) {
         return ResponseEntity.ok(plannerDetailService.uploadImages(files));
     }
 
     //일정 생성
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Boolean> createPlannerDetailList(@RequestBody List<PlannerDetailListRequest> requests,
-                                                           PlannerRequest plannerRequest,
+    public ResponseEntity<Boolean> createPlanner(@RequestBody CreatePlannerInfo info,
                                                            Principal principal) {
 
-        return ResponseEntity.ok(plannerApplication.createPlanner(plannerRequest, requests, principal.getName()));
+        return ResponseEntity.ok(plannerApplication.createPlanner(info.getPlannerRequest(), info.getPlannerDetailListRequests(), principal.getName()));
     }
 
     @PatchMapping("/{plannerId}/detail")
