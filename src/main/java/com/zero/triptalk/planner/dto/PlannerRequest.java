@@ -1,11 +1,13 @@
 package com.zero.triptalk.planner.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zero.triptalk.planner.entity.Planner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,8 +24,9 @@ public class PlannerRequest {
 
     @Enumerated(EnumType.STRING)
     private PlannerStatus plannerStatus;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime startDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endDate;
 
     public Planner toEntity() {
