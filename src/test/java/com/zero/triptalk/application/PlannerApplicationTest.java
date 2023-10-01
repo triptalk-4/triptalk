@@ -124,7 +124,8 @@ class PlannerApplicationTest {
         Assertions.assertEquals(saved.getImages(), images);
         Assertions.assertTrue(result);
         Assertions.assertEquals(saved.getPlace(), place);
-
     }
+
+
 
 }
