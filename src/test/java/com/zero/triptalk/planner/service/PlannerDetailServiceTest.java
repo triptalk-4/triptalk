@@ -4,8 +4,8 @@ import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
-import com.zero.triptalk.planner.dto.PlannerDetailDto;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -93,12 +92,12 @@ class PlannerDetailServiceTest {
         //when
         when(plannerDetailRepository.findById(plannerDetailId)).thenReturn(Optional.ofNullable(result));
         //then
-        PlannerDetailDto plannerDetail = plannerDetailService.getPlannerDetail(plannerDetailId);
+        PlannerDetailResponse response = plannerDetailService.getPlannerDetail(plannerDetailId);
         Assertions.assertDoesNotThrow(
                 () -> plannerDetailService.getPlannerDetail(plannerDetailId)
         );
         assert result != null;
-        Assertions.assertEquals(plannerDetail.getUserId(), result.getUserId());
+        Assertions.assertEquals(response.getUserId(), result.getUserId());
     }
 
     @Test
@@ -145,6 +144,7 @@ class PlannerDetailServiceTest {
         verify(plannerDetailRepository, times(1)).save(any(PlannerDetail.class));
 
     }
+
     @Test
     void savePlannerDetailList() {
         //given
