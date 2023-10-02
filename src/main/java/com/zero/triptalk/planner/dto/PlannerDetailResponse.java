@@ -2,6 +2,7 @@ package com.zero.triptalk.planner.dto;
 
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceResponse;
+import com.zero.triptalk.planner.entity.PlannerDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,15 +26,15 @@ public class PlannerDetailResponse {
     private List<String> imagesUrl;
 
 
-    public static PlannerDetailResponse from(PlannerDetailDto dto) {
+    public static PlannerDetailResponse from(PlannerDetail dto) {
         Place place = dto.getPlace();
 
         return PlannerDetailResponse.builder()
                 .userId(dto.getUserId())
-                .createAt(dto.getCreateAt())
+                .createAt(dto.getCreatedAt())
                 .placeResponse(PlaceResponse.from(place))
                 .description(dto.getDescription())
-                .imagesUrl(dto.getImagesUrl())
+                .imagesUrl(dto.getImages())
                 .build();
     }
 
