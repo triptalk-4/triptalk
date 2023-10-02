@@ -4,7 +4,10 @@ import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
+import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.PlannerRequest;
+import com.zero.triptalk.planner.dto.PlannerStatus;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
@@ -26,8 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -126,6 +129,63 @@ class PlannerApplicationTest {
         Assertions.assertEquals(saved.getPlace(), place);
     }
 
+    @Test
+    @DisplayName("일정 생성")
+    void createPlanner() {
+        //given
+
+        Long plannerId = 1L;
+        String email = "test@exam.com";
+        PlaceRequest placeRequest = PlaceRequest.builder().name("남산")
+                .region("한국")
+                .si("서울시")
+                .gun("서울군")
+                .gu("서울구")
+                .address("남산상세")
+                .latitude(10)
+                .longitude(10)
+                .build();
+        List<String> images =
+                List.of("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg");
+        UserEntity user = UserEntity.builder()
+                .userId(1L)
+                .UserType(UserTypeRole.USER)
+                .nickname("11")
+                .email("test@exam.com")
+                .password("11")
+                .build();
+        PlannerRequest plannerRequest = PlannerRequest.builder()
+                .title("제목")
+                .plannerStatus(PlannerStatus.PUBLIC)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(1))
+                .build();
+        PlannerDetailListRequest plannerDetailListRequest = PlannerDetailListRequest.builder()
+                .images(images)
+                .placeInfo(placeRequest)
+                .description("")
+                .build();
+
+        Planner planner = Planner.builder()
+                .title("11")
+                .build();
+        Place place = placeRequest.toEntity();
+
+        when(plannerDetailService.findByEmail(email)).thenReturn(user);
+        when(plannerService.createPlanner(plannerRequest)).thenReturn(planner);
+        when(placeService.savePlace(any())).thenReturn(place);
+
+
+        //when
+        boolean result = plannerApplication.createPlanner(plannerRequest,
+                Collections.singletonList(plannerDetailListRequest), email);
+
+        //then
+
+        verify(plannerDetailService).savePlannerDetailList(any());
+        Assertions.assertTrue(result);
+
+    }
 
 
 }
