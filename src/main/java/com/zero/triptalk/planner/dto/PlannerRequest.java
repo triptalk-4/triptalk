@@ -1,7 +1,6 @@
 package com.zero.triptalk.planner.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zero.triptalk.planner.entity.Planner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
