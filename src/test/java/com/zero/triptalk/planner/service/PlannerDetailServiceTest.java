@@ -2,7 +2,6 @@ package com.zero.triptalk.planner.service;
 
 import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.place.entity.Place;
-import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailDto;
@@ -12,7 +11,6 @@ import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
-import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +35,6 @@ import java.util.Optional;
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUND_PLANNER_DETAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,5 +128,41 @@ class PlannerDetailServiceTest {
         verify(imageService).uploadFiles(images);
     }
 
+    @Test
+    void savePlannerDetail() {
+        //given
+        Planner planner = new Planner();
+        PlannerDetailRequest plannerDetailRequest = new PlannerDetailRequest();
+        UserEntity user = new UserEntity();
+        Place place = new Place();
+        List<String> images = new ArrayList<>();
+        PlannerDetail plannerDetail = PlannerDetail.buildPlannerDetail(planner, plannerDetailRequest,
+                user, place, images);
+
+        //when
+        //then
+        plannerDetailService.savePlannerDetail(plannerDetail);
+        verify(plannerDetailRepository, times(1)).save(any(PlannerDetail.class));
+
+    }
+    @Test
+    void savePlannerDetailList() {
+        //given
+        Planner planner = new Planner();
+        PlannerDetailRequest plannerDetailRequest = new PlannerDetailRequest();
+        UserEntity user = new UserEntity();
+        Place place = new Place();
+        List<String> images = new ArrayList<>();
+        List<PlannerDetail> list = new ArrayList<>();
+        PlannerDetail plannerDetail = PlannerDetail.buildPlannerDetail(planner, plannerDetailRequest,
+                user, place, images);
+        list.add(plannerDetail);
+
+        //when
+        //then
+        plannerDetailService.savePlannerDetailList(list);
+        verify(plannerDetailRepository, times(1)).saveAll(any(List.class));
+
+    }
 
 }

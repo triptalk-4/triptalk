@@ -29,10 +29,6 @@ public class PlannerDetail {
 
     private Long views;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "plannerDetail_id")
-//    private List<Images> images;
-
     @ElementCollection
     private List<String> images;
 
