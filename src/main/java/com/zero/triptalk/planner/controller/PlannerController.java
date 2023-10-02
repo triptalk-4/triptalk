@@ -25,7 +25,7 @@ public class PlannerController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<PlannerDetailResponse> getPlannerDetail(@PathVariable Long plannerDetailId) {
         return ResponseEntity.ok(
-                PlannerDetailResponse.from(plannerDetailService.getPlannerDetail(plannerDetailId)));
+               plannerDetailService.getPlannerDetail(plannerDetailId));
     }
 
     //세부일정 한개 생성

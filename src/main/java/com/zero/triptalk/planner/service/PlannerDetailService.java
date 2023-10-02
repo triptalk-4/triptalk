@@ -7,10 +7,7 @@ import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
-import com.zero.triptalk.planner.dto.PlannerDetailDto;
-import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
-import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
-import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.*;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
@@ -47,11 +44,11 @@ public class PlannerDetailService {
         return PlannerDetailListResponse.of(detailList);
     }
 
-    public PlannerDetailDto getPlannerDetail(Long plannerDetailId) {
+    public PlannerDetailResponse getPlannerDetail(Long plannerDetailId) {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId).orElseThrow(
                 () -> new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL)
         );
-        return PlannerDetailDto.ofEntity(plannerDetail);
+        return PlannerDetailResponse.from(plannerDetail);
     }
 
     //userService 에서 합칠예정
