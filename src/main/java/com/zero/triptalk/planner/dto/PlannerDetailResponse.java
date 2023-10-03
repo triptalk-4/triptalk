@@ -1,11 +1,13 @@
-package com.zero.triptalk.plannerdetail.dto;
+package com.zero.triptalk.planner.dto;
 
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceResponse;
+import com.zero.triptalk.planner.entity.PlannerDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,21 +19,22 @@ import java.util.List;
 public class PlannerDetailResponse {
 
     private Long userId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime createAt;
     private PlaceResponse placeResponse;
     private String description;
     private List<String> imagesUrl;
 
 
-    public static PlannerDetailResponse from(PlannerDetailDto dto) {
+    public static PlannerDetailResponse from(PlannerDetail dto) {
         Place place = dto.getPlace();
 
         return PlannerDetailResponse.builder()
                 .userId(dto.getUserId())
-                .createAt(dto.getCreateAt())
+                .createAt(dto.getCreatedAt())
                 .placeResponse(PlaceResponse.from(place))
                 .description(dto.getDescription())
-                .imagesUrl(dto.getImagesUrl())
+                .imagesUrl(dto.getImages())
                 .build();
     }
 

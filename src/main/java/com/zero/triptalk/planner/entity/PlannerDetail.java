@@ -1,7 +1,7 @@
-package com.zero.triptalk.plannerdetail.entity;
+package com.zero.triptalk.planner.entity;
 
 import com.zero.triptalk.place.entity.Place;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,10 +28,6 @@ public class PlannerDetail {
     private String description;
 
     private Long views;
-
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "plannerDetail_id")
-//    private List<Images> images;
 
     @ElementCollection
     private List<String> images;

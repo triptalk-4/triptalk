@@ -1,14 +1,15 @@
-package com.zero.triptalk.plannerdetail.controller;
+package com.zero.triptalk.planner.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.zero.triptalk.application.PlannerApplication;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
-import com.zero.triptalk.plannerdetail.service.PlannerDetailService;
+import com.zero.triptalk.planner.dto.*;
+import com.zero.triptalk.planner.service.PlannerDetailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(PlannerDetailController.class)
+@WebMvcTest(PlannerController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @WithMockUser(username = "testUser", roles = "USER")
 class PlannerDetailControllerTest {
@@ -50,6 +50,9 @@ class PlannerDetailControllerTest {
 
     @MockBean
     private PlannerDetailService plannerDetailService;
+
+    @MockBean
+    private PlannerApplication plannerApplication;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -68,7 +71,6 @@ class PlannerDetailControllerTest {
         //given
         Long plannerId = 1L;
         PlannerDetailRequest request = PlannerDetailRequest.builder()
-                .id(1L)
                 .date(LocalDateTime.now())
                 .description("테스트 요청입니다.")
                 .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "남산상세", 10, 10))
@@ -85,7 +87,7 @@ class PlannerDetailControllerTest {
 
         //when
         doReturn(true)
-                .when(plannerDetailService)
+                .when(plannerApplication)
                 .createPlannerDetail(plannerId, files, request, "postrel63@gmail");
         //then
 
@@ -128,7 +130,7 @@ class PlannerDetailControllerTest {
     }
 
     @Test
-    @DisplayName("상세 일정 리스트 추가를 위한 이미지 리스트 업로드")
+    @DisplayName("일정 생성을 위한 사전 이미지 리스트 업로드")
     void uploadImages() throws Exception {
         //given
         Long plannerId = 1L;
@@ -164,7 +166,51 @@ class PlannerDetailControllerTest {
                 "http://127.0.0.1:8001/bucket-name/cat.jpg",
                 "http://127.0.0.1:8001/bucket-name/cat.jpg"
         )));
+    }
+
+    @Test
+    @DisplayName("일정 생성하기")
+    void createPlanner() throws Exception {
+        //given
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        String email = "test@test.com";
+        LocalDateTime date = LocalDateTime.of(2023, 10, 10, 10, 10);
+
+        PlannerRequest plannerRequest = PlannerRequest.builder()
+                .title("제목")
+                .description("설명")
+                .startDate(date)
+                .endDate(date.plusDays(1))
+                .plannerStatus(PlannerStatus.PUBLIC)
+                .build();
+        List<String> images = new ArrayList<>();
+        images.add("urls");
+
+        List<PlannerDetailListRequest> requests = new ArrayList<>();
+        requests.add(PlannerDetailListRequest.builder()
+                .date(date)
+                .description("테스트 요청입니다.")
+                .images(images)
+                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "남산상세", 10, 10))
+                .build());
+        CreatePlannerInfo info = CreatePlannerInfo.builder()
+                .plannerDetailListRequests(requests)
+                .plannerRequest(plannerRequest)
+                .build();
+        //when
+        doReturn(true).when(plannerApplication).createPlanner(
+                info.getPlannerRequest(), info.getPlannerDetailListRequests(), email
+        );
+
+        //then
+        mockMvc.perform(post("/api/plans").contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(info))
+                        .with(csrf()))
+                .andExpect(status().isOk());
 
     }
+
 
 }

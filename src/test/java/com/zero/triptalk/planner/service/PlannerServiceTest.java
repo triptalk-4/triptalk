@@ -1,9 +1,9 @@
-package com.zero.triptalk.plannerdetail.service;
+package com.zero.triptalk.planner.service;
 
-import com.zero.triptalk.plannerdetail.dto.PlannerRequest;
-import com.zero.triptalk.plannerdetail.dto.PlannerStatus;
-import com.zero.triptalk.plannerdetail.entity.Planner;
-import com.zero.triptalk.plannerdetail.repository.PlannerRepository;
+import com.zero.triptalk.planner.dto.PlannerRequest;
+import com.zero.triptalk.planner.dto.PlannerStatus;
+import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

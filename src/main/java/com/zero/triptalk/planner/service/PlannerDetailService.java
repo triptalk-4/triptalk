@@ -1,4 +1,4 @@
-package com.zero.triptalk.plannerdetail.service;
+package com.zero.triptalk.planner.service;
 
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerDetailException;
@@ -7,14 +7,11 @@ import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailDto;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailListRequest;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailListResponse;
-import com.zero.triptalk.plannerdetail.dto.PlannerDetailRequest;
-import com.zero.triptalk.plannerdetail.entity.Planner;
-import com.zero.triptalk.plannerdetail.entity.PlannerDetail;
-import com.zero.triptalk.plannerdetail.repository.PlannerDetailRepository;
-import com.zero.triptalk.plannerdetail.repository.PlannerRepository;
+import com.zero.triptalk.planner.dto.*;
+import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.entity.PlannerDetail;
+import com.zero.triptalk.planner.repository.PlannerDetailRepository;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,68 +44,29 @@ public class PlannerDetailService {
         return PlannerDetailListResponse.of(detailList);
     }
 
-    public PlannerDetailDto getPlannerDetail(Long plannerDetailId) {
+    public PlannerDetailResponse getPlannerDetail(Long plannerDetailId) {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId).orElseThrow(
                 () -> new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL)
         );
-        return PlannerDetailDto.ofEntity(plannerDetail);
+        return PlannerDetailResponse.from(plannerDetail);
     }
 
-    @Transactional
-    public boolean createPlannerDetail(Long plannerId, List<MultipartFile> files,
-                                       PlannerDetailRequest request, String email) {
-
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(
+    //userService 에서 합칠예정
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
                 () -> new UserException(USER_NOT_FOUND));
-
-        Planner planner = plannerRepository.findById(plannerId).orElseThrow(
-                () -> new PlannerException(PlannerErrorCode.NOT_FOUND_PLANNER)
-        );
-
-        //place 저장
-        Place place = placeService.savePlace(request.getPlaceInfo());
-        //S3 -> url 리스트 변환
-        List<String> images = imageService.uploadFiles(files);
-        //상세 일정 저장
-        PlannerDetail plannerDetail = PlannerDetail.buildPlannerDetail(
-                planner, request, user, place, images);
-        plannerDetailRepository.save(plannerDetail);
-
-        return true;
     }
 
     public List<String> uploadImages(List<MultipartFile> files) {
         return imageService.uploadFiles(files);
     }
 
+    public void savePlannerDetail(PlannerDetail plannerDetail){
+        plannerDetailRepository.save(plannerDetail);
+    }
 
-    @Transactional
-    public boolean createPlannerDetailList(Long plannerId, List<PlannerDetailListRequest> requests, String email) {
-
-        try {
-
-            UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                    new UserException(USER_NOT_FOUND));
-
-            Planner planner = plannerRepository.findById(plannerId).orElseThrow(
-                    () -> new PlannerException(PlannerErrorCode.NOT_FOUND_PLANNER)
-            );
-
-            List<PlannerDetail> detailList = requests.stream().map(request -> {
-                Place place = placeService.savePlace(request.getPlaceInfo());
-                return request.toEntity(planner, place, user.getUserId());
-            }).collect(Collectors.toList());
-
-            if (requests.size() != detailList.size()) {
-                throw new PlannerDetailException(CREATE_PLANNER_DETAIL_FAILED);
-            }
-
-            plannerDetailRepository.saveAll(detailList);
-
-        } catch (PlannerDetailException e) {
-            throw new PlannerDetailException(CREATE_PLANNER_DETAIL_FAILED);
-        }
-        return true;
+    public void savePlannerDetailList(List<PlannerDetail> plannerDetailList){
+        plannerDetailRepository.saveAll(plannerDetailList);
     }
 
     public boolean updatePlannerDetail(List<MultipartFile> files,

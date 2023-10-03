@@ -51,6 +51,10 @@ dependencies {
 	//S3 테스트용
 	testImplementation 'io.findify:s3mock_2.12:0.2.4'
 
+	implementation group: 'org.json', name: 'json', version: '20230227'
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.14.2'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+
 	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
