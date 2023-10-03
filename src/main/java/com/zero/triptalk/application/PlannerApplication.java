@@ -1,6 +1,8 @@
 package com.zero.triptalk.application;
 
+import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerDetailException;
+import com.zero.triptalk.exception.type.PlannerException;
 import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
@@ -92,7 +94,24 @@ public class PlannerApplication {
         }
         imageService.deleteImages(plannerDetail.getImages());
 
-        plannerDetailService.deletePlannerDetail(plannerDetail.getId());
+        plannerDetailService.deletePlannerDetail(plannerDetailId);
     }
 
+    // 일정 삭제
+    @Transactional
+    public void deletePlanner(Long plannerId, String email) {
+
+        UserEntity user = plannerDetailService.findByEmail(email);
+        Planner planner = plannerService.findById(plannerId);
+        if (!planner.getUser().equals(user)){
+            throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
+        }
+
+        //일정에 존재하는 상세 일정 모두 조회해서 삭제
+        List<PlannerDetail> byPlanner = plannerDetailService.findByPlanner(planner);
+        byPlanner.forEach(details -> deletePlannerDetail(details.getId(),email));
+
+        //일정 삭제
+        plannerService.deletePlanner(plannerId);
+    }
 }
