@@ -88,21 +88,12 @@ public class PlannerDetailService {
         return true;
     }
 
-    public void deletePlannerDetail(Long plannerDetailId, String email) {
-
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserException(USER_NOT_FOUND));
-
-        PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
+    public PlannerDetail findById(Long plannerDetailId) {
+        return plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL));
-
-        if (!user.getUserId().equals(plannerDetail.getUserId())) {
-            throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
-        }
-
-        plannerDetailRepository.deleteById(plannerDetail.getId());
-
     }
 
-
+    public void deletePlannerDetail(Long id) {
+        plannerDetailRepository.deleteById(id);
+    }
 }
