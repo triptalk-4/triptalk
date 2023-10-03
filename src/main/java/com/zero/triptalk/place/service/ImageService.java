@@ -1,7 +1,9 @@
 package com.zero.triptalk.place.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.zero.triptalk.exception.code.ImageUploadErrorCode;
@@ -14,8 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +73,24 @@ public class ImageService {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
+    public void deleteImages(List<String> imageUrls) {
+        List<String> objectKeys = imageUrls.stream().map(this::convertUrlToObjectKey).collect(Collectors.toList());
+
+        try {
+            DeleteObjectsRequest dor = new DeleteObjectsRequest(bucket)
+                    .withKeys(objectKeys.toArray(new String[0]));
+            amazonS3Client.deleteObjects(dor);
+        } catch (AmazonServiceException e) {
+            throw new ImageException(ImageUploadErrorCode.IMAGE_DELETE_FAILED);
+        }
+    }
+
+    private String convertUrlToObjectKey(String url) {
+        return url.substring(url.indexOf(bucket) + bucket.length() + 1);
+    }
+
+    public void deleteImage(String imageUrl) {
+        deleteImages(Collections.singletonList(imageUrl));
+    }
 
 }
