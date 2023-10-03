@@ -89,7 +89,7 @@ public class PlannerController {
     }
 
     // 일정 삭제
-    @DeleteMapping("/{plannerId")
+    @DeleteMapping("/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Void> deletePlanner(@PathVariable Long plannerId,
                                               Principal principal) {
