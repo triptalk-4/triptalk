@@ -3,7 +3,9 @@ package com.zero.triptalk.planner.controller;
 import com.zero.triptalk.application.PlannerApplication;
 import com.zero.triptalk.planner.dto.*;
 import com.zero.triptalk.planner.service.PlannerDetailService;
+import com.zero.triptalk.planner.service.PlannerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -74,12 +76,14 @@ public class PlannerController {
         return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
     }
 
-    @DeleteMapping("/{plannerId}/detail/{detailId}")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> deletePlannerDetail(@PathVariable Long plannerId,
-                                                 @PathVariable Long detailId,
-                                                 Principal principal) {
 
-        return ResponseEntity.ok(plannerDetailService.deletePlannerDetail(detailId, principal.getName()));
+    // 상세 일정 삭제
+    @DeleteMapping("/{plannerDetailId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Void> deletePlannerDetail(@PathVariable Long plannerDetailId,
+                                                 Principal principal) {
+        plannerDetailService.deletePlannerDetail(plannerDetailId, principal.getName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
