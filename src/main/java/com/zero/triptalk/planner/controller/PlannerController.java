@@ -82,7 +82,7 @@ public class PlannerController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Void> deletePlannerDetail(@PathVariable Long plannerDetailId,
                                                  Principal principal) {
-        plannerDetailService.deletePlannerDetail(plannerDetailId, principal.getName());
+        plannerApplication.deletePlannerDetail(plannerDetailId, principal.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

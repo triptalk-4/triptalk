@@ -1,6 +1,7 @@
 package com.zero.triptalk.application;
 
 import com.zero.triptalk.exception.type.PlannerDetailException;
+import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
@@ -20,7 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.CREATE_PLANNER_DETAIL_FAILED;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.*;
+import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -77,4 +79,20 @@ public class PlannerApplication {
         }
         return true;
     }
+
+    //상세 일정 삭제
+    @Transactional
+    public void deletePlannerDetail(Long plannerDetailId, String email) {
+
+        UserEntity user = plannerDetailService.findByEmail(email);
+        PlannerDetail plannerDetail = plannerDetailService.findById(plannerDetailId);
+
+        if (!user.getUserId().equals(plannerDetail.getUserId())) {
+            throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
+        }
+        imageService.deleteImages(plannerDetail.getImages());
+
+        plannerDetailService.deletePlannerDetail(plannerDetail.getId());
+    }
+
 }
