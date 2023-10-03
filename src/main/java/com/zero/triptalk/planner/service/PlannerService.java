@@ -23,4 +23,7 @@ public class PlannerService {
                 () -> new PlannerException(PlannerErrorCode.NOT_FOUND_PLANNER));
     }
 
+    public void deletePlanner(Long plannerId) {
+        plannerRepository.deleteById(plannerId);
+    }
 }
