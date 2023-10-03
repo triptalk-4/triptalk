@@ -68,19 +68,8 @@ public class PlannerController {
         return ResponseEntity.ok(plannerApplication.createPlanner(info.getPlannerRequest(), info.getPlannerDetailListRequests(), principal.getName()));
     }
 
-    @PatchMapping("/{plannerId}/detail")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> updatePlannerDetail(@PathVariable Long plannerId,
-                                                 @RequestPart List<MultipartFile> files,
-                                                 @RequestPart PlannerDetailRequest request,
-                                                 Principal principal) {
-
-        return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
-    }
-
-
     // 상세 일정 삭제
-    @DeleteMapping("/{plannerDetailId}")
+    @DeleteMapping("/details/{plannerDetailId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Void> deletePlannerDetail(@PathVariable Long plannerDetailId,
                                                     Principal principal) {
@@ -95,6 +84,16 @@ public class PlannerController {
                                               Principal principal) {
         plannerApplication.deletePlanner(plannerId, principal.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/{plannerId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> updatePlannerDetail(@PathVariable Long plannerId,
+                                                 @RequestPart List<MultipartFile> files,
+                                                 @RequestPart PlannerDetailRequest request,
+                                                 Principal principal) {
+
+        return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
     }
 
 }
