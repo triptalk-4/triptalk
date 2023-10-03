@@ -21,7 +21,7 @@ public class PlannerController {
     private final PlannerApplication plannerApplication;
 
     //상세일정 한개 조회
-    @GetMapping("/{plannerDetailId}/detail")
+    @GetMapping("/detail/{plannerDetailId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<PlannerDetailResponse> getPlannerDetail(@PathVariable Long plannerDetailId) {
         return ResponseEntity.ok(
@@ -29,7 +29,7 @@ public class PlannerController {
     }
 
     //세부일정 한개 생성
-    @PostMapping("/{plannerId}/detail")
+    @PostMapping("/detail/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Boolean> createPlannerDetail(@PathVariable Long plannerId,
                                                        @RequestPart("files") List<MultipartFile> files,
