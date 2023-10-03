@@ -66,7 +66,7 @@ public class PlannerApplication {
         try {
             UserEntity user = plannerDetailService.findByEmail(email);
             //일정 생성
-            Planner planner = plannerService.createPlanner(plannerRequest);
+            Planner planner = plannerService.createPlanner(plannerRequest,user);
 
             //상세 일정 저장
             List<PlannerDetail> detailList = requests.stream().map(request -> {
