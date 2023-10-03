@@ -40,7 +40,7 @@ public class PlannerController {
     }
 
     // 모든 상세일정 조회
-    @GetMapping("/detailList")
+    @GetMapping("/details")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getAllPlannerDetail() {
         List<PlannerDetailListResponse> list = plannerDetailService.getAllPlannerDetail();
