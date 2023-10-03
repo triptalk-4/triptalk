@@ -73,6 +73,7 @@ public class ImageService {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
+    //사진 리스트 삭제
     public void deleteImages(List<String> imageUrls) {
         List<String> objectKeys = imageUrls.stream().map(this::convertUrlToObjectKey).collect(Collectors.toList());
 
@@ -89,6 +90,7 @@ public class ImageService {
         return url.substring(url.indexOf(bucket) + bucket.length() + 1);
     }
 
+    //사진 한개 삭제
     public void deleteImage(String imageUrl) {
         deleteImages(Collections.singletonList(imageUrl));
     }
