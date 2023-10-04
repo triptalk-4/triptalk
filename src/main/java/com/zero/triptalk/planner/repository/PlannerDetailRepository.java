@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface PlannerDetailRepository extends JpaRepository<PlannerDetail, Long> {
 
-    List<PlannerDetail> findByPlanner(Planner planner);
+    List<PlannerDetail> findByPlanner_Id(Long plannerId);
 }

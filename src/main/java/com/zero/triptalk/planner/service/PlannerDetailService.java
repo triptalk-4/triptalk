@@ -7,7 +7,6 @@ import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailResponse;
-import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
 import com.zero.triptalk.user.entity.UserEntity;
@@ -74,8 +73,8 @@ public class PlannerDetailService {
         plannerDetailRepository.deleteById(id);
     }
 
-    public List<PlannerDetail> findByPlanner(Planner planner) {
-        List<PlannerDetail> byPlanner = plannerDetailRepository.findByPlanner(planner);
+    public List<PlannerDetail> findByPlannerId(Long plannerId) {
+        List<PlannerDetail> byPlanner = plannerDetailRepository.findByPlanner_Id(plannerId);
         if (byPlanner.isEmpty()){
             throw new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL);
         }

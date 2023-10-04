@@ -3,7 +3,6 @@ package com.zero.triptalk.application;
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.exception.type.PlannerException;
-import com.zero.triptalk.exception.type.UserException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.*;
-import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -108,7 +106,7 @@ public class PlannerApplication {
         }
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
-        List<PlannerDetail> byPlanner = plannerDetailService.findByPlanner(planner);
+        List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
         byPlanner.forEach(details -> deletePlannerDetail(details.getId(),email));
 
         //일정 삭제
