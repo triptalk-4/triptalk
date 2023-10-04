@@ -146,6 +146,7 @@ class PlannerDetailServiceTest {
     }
 
     @Test
+    @DisplayName("상세일정 리스트 저장")
     void savePlannerDetailList() {
         //given
         Planner planner = new Planner();
@@ -162,7 +163,47 @@ class PlannerDetailServiceTest {
         //then
         plannerDetailService.savePlannerDetailList(list);
         verify(plannerDetailRepository, times(1)).saveAll(any(List.class));
+    }
+
+    @Test
+    @DisplayName("상세 일정 ID를 통해 상세 일정 찾기")
+    void findById() {
+        //given
+        Long plannerDetailId = 1L;
+        PlannerDetail plannerDetail = PlannerDetail.builder()
+                .description("설명")
+                .build();
+        //when
+        doReturn(Optional.of(plannerDetail)).when(plannerDetailRepository).findById(plannerDetailId);
+        PlannerDetail result = plannerDetailService.findById(plannerDetailId);
+        //then
+        Assertions.assertEquals("설명",result.getDescription());
 
     }
+
+    @Test
+    @DisplayName("상세 일정 ID를 통해 상세 일정 찾기- 해당 상세일정이 존재 하지 않는 경우")
+    void findById_NOT_FOUND() {
+        //given
+        Long plannerDetailId = 1L;
+        //when
+        when(plannerDetailRepository.findById(plannerDetailId)).thenReturn(Optional.empty());
+        //then
+        Assertions.assertThrows(PlannerDetailException.class, () -> plannerDetailService.findById(plannerDetailId));
+    }
+
+    @Test
+    @DisplayName("상세 일정 삭제")
+    void deletePlannerDetail() {
+        //given
+        Long id = 1L;
+        //when
+        plannerDetailService.deletePlannerDetail(id);
+        //then
+        verify(plannerDetailRepository,times(1)).deleteById(id);
+    }
+
+
+
 
 }
