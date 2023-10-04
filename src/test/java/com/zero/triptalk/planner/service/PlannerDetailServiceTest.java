@@ -211,7 +211,7 @@ class PlannerDetailServiceTest {
                 .build();
         List<PlannerDetail> plannerDetails =Arrays.asList(plannerDetail,plannerDetail);
         //when
-        when(plannerDetailRepository.findByPlanner_Id(plannerId)).thenReturn(plannerDetails);
+        when(plannerDetailRepository.findByPlanner_PlannerId(plannerId)).thenReturn(plannerDetails);
         //then
         List<PlannerDetail> byPlannerId = plannerDetailService.findByPlannerId(plannerId);
         Assertions.assertEquals(byPlannerId.get(0),plannerDetail);
@@ -223,7 +223,7 @@ class PlannerDetailServiceTest {
         //given
         Long plannerId = 1L;
         //when
-        when(plannerDetailRepository.findByPlanner_Id(plannerId)).thenReturn(new ArrayList<>());
+        when(plannerDetailRepository.findByPlanner_PlannerId(plannerId)).thenReturn(new ArrayList<>());
         //then
         Assertions.assertThrows(PlannerDetailException.class,
                 () -> plannerDetailService.findByPlannerId(plannerId));

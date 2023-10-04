@@ -1,8 +1,6 @@
 package com.zero.triptalk.application;
 
-import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerDetailException;
-import com.zero.triptalk.exception.type.PlannerException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
@@ -102,7 +100,7 @@ public class PlannerApplication {
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
         List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
-        byPlanner.forEach(details -> deletePlannerDetail(details.getId(),email));
+        byPlanner.forEach(details -> deletePlannerDetail(details.getPlannerDetailId(),email));
 
         //일정 삭제
         plannerService.deletePlanner(plannerId);

@@ -21,7 +21,7 @@ public class Planner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Long plannerId;
 
     private String title;
 
