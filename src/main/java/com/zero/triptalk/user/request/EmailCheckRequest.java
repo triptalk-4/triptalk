@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmailTokenRequest {
-    private String token;
+public class EmailCheckRequest {
+    private String email;
+
 }
