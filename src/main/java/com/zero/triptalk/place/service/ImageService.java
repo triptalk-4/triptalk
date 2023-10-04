@@ -94,8 +94,9 @@ public class ImageService {
         return url.substring(url.indexOf(".com/") + 5);
     }
 
-    //사진 한개 삭제
+    //S3에서 사진 삭제
     public void deleteImage(String imageUrl) {
+        System.out.println(imageUrl);
         deleteImages(Collections.singletonList(imageUrl));
     }
 
