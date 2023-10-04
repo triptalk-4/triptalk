@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-	// 기본
+	// 기본 설정
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// mailer
