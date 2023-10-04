@@ -31,6 +31,8 @@ public class UserEntity implements UserDetails {
 
     private String email;
 
+    private String profile;
+
     private String password;
 
     private LocalDateTime registerAt;

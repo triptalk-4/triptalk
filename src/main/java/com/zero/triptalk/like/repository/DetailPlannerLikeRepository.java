@@ -1,0 +1,13 @@
+package com.zero.triptalk.like.repository;
+
+import com.zero.triptalk.like.entity.DetailPlannerLike;
+import com.zero.triptalk.planner.entity.PlannerDetail;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface DetailPlannerLikeRepository extends JpaRepository<DetailPlannerLike, Long> {
+
+
+    Optional<DetailPlannerLike> findByPlannerDetail(PlannerDetail plannerDetail);
+}
