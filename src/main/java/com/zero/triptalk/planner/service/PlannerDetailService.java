@@ -75,7 +75,11 @@ public class PlannerDetailService {
     }
 
     public List<PlannerDetail> findByPlanner(Planner planner) {
-       return plannerDetailRepository.findByPlanner(planner);
+        List<PlannerDetail> byPlanner = plannerDetailRepository.findByPlanner(planner);
+        if (byPlanner.isEmpty()){
+            throw new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL);
+        }
+        return byPlanner;
     }
 
     public boolean updatePlannerDetail(List<MultipartFile> files,
