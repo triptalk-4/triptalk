@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PlannerServiceTest {
@@ -56,4 +56,13 @@ class PlannerServiceTest {
 
     }
 
+    @Test
+    void deletePlanner() {
+        //given
+        Long plannerId = 1L;
+        //when
+        plannerService.deletePlanner(plannerId);
+        //then
+        verify(plannerRepository,times(1)).deleteById(plannerId);
+    }
 }
