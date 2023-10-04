@@ -31,15 +31,15 @@ public class GoogleLoginService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    @Value("${GOOGLE_CLIENT_ID}")
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
-    @Value("${GOOGLE_CLIENT_SECRET}")
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String googleClientPw;
-    @Value("${GOOGLE_REDIRECT_URI}")
+    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String redirectUri;
-    @Value("${GOOGLE_GRANT_TYPE}")
+    @Value("${spring.security.oauth2.client.registration.google.authorization-grant-type}")
     private String grantType;
-    @Value("${GOOGLE_SCOPE")
+    @Value("${spring.security.oauth2.client.registration.google.scope}")
     private String scope;
 
     public String doSocialLogin(String code) {
