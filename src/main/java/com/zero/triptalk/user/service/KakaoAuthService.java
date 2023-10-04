@@ -3,7 +3,7 @@ package com.zero.triptalk.user.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.exception.type.UserException;
+import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
@@ -16,7 +16,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

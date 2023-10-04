@@ -1,7 +1,6 @@
-package com.zero.triptalk.exception.type;
+package com.zero.triptalk.exception.custom;
 
 import com.zero.triptalk.exception.code.ImageUploadErrorCode;
-import com.zero.triptalk.exception.code.PlaceErrorCode;
 import lombok.Getter;
 
 @Getter

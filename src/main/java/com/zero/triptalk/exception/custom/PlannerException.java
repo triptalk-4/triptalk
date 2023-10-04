@@ -1,4 +1,4 @@
-package com.zero.triptalk.exception.type;
+package com.zero.triptalk.exception.custom;
 
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import lombok.Getter;

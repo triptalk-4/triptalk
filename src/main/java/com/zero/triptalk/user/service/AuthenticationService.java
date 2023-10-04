@@ -2,7 +2,7 @@ package com.zero.triptalk.user.service;
 
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.exception.type.UserException;
+import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
