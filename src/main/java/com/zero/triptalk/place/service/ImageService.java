@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.zero.triptalk.exception.code.ImageUploadErrorCode;
-import com.zero.triptalk.exception.type.ImageException;
+import com.zero.triptalk.exception.custom.ImageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
