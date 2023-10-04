@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @EntityListeners(value = {AuditingEntityListener.class})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@AllArgsConstructor
 public class PlannerDetail {
 
     @Id
