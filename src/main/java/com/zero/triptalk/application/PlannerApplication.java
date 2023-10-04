@@ -99,11 +99,6 @@ public class PlannerApplication {
     @Transactional
     public void deletePlanner(Long plannerId, String email) {
 
-        UserEntity user = plannerDetailService.findByEmail(email);
-        Planner planner = plannerService.findById(plannerId);
-        if (!planner.getUser().equals(user)){
-            throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
-        }
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
         List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
