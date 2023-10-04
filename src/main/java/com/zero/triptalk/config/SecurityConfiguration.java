@@ -22,7 +22,15 @@ public class SecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/users/**","/api/auth/**").permitAll()
+                .antMatchers("/api/users/**",
+                        "/api/auth/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/v2/api-docs/**",
+                        "/swagger-resources/**",
+                        "/swagger-ui/**",
+                        "/swagger/**"
+                ).permitAll()
                 .antMatchers("/api/plans/**").hasAuthority("USER")
                 .antMatchers("/kakao/**").permitAll()
                 .anyRequest().authenticated()
