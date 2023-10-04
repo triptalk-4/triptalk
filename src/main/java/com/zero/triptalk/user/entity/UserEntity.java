@@ -26,6 +26,7 @@ public class UserEntity implements UserDetails {
     private Long userId;
 
     private String name;
+    private String profile;
 
     private String nickname;
 

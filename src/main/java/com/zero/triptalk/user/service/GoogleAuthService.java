@@ -41,6 +41,8 @@ public class GoogleAuthService {
     private String grantType;
     @Value("${spring.security.oauth2.client.registration.google.scope}")
     private String scope;
+    @Value("${cloud.aws.image}")
+    private String profile;
 
     public String doSocialLogin(String code) {
 
@@ -84,6 +86,7 @@ public class GoogleAuthService {
                 .UserType(UserTypeRole.USER)
                 .userLoginRole(UserLoginRole.GOOGLE_USER_LOGIN)
                 .name(userInfo.getName())
+                .profile(profile)
                 .email(userInfo.getEmail())
                 .nickname("GOOGLE" + uuid)
                 .password(BCrypt.hashpw(uuid, BCrypt.gensalt()))
