@@ -23,16 +23,26 @@ repositories {
 }
 
 dependencies {
+	// 기본
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// mailer
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.13'
-	implementation 'com.google.code.gson:gson:2.9.0'
+	// json 풀어내기
+	implementation group: 'org.json', name: 'json', version: '20230227'
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.14.2'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.3'
+	//log
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	//S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	//S3 테스트용
+	testImplementation 'io.findify:s3mock_2.12:0.2.4'
 
 
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
@@ -56,7 +66,7 @@ dependencies {
 	implementation group: 'org.json', name: 'json', version: '20230227'
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.14.2'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
-
+    //
 	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
