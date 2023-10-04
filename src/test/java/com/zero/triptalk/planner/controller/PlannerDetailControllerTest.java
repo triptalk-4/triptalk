@@ -8,6 +8,7 @@ import com.zero.triptalk.application.PlannerApplication;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
+import com.zero.triptalk.place.entity.PlaceResponse;
 import com.zero.triptalk.planner.dto.*;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -73,7 +75,7 @@ class PlannerDetailControllerTest {
         PlannerDetailRequest request = PlannerDetailRequest.builder()
                 .date(LocalDateTime.now())
                 .description("테스트 요청입니다.")
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
                 .build();
 
         Path path = Paths.get("src/test/resources/cat.jpg");
@@ -91,7 +93,7 @@ class PlannerDetailControllerTest {
                 .createPlannerDetail(plannerId, files, request, "postrel63@gmail");
         //then
 
-        mockMvc.perform(multipart("/api/plans/{plannerId}/detail", plannerId)
+        mockMvc.perform(multipart("/api/plans/detail/{plannerId}", plannerId)
                 .file((MockMultipartFile) files.get(0))
                 .file((MockMultipartFile) files.get(1))
                 .file(new MockMultipartFile("request",
@@ -109,20 +111,20 @@ class PlannerDetailControllerTest {
         //given
         Long PlannerDetailId = 1L;
         String description = "TT";
-        Place place = new Place();
+        PlaceResponse placeResponse = new PlaceResponse();
         List<String> images = new ArrayList<>();
 
         //when
-        doReturn(PlannerDetailDto.builder()
+        doReturn(PlannerDetailResponse.builder()
                 .createAt(LocalDateTime.now())
                 .imagesUrl(images)
                 .description(description)
-                .place(place)
+                .placeResponse(placeResponse)
                 .build()).when(plannerDetailService)
                 .getPlannerDetail(PlannerDetailId);
 
         //then
-        mockMvc.perform(get("/api/plans/{plannerDetailId}/detail", PlannerDetailId)
+        mockMvc.perform(get("/api/plans/detail/{plannerDetailId}", PlannerDetailId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -193,7 +195,7 @@ class PlannerDetailControllerTest {
                 .date(date)
                 .description("테스트 요청입니다.")
                 .images(images)
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
                 .build());
         CreatePlannerInfo info = CreatePlannerInfo.builder()
                 .plannerDetailListRequests(requests)
@@ -209,6 +211,21 @@ class PlannerDetailControllerTest {
                         .content(mapper.writeValueAsString(info))
                         .with(csrf()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("상세 일정 삭제")
+    void deletePlannerDetail() throws Exception {
+        //given
+        Long plannerDetailId = 1L;
+        String email = "test@test.com";
+        //when
+        doNothing().when(plannerApplication).deletePlannerDetail(plannerDetailId,email);
+        //then
+        mockMvc.perform(delete("/api/plans/details/{plannerDetailId}",plannerDetailId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
+        ).andExpect(status().isNoContent());
 
     }
 

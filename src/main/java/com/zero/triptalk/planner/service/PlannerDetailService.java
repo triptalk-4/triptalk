@@ -1,28 +1,24 @@
 package com.zero.triptalk.planner.service;
 
-import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerDetailException;
-import com.zero.triptalk.exception.type.PlannerException;
 import com.zero.triptalk.exception.type.UserException;
-import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
-import com.zero.triptalk.planner.dto.*;
-import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
+import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
-import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.*;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUND_PLANNER_DETAIL;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_USER_PLANNER;
 import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
 @Service
@@ -30,7 +26,6 @@ import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 public class PlannerDetailService {
 
     private final PlannerDetailRepository plannerDetailRepository;
-    private final PlannerRepository plannerRepository;
 
     private final UserRepository userRepository;
     private final PlaceService placeService;
@@ -61,12 +56,29 @@ public class PlannerDetailService {
         return imageService.uploadFiles(files);
     }
 
-    public void savePlannerDetail(PlannerDetail plannerDetail){
+    public void savePlannerDetail(PlannerDetail plannerDetail) {
         plannerDetailRepository.save(plannerDetail);
     }
 
-    public void savePlannerDetailList(List<PlannerDetail> plannerDetailList){
+    public void savePlannerDetailList(List<PlannerDetail> plannerDetailList) {
         plannerDetailRepository.saveAll(plannerDetailList);
+    }
+
+    public PlannerDetail findById(Long plannerDetailId) {
+        return plannerDetailRepository.findById(plannerDetailId)
+                .orElseThrow(() -> new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL));
+    }
+
+    public void deletePlannerDetail(Long id) {
+        plannerDetailRepository.deleteById(id);
+    }
+
+    public List<PlannerDetail> findByPlannerId(Long plannerId) {
+        List<PlannerDetail> byPlanner = plannerDetailRepository.findByPlanner_Id(plannerId);
+        if (byPlanner.isEmpty()){
+            throw new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL);
+        }
+        return byPlanner;
     }
 
     public boolean updatePlannerDetail(List<MultipartFile> files,
@@ -89,23 +101,6 @@ public class PlannerDetailService {
         plannerDetail.updatePlannerDetail(request);
 
         plannerDetailRepository.save(plannerDetail);
-
-        return true;
-    }
-
-    public boolean deletePlannerDetail(Long detailId, String email) {
-
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserException(USER_NOT_FOUND));
-
-        PlannerDetail plannerDetail = plannerDetailRepository.findById(detailId)
-                .orElseThrow(() -> new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL));
-
-        if (!user.getUserId().equals(plannerDetail.getUserId())) {
-            throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
-        }
-
-        plannerDetailRepository.deleteById(plannerDetail.getId());
 
         return true;
     }

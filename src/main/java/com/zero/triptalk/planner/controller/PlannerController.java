@@ -1,9 +1,13 @@
 package com.zero.triptalk.planner.controller;
 
 import com.zero.triptalk.application.PlannerApplication;
-import com.zero.triptalk.planner.dto.*;
+import com.zero.triptalk.planner.dto.CreatePlannerInfo;
+import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
+import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +29,7 @@ public class PlannerController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<PlannerDetailResponse> getPlannerDetail(@PathVariable Long plannerDetailId) {
         return ResponseEntity.ok(
-               plannerDetailService.getPlannerDetail(plannerDetailId));
+                plannerDetailService.getPlannerDetail(plannerDetailId));
     }
 
     //세부일정 한개 생성
@@ -59,12 +63,30 @@ public class PlannerController {
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Boolean> createPlanner(@RequestBody CreatePlannerInfo info,
-                                                           Principal principal) {
+                                                 Principal principal) {
 
         return ResponseEntity.ok(plannerApplication.createPlanner(info.getPlannerRequest(), info.getPlannerDetailListRequests(), principal.getName()));
     }
 
-    @PatchMapping("/{plannerId}/detail")
+    // 상세 일정 삭제
+    @DeleteMapping("/details/{plannerDetailId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Void> deletePlannerDetail(@PathVariable Long plannerDetailId,
+                                                    Principal principal) {
+        plannerApplication.deletePlannerDetail(plannerDetailId, principal.getName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // 일정 삭제
+    @DeleteMapping("/{plannerId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Void> deletePlanner(@PathVariable Long plannerId,
+                                              Principal principal) {
+        plannerApplication.deletePlanner(plannerId, principal.getName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> updatePlannerDetail(@PathVariable Long plannerId,
                                                  @RequestPart List<MultipartFile> files,
@@ -74,12 +96,4 @@ public class PlannerController {
         return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
     }
 
-    @DeleteMapping("/{plannerId}/detail/{detailId}")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> deletePlannerDetail(@PathVariable Long plannerId,
-                                                 @PathVariable Long detailId,
-                                                 Principal principal) {
-
-        return ResponseEntity.ok(plannerDetailService.deletePlannerDetail(detailId, principal.getName()));
-    }
 }

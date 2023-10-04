@@ -5,6 +5,7 @@ import com.zero.triptalk.exception.type.PlannerException;
 import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerRepository;
+import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class PlannerService {
 
     private final PlannerRepository plannerRepository;
 
-    public Planner createPlanner(PlannerRequest request) {
-       return plannerRepository.save(request.toEntity());
+    public Planner createPlanner(PlannerRequest request, UserEntity user) {
+       return plannerRepository.save(request.toEntity(user));
     }
 
     public Planner findById(Long plannerId){
@@ -23,4 +24,7 @@ public class PlannerService {
                 () -> new PlannerException(PlannerErrorCode.NOT_FOUND_PLANNER));
     }
 
+    public void deletePlanner(Long plannerId) {
+        plannerRepository.deleteById(plannerId);
+    }
 }

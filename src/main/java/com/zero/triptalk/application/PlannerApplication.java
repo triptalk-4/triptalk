@@ -1,6 +1,8 @@
 package com.zero.triptalk.application;
 
+import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.type.PlannerDetailException;
+import com.zero.triptalk.exception.type.PlannerException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
@@ -20,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.CREATE_PLANNER_DETAIL_FAILED;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +64,7 @@ public class PlannerApplication {
         try {
             UserEntity user = plannerDetailService.findByEmail(email);
             //일정 생성
-            Planner planner = plannerService.createPlanner(plannerRequest);
+            Planner planner = plannerService.createPlanner(plannerRequest,user);
 
             //상세 일정 저장
             List<PlannerDetail> detailList = requests.stream().map(request -> {
@@ -76,5 +78,33 @@ public class PlannerApplication {
             throw new PlannerDetailException(CREATE_PLANNER_DETAIL_FAILED);
         }
         return true;
+    }
+
+    //상세 일정 삭제
+    @Transactional
+    public void deletePlannerDetail(Long plannerDetailId, String email) {
+
+        UserEntity user = plannerDetailService.findByEmail(email);
+        PlannerDetail plannerDetail = plannerDetailService.findById(plannerDetailId);
+
+        if (!user.getUserId().equals(plannerDetail.getUserId())) {
+            throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
+        }
+        imageService.deleteImages(plannerDetail.getImages());
+
+        plannerDetailService.deletePlannerDetail(plannerDetailId);
+    }
+
+    // 일정 삭제
+    @Transactional
+    public void deletePlanner(Long plannerId, String email) {
+
+
+        //일정에 존재하는 상세 일정 모두 조회해서 삭제
+        List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
+        byPlanner.forEach(details -> deletePlannerDetail(details.getId(),email));
+
+        //일정 삭제
+        plannerService.deletePlanner(plannerId);
     }
 }

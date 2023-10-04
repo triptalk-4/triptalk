@@ -4,6 +4,7 @@ import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.dto.PlannerStatus;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerRepository;
+import com.zero.triptalk.user.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PlannerServiceTest {
@@ -45,13 +46,24 @@ class PlannerServiceTest {
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now())
                 .build();
+        UserEntity user = new UserEntity();
 
         //when
         when(plannerRepository.save(any(Planner.class))).thenReturn(result);
         //then
-        Planner planner = plannerService.createPlanner(request);
+        Planner planner = plannerService.createPlanner(request, user);
         Assertions.assertEquals(planner.getTitle(), result.getTitle());
 
     }
 
+    @Test
+    @DisplayName("일정 삭제하기")
+    void deletePlanner() {
+        //given
+        Long plannerId = 1L;
+        //when
+        plannerService.deletePlanner(plannerId);
+        //then
+        verify(plannerRepository,times(1)).deleteById(plannerId);
+    }
 }

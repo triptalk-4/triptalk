@@ -2,6 +2,7 @@ package com.zero.triptalk.planner.dto;
 
 
 import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,10 +29,11 @@ public class PlannerRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endDate;
 
-    public Planner toEntity() {
+    public Planner toEntity(UserEntity user) {
 
         return Planner.builder()
                 .title(title)
+                .user(user)
                 .description(description)
                 .startDate(startDate)
                 .endDate(endDate)
