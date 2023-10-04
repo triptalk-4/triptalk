@@ -100,8 +100,6 @@ public class PlannerDetailService {
 
         plannerDetail.updatePlannerDetail(request);
 
-        plannerDetailRepository.save(plannerDetail);
-
         return true;
     }
 

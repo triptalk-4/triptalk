@@ -1,4 +1,4 @@
-package com.zero.triptalk.auth.client;
+package com.zero.triptalk.user.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
