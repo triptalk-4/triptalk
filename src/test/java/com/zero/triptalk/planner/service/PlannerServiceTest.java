@@ -57,6 +57,7 @@ class PlannerServiceTest {
     }
 
     @Test
+    @DisplayName("일정 삭제하기")
     void deletePlanner() {
         //given
         Long plannerId = 1L;
