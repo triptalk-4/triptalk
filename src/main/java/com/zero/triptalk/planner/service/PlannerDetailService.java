@@ -74,7 +74,7 @@ public class PlannerDetailService {
     }
 
     public List<PlannerDetail> findByPlannerId(Long plannerId) {
-        List<PlannerDetail> byPlanner = plannerDetailRepository.findByPlanner_Id(plannerId);
+        List<PlannerDetail> byPlanner = plannerDetailRepository.findByPlanner_PlannerId(plannerId);
         if (byPlanner.isEmpty()){
             throw new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL);
         }

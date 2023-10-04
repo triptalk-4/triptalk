@@ -82,7 +82,7 @@ class PlannerApplicationTest {
                 .build();
 
         Place place = Place.builder()
-                .id(1L)
+                .placeId(1L)
                 .name("남산")
                 .region("한국")
                 .si("서울시")
@@ -124,7 +124,6 @@ class PlannerApplicationTest {
         verify(plannerDetailService).savePlannerDetail(captor.capture());
         PlannerDetail saved = captor.getValue();
 
-        System.out.println(saved.getImages());
         Assertions.assertEquals(saved.getImages(), images);
         Assertions.assertTrue(result);
         Assertions.assertEquals(saved.getPlace(), place);
