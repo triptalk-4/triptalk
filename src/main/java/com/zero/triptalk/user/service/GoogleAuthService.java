@@ -1,11 +1,11 @@
-package com.zero.triptalk.auth;
+package com.zero.triptalk.user.service;
 
 import com.google.gson.Gson;
-import com.zero.triptalk.auth.client.FeignClientGoogleAuth;
-import com.zero.triptalk.auth.client.FeignClientGoogleUser;
-import com.zero.triptalk.auth.dto.GoogleAuthResponse;
-import com.zero.triptalk.auth.dto.GoogleRequestToken;
-import com.zero.triptalk.auth.dto.GoogleUserInfoResponse;
+import com.zero.triptalk.user.client.FeignClientGoogleAuth;
+import com.zero.triptalk.user.client.FeignClientGoogleUser;
+import com.zero.triptalk.user.dto.GoogleAuthResponse;
+import com.zero.triptalk.user.dto.GoogleRequestToken;
+import com.zero.triptalk.user.dto.GoogleUserInfoResponse;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
@@ -24,7 +24,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class GoogleLoginService {
+public class GoogleAuthService {
 
     private final FeignClientGoogleAuth feignClientGoogleAuth;
     private final FeignClientGoogleUser feignClientGoogleUser;

@@ -1,4 +1,4 @@
-package com.zero.triptalk.auth.dto;
+package com.zero.triptalk.user.dto;
 
 import lombok.Builder;
 import lombok.Getter;

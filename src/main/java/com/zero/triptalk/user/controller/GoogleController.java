@@ -1,5 +1,6 @@
-package com.zero.triptalk.auth;
+package com.zero.triptalk.user.controller;
 
+import com.zero.triptalk.user.service.GoogleAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,19 +8,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api/auth/google")
-public class GoogleLoginController {
+public class GoogleController {
 
-    private final GoogleLoginService googleLoginService;
+    private final GoogleAuthService googleAuthService;
 
     @PostMapping
     public String getLoginUrl(){
 
-        return googleLoginService.getLoginUrl();
+        return googleAuthService.getLoginUrl();
     }
 
     @GetMapping
     public ResponseEntity<String> loginGoogle(@RequestParam(value = "code") String code){
 
-        return ResponseEntity.ok(googleLoginService.doSocialLogin(code));
+        return ResponseEntity.ok(googleAuthService.doSocialLogin(code));
     }
 }

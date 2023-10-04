@@ -1,6 +1,6 @@
-package com.zero.triptalk.auth.client;
+package com.zero.triptalk.user.client;
 
-import com.zero.triptalk.auth.dto.GoogleRequestToken;
+import com.zero.triptalk.user.dto.GoogleRequestToken;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
