@@ -1,5 +1,6 @@
 package com.zero.triptalk.application;
 
+import com.zero.triptalk.exception.type.PlannerDetailException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.ImageService;
@@ -187,5 +188,49 @@ class PlannerApplicationTest {
 
     }
 
+    @Test
+    @DisplayName("상세 일정 삭제 - 성공")
+    void deletePlannerDetail() {
+        //given
+        Long plannerDetailId = 1L;
+        String email = "test@test.com";
+        UserEntity user = UserEntity.builder()
+                .userId(2L)
+                .build();
+        PlannerDetail plannerDetail = PlannerDetail.builder()
+                .userId(2L)
+                .build();
+        List<String> images = new ArrayList<>();
+        //when
+        when(plannerDetailService.findByEmail(email)).thenReturn(user);
+        when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
+        plannerApplication.deletePlannerDetail(plannerDetailId,email);
+        //then
+
+        imageService.deleteImages(images);
+        verify(plannerDetailService).deletePlannerDetail(plannerDetailId);
+    }
+
+    @Test
+    @DisplayName("상세 일정 삭제 - 사용자 불일치")
+    void deletePlannerDetail_UNMATCHED() {
+        //given
+        Long plannerDetailId = 1L;
+        String email = "test@test.com";
+        UserEntity user = UserEntity.builder()
+                .userId(2L)
+                .build();
+        PlannerDetail plannerDetail = PlannerDetail.builder()
+                .userId(1L)
+                .build();
+        List<String> images = new ArrayList<>();
+        //when
+        when(plannerDetailService.findByEmail(email)).thenReturn(user);
+        when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
+        //then
+        imageService.deleteImages(images);
+        Assertions.assertThrows(PlannerDetailException.class,
+                () -> plannerApplication.deletePlannerDetail(plannerDetailId,email));
+    }
 
 }
