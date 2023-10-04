@@ -21,6 +21,8 @@ public class PlaceRequest {
 
     private String gu;
 
+    private String postCode;
+
     private String address;
 
     private double latitude;
@@ -34,6 +36,7 @@ public class PlaceRequest {
                 .si(si)
                 .gun(gun)
                 .gu(gu)
+                .postCode(postCode)
                 .address(address)
                 .latitude(latitude)
                 .longitude(longitude)

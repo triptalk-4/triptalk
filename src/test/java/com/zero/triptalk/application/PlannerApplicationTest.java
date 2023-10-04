@@ -100,7 +100,7 @@ class PlannerApplicationTest {
                 .id(1L)
                 .date(LocalDateTime.now())
                 .description("테스트 요청입니다.")
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
                 .build();
 
         List<String> images =
@@ -172,7 +172,7 @@ class PlannerApplicationTest {
         Place place = placeRequest.toEntity();
 
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
-        when(plannerService.createPlanner(plannerRequest)).thenReturn(planner);
+        when(plannerService.createPlanner(plannerRequest,user)).thenReturn(planner);
         when(placeService.savePlace(any())).thenReturn(place);
 
 

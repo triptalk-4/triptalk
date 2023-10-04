@@ -34,6 +34,7 @@ public class PlaceService {
                 .si(placeRequest.getSi())
                 .gun(placeRequest.getGun())
                 .gu(placeRequest.getGu())
+                .postCode(placeRequest.getPostCode())
                 .address(placeRequest.getAddress())
                 .latitude(placeRequest.getLatitude())
                 .longitude(placeRequest.getLongitude())

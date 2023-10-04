@@ -29,6 +29,8 @@ public class Place {
 
     private String gu;
 
+    private String postCode;
+
     private String address;
 
     private double latitude;
