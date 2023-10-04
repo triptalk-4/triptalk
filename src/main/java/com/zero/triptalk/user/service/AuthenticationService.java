@@ -159,7 +159,6 @@ public class AuthenticationService {
 
         return EmailCheckResponse.builder()
                 .PostMailOk("이메일이 전송 완료되었습니다. 이메일 인증 유효 시간은 5분입니다!")
-                .emailToken(token)
                 .build();
     }
 
@@ -174,7 +173,7 @@ public class AuthenticationService {
         }
 
         return EmailCheckOkResponse.builder()
-                .emailVerificationFailed("이메일 인증이 완료 되었습니다.")
+                .emailVerificationFailed("이메일 인증에 실패하였습니다")
                 .build();
     }
 }
