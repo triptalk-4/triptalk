@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -27,6 +28,8 @@ public class Planner {
 
     private String description;
 
+    private String thumbnail;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -35,6 +38,10 @@ public class Planner {
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createAt;
 
 
 }
