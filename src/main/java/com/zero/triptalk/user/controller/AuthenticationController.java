@@ -49,7 +49,7 @@ public class AuthenticationController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new EmailCheckResponse(e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new EmailCheckResponse("서버 오류가 발생했습니다."));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new EmailCheckResponse(e.getMessage()));
         }
     }
 
@@ -61,7 +61,7 @@ public class AuthenticationController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
