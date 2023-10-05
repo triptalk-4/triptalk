@@ -3,7 +3,7 @@ package com.zero.triptalk.application;
 import com.zero.triptalk.exception.custom.PlannerDetailException;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
-import com.zero.triptalk.place.service.ImageService;
+import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;

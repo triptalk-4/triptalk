@@ -132,45 +132,6 @@ class PlannerDetailControllerTest {
     }
 
     @Test
-    @DisplayName("일정 생성을 위한 사전 이미지 리스트 업로드")
-    void uploadImages() throws Exception {
-        //given
-        Long plannerId = 1L;
-        Path path = Paths.get("src/test/resources/cat.jpg");
-        byte[] imageBytes = Files.readAllBytes(path);
-        List<MultipartFile> images = List.of(
-                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes),
-                new MockMultipartFile("files", "cat.jpg", "image/jpeg", imageBytes)
-        );
-
-        //when
-        doReturn(Arrays.asList("http://127.0.0.1:8001/bucket-name/cat.jpg",
-                "http://127.0.0.1:8001/bucket-name/cat.jpg"))
-                .when(plannerDetailService)
-                .uploadImages(images);
-
-        //then
-        MvcResult mvcResult = mockMvc.perform(multipart("/api/plans/{plannerId}/images", plannerId)
-                        .file((MockMultipartFile) images.get(0))
-                        .file((MockMultipartFile) images.get(1))
-                        .with(csrf()))
-                .andExpect(status().isOk())
-                .andReturn();
-
-
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<String> urlList = objectMapper.readValue(contentAsString, new TypeReference<List<String>>() {
-        });
-
-        assertEquals(2, urlList.size());
-        assertTrue(urlList.containsAll(Arrays.asList(
-                "http://127.0.0.1:8001/bucket-name/cat.jpg",
-                "http://127.0.0.1:8001/bucket-name/cat.jpg"
-        )));
-    }
-
-    @Test
     @DisplayName("일정 생성하기")
     void createPlanner() throws Exception {
         //given

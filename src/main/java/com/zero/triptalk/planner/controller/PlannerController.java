@@ -51,13 +51,6 @@ public class PlannerController {
         return ResponseEntity.ok(list);
     }
 
-    //사진 리스트 저장
-    @PostMapping("/{plannerId}/images")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<List<String>> uploadImages(@PathVariable Long plannerId,
-                                                     @RequestPart("files") List<MultipartFile> files) {
-        return ResponseEntity.ok(plannerDetailService.uploadImages(files));
-    }
 
     //일정 생성
     @PostMapping
