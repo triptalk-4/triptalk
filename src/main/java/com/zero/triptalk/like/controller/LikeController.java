@@ -19,11 +19,11 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping("/planner/plans/detail/{{plannerId}")
+    @PostMapping("/planner/plans/detail/{plannerDetailId}")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Object> LikeOnePlus(@PathVariable Long plannerId) {
+    public ResponseEntity<Object> LikeOnePlus(@PathVariable Long plannerDetailId) {
 
-        return ResponseEntity.ok(likeService.createPlannerDetail(plannerId));
+        return ResponseEntity.ok(likeService.createPlannerDetail(plannerDetailId));
     }
 
 

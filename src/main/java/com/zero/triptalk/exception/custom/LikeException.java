@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class LikeException extends RuntimeException{
 
-    private final UserErrorCode errorCode;
+    private final LikeErrorCode errorCode;
     public LikeException(LikeErrorCode errorCode) {
         super(errorCode.getErrorMessage());
         this.errorCode = errorCode;

@@ -1,5 +1,6 @@
 package com.zero.triptalk.user.controller;
 
+import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.user.request.AuthenticationRequest;
 import com.zero.triptalk.user.request.EmailCheckRequest;
 import com.zero.triptalk.user.request.EmailTokenRequest;

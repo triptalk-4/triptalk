@@ -23,7 +23,7 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/users/**","/api/auth/**").permitAll()
-                .antMatchers("/api/plans/**").hasAuthority("USER")
+                .antMatchers("/api/plans/**","/api/likes/**").hasAuthority("USER")
                 .antMatchers("/kakao/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

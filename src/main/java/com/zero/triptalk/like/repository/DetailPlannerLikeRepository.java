@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface DetailPlannerLikeRepository extends JpaRepository<DetailPlannerLike, Long> {
 
 
-    Optional<DetailPlannerLike> findByPlannerDetail(PlannerDetail plannerDetail);
+    DetailPlannerLike findByPlannerDetail(PlannerDetail plannerDetail);
 }
