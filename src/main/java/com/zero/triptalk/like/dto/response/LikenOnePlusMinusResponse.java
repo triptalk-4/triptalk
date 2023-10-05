@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikenOnePlusResponse {
+public class LikenOnePlusMinusResponse {
     private String ok;
 
 }

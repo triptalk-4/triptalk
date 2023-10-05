@@ -109,7 +109,7 @@ public class AuthenticationService {
         if (existingUser.isPresent()) {
             throw new UserException(EMAIL_ALREADY_EXIST);
         }
-
+        // 이미 존재하는 닉네임인지 확인
         Optional<UserEntity> existingNickname = repository.findByNickname(nickname);
         if (existingNickname.isPresent()) {
             throw new UserException(NICKNAME_ALREADY_EXIST);

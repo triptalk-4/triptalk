@@ -1,6 +1,5 @@
 package com.zero.triptalk.like.controller;
 
-import com.zero.triptalk.like.dto.response.LikenOnePlusResponse;
 import com.zero.triptalk.like.service.LikeService;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,12 @@ public class LikeController {
     public ResponseEntity<Object> LikeOnePlus(@PathVariable Long plannerDetailId) {
 
         return ResponseEntity.ok(likeService.createPlannerDetail(plannerDetailId));
+    }
+    @PostMapping("/minus/plans/detail/{plannerDetailId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Object> LikeOneMinus(@PathVariable Long plannerDetailId) {
+
+        return ResponseEntity.ok(likeService.LikeOneMinus(plannerDetailId));
     }
 
 
