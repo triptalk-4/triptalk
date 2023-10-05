@@ -1,4 +1,4 @@
-package com.zero.triptalk.place.service;
+package com.zero.triptalk.image.service;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -96,7 +96,6 @@ public class ImageService {
 
     //S3에서 사진 삭제
     public void deleteImage(String imageUrl) {
-        System.out.println(imageUrl);
         deleteImages(Collections.singletonList(imageUrl));
     }
 
