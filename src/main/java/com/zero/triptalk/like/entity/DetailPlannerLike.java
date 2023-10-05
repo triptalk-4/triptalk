@@ -21,11 +21,9 @@ public class DetailPlannerLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long detailPlannerLikeId;
 
-
     @ManyToOne
     @JoinColumn(name = "planner_detail_Id")
     private PlannerDetail plannerDetail;
-
 
     private Double likeCount;
 
