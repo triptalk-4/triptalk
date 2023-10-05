@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                         "/swagger/**"
                 ).permitAll()
                 .antMatchers("/api/plans/**").hasAuthority("USER")
+                .antMatchers("/api/likes/**").hasAuthority("USER")
                 .antMatchers("/kakao/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
