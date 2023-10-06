@@ -25,17 +25,10 @@ public class LikeController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Object> LikeOnePlus(@PathVariable Long plannerDetailId) {
 
-        try {
             // LikeService에서 던진 예외를 캐치하고 처리합니다.
             Object response = likeService.createLikeOrPlusPlannerDetail(plannerDetailId);
             return ResponseEntity.ok(response);
-        } catch (UserException e) {
-            // 중복 "좋아요" 클릭에 대한 예외가 발생한 경우 에러 메시지를 클라이언트에게 반환합니다.
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (LikeException e) {
-            // 중복 "좋아요" 클릭에 대한 예외가 발생한 경우 에러 메시지를 클라이언트에게 반환합니다.
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
     }
     @PostMapping("/minus/plans/detail/{plannerDetailId}")
     @PreAuthorize("hasAuthority('USER')")
