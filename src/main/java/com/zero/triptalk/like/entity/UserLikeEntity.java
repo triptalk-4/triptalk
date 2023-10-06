@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -32,8 +34,5 @@ public class UserLikeEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-
-
-
-
+    private LocalDateTime likeDt;
 }
