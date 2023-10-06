@@ -61,7 +61,7 @@ public class LikeService {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new LikeException(LikeErrorCode.NO_Planner_Detail_Board));
 
-        // 좋아요를 한 유저 찾기
+        // 좋아요를 누른 접속자 유저 찾기
         String email = userEmail(); // 이메일 불러오기
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
@@ -124,15 +124,35 @@ public class LikeService {
     public Object LikeOneMinus(Long plannerDetailId) {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
-
+        // 좋아요 취소 (플레너 디테일 라이크)
         DetailPlannerLike detailPlannerLike = detailPlannerLikeRepository.findByPlannerDetail(plannerDetail);
+        //플레너 디테일 좋아요취소
+        double currentDetailLikeCount = detailPlannerLike.getLikeCount();
+        double newDetailLikeCount = currentDetailLikeCount - 1;
 
-
-        double currentLikeCount = detailPlannerLike.getLikeCount();
-        double newLikeCount = currentLikeCount - 1;
-
-        detailPlannerLike.setLikeCount(newLikeCount);
+        detailPlannerLike.setLikeCount(newDetailLikeCount);
         detailPlannerLikeRepository.save(detailPlannerLike);
+
+        //좋아요 취소 (일정 좋아요 취소)
+        PlannerLike plannerLike = plannerLikeRepository.findByPlanner(plannerDetail.getPlanner());
+
+        double currentPlanerLikeCount = plannerLike.getLikeCount();
+        double newPlannerLikeCount = currentPlanerLikeCount -1;
+
+        plannerLike.setLikeCount(newPlannerLikeCount);
+        plannerLikeRepository.save(plannerLike);
+
+        // 좋아요를 누른 접속자 유저 찾기
+        String email = userEmail(); // 이메일 불러오기
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
+
+        // 좋아요 취소 하면 등록 취소 
+        UserLikeEntity userLike = (UserLikeEntity) userLikeRepository.findByPlannerDetailAndUser(plannerDetail,user)
+                .orElseThrow(() -> new LikeException(LikeErrorCode.NO_LIKE_SEARCH_ERROR));
+        System.out.println("userLike.toString() = " + userLike.toString());
+
+        userLikeRepository.delete(userLike);
 
         return LikenOnePlusMinusResponse.builder()
                 .ok("좋아요가 취소되었습니다")
