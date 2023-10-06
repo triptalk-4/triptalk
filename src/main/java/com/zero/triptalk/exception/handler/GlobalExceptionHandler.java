@@ -1,6 +1,7 @@
 package com.zero.triptalk.exception.handler;
 
 import com.zero.triptalk.exception.custom.LikeException;
+import com.zero.triptalk.exception.custom.ReplyException;
 import com.zero.triptalk.exception.response.GlobalExceptionResponse;
 import com.zero.triptalk.exception.custom.PlannerDetailException;
 import com.zero.triptalk.exception.custom.UserException;
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(LikeException.class)
     protected ResponseEntity<String> handleLikeException(LikeException e) {
+
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ReplyException.class)
+    protected ResponseEntity<String> handleReplyException(ReplyException e) {
 
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
     }

@@ -11,5 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LikenOnePlusMinusResponse {
     private String ok;
+    private Double plannerCount;
+    private Double detailPlannerCount;
 
 }
