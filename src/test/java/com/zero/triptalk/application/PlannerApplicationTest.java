@@ -8,7 +8,7 @@ import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.PlannerRequest;
-import com.zero.triptalk.planner.dto.PlannerStatus;
+import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;

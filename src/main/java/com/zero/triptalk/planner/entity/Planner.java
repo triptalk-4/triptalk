@@ -1,6 +1,6 @@
 package com.zero.triptalk.planner.entity;
 
-import com.zero.triptalk.planner.dto.PlannerStatus;
+import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

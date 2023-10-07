@@ -1,8 +1,8 @@
 package com.zero.triptalk.application;
 
 import com.zero.triptalk.exception.custom.PlannerDetailException;
-import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.image.service.ImageService;
+import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
@@ -20,7 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.*;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.CREATE_PLANNER_DETAIL_FAILED;
+import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_USER_PLANNER;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +63,7 @@ public class PlannerApplication {
         try {
             UserEntity user = plannerDetailService.findByEmail(email);
             //일정 생성
-            Planner planner = plannerService.createPlanner(plannerRequest,user);
+            Planner planner = plannerService.createPlanner(plannerRequest, user);
 
             //상세 일정 저장
             List<PlannerDetail> detailList = requests.stream().map(request -> {
@@ -100,9 +101,11 @@ public class PlannerApplication {
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
         List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
-        byPlanner.forEach(details -> deletePlannerDetail(details.getPlannerDetailId(),email));
+        byPlanner.forEach(details -> deletePlannerDetail(details.getPlannerDetailId(), email));
 
         //일정 삭제
         plannerService.deletePlanner(plannerId);
     }
+
+
 }

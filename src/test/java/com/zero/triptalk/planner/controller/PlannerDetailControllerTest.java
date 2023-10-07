@@ -1,16 +1,15 @@
 package com.zero.triptalk.planner.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zero.triptalk.application.PlannerApplication;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.entity.PlaceResponse;
 import com.zero.triptalk.planner.dto.*;
 import com.zero.triptalk.planner.service.PlannerDetailService;
+import com.zero.triptalk.planner.type.PlannerStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
@@ -29,11 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -75,7 +70,7 @@ class PlannerDetailControllerTest {
         PlannerDetailRequest request = PlannerDetailRequest.builder()
                 .date(LocalDateTime.now())
                 .description("테스트 요청입니다.")
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "123", "남산상세", 10, 10))
                 .build();
 
         Path path = Paths.get("src/test/resources/cat.jpg");
@@ -156,7 +151,7 @@ class PlannerDetailControllerTest {
                 .date(date)
                 .description("테스트 요청입니다.")
                 .images(images)
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "123", "남산상세", 10, 10))
                 .build());
         CreatePlannerInfo info = CreatePlannerInfo.builder()
                 .plannerDetailListRequests(requests)
@@ -181,9 +176,9 @@ class PlannerDetailControllerTest {
         Long plannerDetailId = 1L;
         String email = "test@test.com";
         //when
-        doNothing().when(plannerApplication).deletePlannerDetail(plannerDetailId,email);
+        doNothing().when(plannerApplication).deletePlannerDetail(plannerDetailId, email);
         //then
-        mockMvc.perform(delete("/api/plans/details/{plannerDetailId}",plannerDetailId)
+        mockMvc.perform(delete("/api/plans/details/{plannerDetailId}", plannerDetailId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
         ).andExpect(status().isNoContent());
