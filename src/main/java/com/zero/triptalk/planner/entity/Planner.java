@@ -32,6 +32,9 @@ public class Planner {
 
     private Long views;
 
+    //재훈님이 먼저 변경 후 나중에 Integer로 변경
+    private Integer Likes;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
