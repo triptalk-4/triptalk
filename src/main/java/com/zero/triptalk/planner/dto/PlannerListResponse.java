@@ -15,9 +15,11 @@ public class PlannerListResponse {
 
     private Long plannerId;
     private String title;
-    private String imageUrl;
-    private Integer plannerLike;
-    private Integer views;
-    private LocalDateTime createAt;
+    private String thumbnail;
+    //나중에 Integer로 변경
+    private Double likeCount;
+    private Long views;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
 }
