@@ -30,6 +30,8 @@ public class Planner {
 
     private String thumbnail;
 
+    private Long views;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
