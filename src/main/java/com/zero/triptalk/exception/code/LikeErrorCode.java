@@ -9,9 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum LikeErrorCode {
 
     NO_Planner_Detail_Board(HttpStatus.NOT_FOUND, "게시물을 찾을수 없습니다."),
-    NO_LIKE_DUPLICATE_ERROR(HttpStatus.BAD_REQUEST, "좋아요는 중복이 불가능 합니다.");
-
-
+    NO_LIKE_DUPLICATE_ERROR(HttpStatus.BAD_REQUEST, "좋아요는 중복이 불가능 합니다."),
+    NO_LIKE_SEARCH_ERROR(HttpStatus.BAD_REQUEST, "유저가 해당 게시글에 좋아요를 누르지 않았습니다");
     private final HttpStatus status;
     private final String errorMessage;
 }
