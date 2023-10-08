@@ -16,6 +16,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = "14"
+	targetCompatibility = "14"
 
 }
 
@@ -98,6 +99,20 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+//targetCompatibility = JavaVersion.VERSION_14
+
+//querydsl 추가 시작
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
 sourceSets {
 	main {
 		java {
@@ -105,9 +120,12 @@ sourceSets {
 		}
 	}
 }
-
-
-tasks.named('test') {
-	useJUnitPlatform()
+compileQuerydsl{
+	options.annotationProcessorPath = configurations.querydsl
 }
-targetCompatibility = JavaVersion.VERSION_14
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	querydsl.extendsFrom compileClasspath
+}
