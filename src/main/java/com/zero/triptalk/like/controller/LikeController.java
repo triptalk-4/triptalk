@@ -28,7 +28,6 @@ public class LikeController {
             // LikeService에서 던진 예외를 캐치하고 처리합니다.
             Object response = likeService.createLikeOrPlusPlannerDetail(plannerDetailId);
             return ResponseEntity.ok(response);
-
     }
     @PostMapping("/minus/plans/detail/{plannerDetailId}")
     @PreAuthorize("hasAuthority('USER')")
@@ -36,6 +35,8 @@ public class LikeController {
 
         return ResponseEntity.ok(likeService.LikeOneMinus(plannerDetailId));
     }
+
+
 
 
 }
