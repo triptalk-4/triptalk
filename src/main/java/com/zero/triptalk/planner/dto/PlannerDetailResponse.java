@@ -20,7 +20,7 @@ public class PlannerDetailResponse {
 
     private Long userId;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime createAt;
+    private LocalDateTime date;
     private PlaceResponse placeResponse;
     private String description;
     private List<String> imagesUrl;
@@ -31,7 +31,7 @@ public class PlannerDetailResponse {
 
         return PlannerDetailResponse.builder()
                 .userId(dto.getUserId())
-                .createAt(dto.getCreatedAt())
+                .date(dto.getDate())
                 .placeResponse(PlaceResponse.from(place))
                 .description(dto.getDescription())
                 .imagesUrl(dto.getImages())
