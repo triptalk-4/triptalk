@@ -53,13 +53,12 @@ public class PlannerController {
         return ResponseEntity.ok(plannerService.getPlanners(lastId, limit, sortType));
     }
 
-
-    // 모든 상세일정 조회
-    @GetMapping("/details")
+    //일정 상세페이지 조회
+    @GetMapping("/{plannerId}/details")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> getAllPlannerDetail() {
-        List<PlannerDetailListResponse> list = plannerDetailService.getAllPlannerDetail();
-        return ResponseEntity.ok(list);
+    public ResponseEntity<PlannerResponse> getPlanner(@PathVariable Long plannerId,
+                                                      Principal principal) {
+        return ResponseEntity.ok(plannerApplication.getPlanner(plannerId,principal.getName()));
     }
 
 

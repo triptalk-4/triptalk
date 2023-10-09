@@ -4,9 +4,7 @@ import com.zero.triptalk.exception.custom.PlannerDetailException;
 import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.PlaceService;
-import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
-import com.zero.triptalk.planner.dto.PlannerDetailRequest;
-import com.zero.triptalk.planner.dto.PlannerRequest;
+import com.zero.triptalk.planner.dto.*;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.service.PlannerDetailService;
@@ -98,7 +96,6 @@ public class PlannerApplication {
     @Transactional
     public void deletePlanner(Long plannerId, String email) {
 
-
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
         List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
         byPlanner.forEach(details -> deletePlannerDetail(details.getPlannerDetailId(), email));
@@ -107,5 +104,14 @@ public class PlannerApplication {
         plannerService.deletePlanner(plannerId);
     }
 
+    //일정 상세페이지 조회
+    public PlannerResponse getPlanner(Long plannerId, String email) {
 
+        UserEntity user = plannerDetailService.findByEmail(email);
+        Planner planner = plannerService.findById(plannerId);
+        List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
+                PlannerDetailResponse::from).collect(Collectors.toList());
+
+        return PlannerResponse.of(planner,user,responses);
+    }
 }
