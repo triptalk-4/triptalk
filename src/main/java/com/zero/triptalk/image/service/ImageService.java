@@ -76,7 +76,7 @@ public class ImageService {
     }
 
     //사진 리스트 삭제
-    public void deleteImages(List<String> imageUrls) {
+    public void deleteFiles(List<String> imageUrls) {
         List<String> objectKeys = imageUrls.stream().map(this::convertUrlToObjectKey).collect(Collectors.toList());
 
         for (String x : objectKeys) {
@@ -95,8 +95,8 @@ public class ImageService {
     }
 
     //S3에서 사진 삭제
-    public void deleteImage(String imageUrl) {
-        deleteImages(Collections.singletonList(imageUrl));
+    public void deleteFile(String imageUrl) {
+        deleteFiles(Collections.singletonList(imageUrl));
     }
 
 }

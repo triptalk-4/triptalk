@@ -30,7 +30,7 @@ public class ImageController {
     @DeleteMapping("/images")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Void> deleteImage(@RequestBody ImageRequest request){
-        imageService.deleteImage(request.getUrl());
+        imageService.deleteFile(request.getUrl());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

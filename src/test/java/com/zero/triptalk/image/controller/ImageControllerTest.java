@@ -82,12 +82,12 @@ class ImageControllerTest {
                 .build();
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        doNothing().when(imageService).deleteImage(request.getUrl());
+        doNothing().when(imageService).deleteFile(request.getUrl());
         mockMvc.perform(delete("/api/images")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest)
                         .with(csrf()))
                 .andExpect(status().isNoContent());
-        verify(imageService, times(1)).deleteImage(request.getUrl());
+        verify(imageService, times(1)).deleteFile(request.getUrl());
     }
 }
