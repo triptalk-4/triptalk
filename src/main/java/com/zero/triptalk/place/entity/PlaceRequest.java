@@ -13,8 +13,6 @@ public class PlaceRequest {
 
     private String name;
 
-    private String region;
-
     private String si;
 
     private String gun;
@@ -23,7 +21,7 @@ public class PlaceRequest {
 
     private String postCode;
 
-    private String address;
+    private String roadAddress;
 
     private double latitude;
 
@@ -32,12 +30,11 @@ public class PlaceRequest {
     public Place toEntity(){
         return Place.builder()
                 .name(name)
-                .region(region)
                 .si(si)
                 .gun(gun)
                 .gu(gu)
                 .postCode(postCode)
-                .address(address)
+                .roadAddress(roadAddress)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();
