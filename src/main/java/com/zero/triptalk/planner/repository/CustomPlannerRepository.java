@@ -6,6 +6,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zero.triptalk.like.entity.QPlannerLike;
 import com.zero.triptalk.planner.dto.PlannerListResponse;
+import com.zero.triptalk.planner.dto.PlannerListResult;
 import com.zero.triptalk.planner.entity.QPlanner;
 import com.zero.triptalk.planner.type.SortType;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,7 @@ public class CustomPlannerRepository {
         this.queryFactory = queryFactory;
     }
 
-    public List<PlannerListResponse> PlannerList(Long lastId, int limit, SortType sortType) {
+    public PlannerListResult PlannerList(Long lastId, int limit, SortType sortType) {
 
         final ConstructorExpression<PlannerListResponse> plannerListResponse =
                 Projections.constructor(PlannerListResponse.class,
@@ -49,11 +50,16 @@ public class CustomPlannerRepository {
                 .limit(limit + 1)
                 .fetch();
 
+        boolean hasNext = false;
         if (result.size() > limit) {
             result.remove(limit);
+            hasNext = true;
         }
 
-        return result;
+        return PlannerListResult.builder()
+                .plannerListResponses(result)
+                .hasNext(hasNext)
+                .build();
 
     }
 
@@ -65,6 +71,9 @@ public class CustomPlannerRepository {
                 break;
             case RECENT:
                 orderSpecifier = qPlanner.createAt.desc();
+                break;
+            case VIEWS:
+                orderSpecifier = qPlanner.views.desc();
                 break;
             default:
                 orderSpecifier = qPlanner.plannerId.desc();

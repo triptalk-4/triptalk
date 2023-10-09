@@ -46,15 +46,11 @@ public class PlannerController {
     //일정 목록 조회
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<List<PlannerListResponse>> getPlannerList(@RequestParam(required = false) Long lastId,
-                                                                    @RequestParam(defaultValue = "10") int limit,
-                                                                    @RequestParam SortType sortType,
-                                                                    Principal principal) {
-        System.out.println(lastId);
-        System.out.println(limit);
-        System.out.println(sortType);
-        List<PlannerListResponse> planners = plannerService.getPlanners(lastId, limit, sortType);
-        return ResponseEntity.ok(planners);
+    public ResponseEntity<PlannerListResult> getPlannerList(@RequestParam(required = false) Long lastId,
+                                                            @RequestParam(defaultValue = "10") int limit,
+                                                            @RequestParam SortType sortType,
+                                                            Principal principal) {
+        return ResponseEntity.ok(plannerService.getPlanners(lastId, limit, sortType));
     }
 
 
