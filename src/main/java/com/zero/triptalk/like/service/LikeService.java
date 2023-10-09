@@ -118,9 +118,12 @@ public class LikeService {
 
         return LikenOnePlusMinusResponse.builder()
                 .ok("좋아요가 완료되었습니다")
+                .plannerCount(newPlannerLikeCount)
+                .detailPlannerCount(newDetailLikeCount)
                 .build();
     }
 
+    @Transactional
     public Object LikeOneMinus(Long plannerDetailId) {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
@@ -156,6 +159,8 @@ public class LikeService {
 
         return LikenOnePlusMinusResponse.builder()
                 .ok("좋아요가 취소되었습니다")
+                .plannerCount(newPlannerLikeCount)
+                .detailPlannerCount(newDetailLikeCount)
                 .build();
     }
 }
