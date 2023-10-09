@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,8 +28,6 @@ public class PlannerDetail {
 
     private String description;
 
-    private Long views;
-
     @ElementCollection
     private List<String> images;
 
@@ -40,6 +39,8 @@ public class PlannerDetail {
     @JoinColumn(name = "planner_id")
     private Planner planner;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime date;
 
     @CreatedDate
     @Column(updatable = false)
@@ -52,12 +53,13 @@ public class PlannerDetail {
     @Builder
     public PlannerDetail(
             Long userId, String description, Place place,
-            List<String> images, Planner planner) {
+            List<String> images, Planner planner, LocalDateTime date) {
         this.planner = planner;
         this.userId = userId;
         this.description = description;
         this.place = place;
         this.images = images;
+        this.date = date;
     }
 
     public void updatePlannerDetail(PlannerDetailRequest request) {
@@ -78,6 +80,7 @@ public class PlannerDetail {
                 .description(request.getDescription())
                 .place(place)
                 .images(images)
+                .date(request.getDate())
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package com.zero.triptalk.planner.dto;
+package com.zero.triptalk.planner.type;
 
 public enum PlannerStatus {
     PUBLIC, // 일정 공개

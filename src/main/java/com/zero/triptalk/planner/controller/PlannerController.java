@@ -1,11 +1,10 @@
 package com.zero.triptalk.planner.controller;
 
 import com.zero.triptalk.application.PlannerApplication;
-import com.zero.triptalk.planner.dto.CreatePlannerInfo;
-import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
-import com.zero.triptalk.planner.dto.PlannerDetailRequest;
-import com.zero.triptalk.planner.dto.PlannerDetailResponse;
+import com.zero.triptalk.planner.dto.*;
 import com.zero.triptalk.planner.service.PlannerDetailService;
+import com.zero.triptalk.planner.service.PlannerService;
+import com.zero.triptalk.planner.type.SortType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,7 @@ public class PlannerController {
 
     private final PlannerDetailService plannerDetailService;
     private final PlannerApplication plannerApplication;
+    private final PlannerService plannerService;
 
     //상세일정 한개 조회
     @GetMapping("/detail/{plannerDetailId}")
@@ -42,6 +42,17 @@ public class PlannerController {
 
         return ResponseEntity.ok(plannerApplication.createPlannerDetail(plannerId, files, request, principle.getName()));
     }
+
+    //일정 목록 조회
+    @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<PlannerListResult> getPlannerList(@RequestParam(required = false) Long lastId,
+                                                            @RequestParam(defaultValue = "10") int limit,
+                                                            @RequestParam SortType sortType,
+                                                            Principal principal) {
+        return ResponseEntity.ok(plannerService.getPlanners(lastId, limit, sortType));
+    }
+
 
     // 모든 상세일정 조회
     @GetMapping("/details")
