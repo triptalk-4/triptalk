@@ -70,7 +70,7 @@ class PlannerDetailControllerTest {
         PlannerDetailRequest request = PlannerDetailRequest.builder()
                 .date(LocalDateTime.now())
                 .description("테스트 요청입니다.")
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "123", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "서울시", "서울군", "서울구", "123", "남산상세", 10, 10))
                 .build();
 
         Path path = Paths.get("src/test/resources/cat.jpg");
@@ -111,7 +111,7 @@ class PlannerDetailControllerTest {
 
         //when
         doReturn(PlannerDetailResponse.builder()
-                .createAt(LocalDateTime.now())
+                .date(LocalDateTime.now())
                 .imagesUrl(images)
                 .description(description)
                 .placeResponse(placeResponse)
@@ -151,7 +151,7 @@ class PlannerDetailControllerTest {
                 .date(date)
                 .description("테스트 요청입니다.")
                 .images(images)
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구", "123", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산","서울시", "서울군", "서울구", "123", "남산상세", 10, 10))
                 .build());
         CreatePlannerInfo info = CreatePlannerInfo.builder()
                 .plannerDetailListRequests(requests)
