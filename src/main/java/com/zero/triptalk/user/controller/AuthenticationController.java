@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping("/api/users")
 public class AuthenticationController {
@@ -42,15 +44,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/email/send")
-    public ResponseEntity<EmailCheckResponse> registerEmailSend(@RequestBody EmailCheckRequest request) {
-        try {
+    public ResponseEntity<EmailCheckResponse> registerEmailSend(@RequestBody EmailCheckRequest request) throws MessagingException {
+
             EmailCheckResponse response = service.emailSend(request);
             return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new EmailCheckResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new EmailCheckResponse(e.getMessage()));
-        }
+
     }
 
     @PostMapping("/register/email/check")
@@ -76,7 +74,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody AuthenticationRequest request
     ){
-        return ResponseEntity.ok((AuthenticationResponse) service.authenticate(request));
+        return ResponseEntity.ok(service.authenticate(request));
     }
 
 
