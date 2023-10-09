@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		queryDslVersion = "5.0.0"
+		queryDslVersion = '5.0.0'
 	}
 }
 
@@ -15,9 +15,7 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = "14"
-	targetCompatibility = "14"
-
+	sourceCompatibility = "11"
 }
 
 configurations {
@@ -84,13 +82,11 @@ dependencies {
 	//S3 테스트용
 	testImplementation 'io.findify:s3mock_2.12:0.2.4'
 
+
 	// querydsl 추가
-	implementation "com.querydsl:querydsl-core:${queryDslVersion}"
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	annotationProcessor(
-			"javax.persistence:javax.persistence-api",
-			"javax.annotation:javax.annotation-api",
-			"com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
 
 	implementation group: 'org.json', name: 'json', version: '20230227'
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.14.2'
@@ -102,12 +98,10 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
-
-
 tasks.named('test') {
 	useJUnitPlatform()
 }
-//targetCompatibility = JavaVersion.VERSION_14
+
 
 //querydsl 추가 시작
 def querydslDir = "$buildDir/generated/querydsl"
@@ -117,11 +111,7 @@ querydsl {
 	querydslSourcesDir = querydslDir
 }
 sourceSets {
-	main {
-		java {
-			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-		}
-	}
+	main.java.srcDir querydslDir
 }
 compileQuerydsl{
 	options.annotationProcessorPath = configurations.querydsl
@@ -132,3 +122,4 @@ configurations {
 	}
 	querydsl.extendsFrom compileClasspath
 }
+//querydsl 추가 끝
