@@ -50,7 +50,7 @@ public class ReplyService {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_Planner_Detail_Board));
 
-        // 좋아요를 누른 접속자 유저 찾기
+        // 접속자 유저 찾기 -> 어떤 유저가 댓글을 달았는지 등록할 수 있다
         String email = userEmail(); // 이메일 불러오기
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));

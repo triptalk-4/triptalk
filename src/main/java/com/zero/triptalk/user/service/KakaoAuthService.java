@@ -16,6 +16,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,6 +41,15 @@ public class KakaoAuthService {
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender mailSender; // Spring MailSender
 
+    @Value("${kakao.client.id}")
+    private String kakaoClientId;
+
+    @Value("${kakao.redirect.url}")
+    private String kakaoRedirectUrl;
+
+    @Value("${cloud.aws.image}")
+    private String profile;
+
     public KakaoAuthService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender) throws IOException {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
@@ -52,8 +62,8 @@ public class KakaoAuthService {
 
         StringBuilder url = new StringBuilder();
         url.append("https://kauth.kakao.com/oauth/authorize?");
-        url.append("client_id=" + "c5e7d3418384adeea868cb7470027a67");
-        url.append("&redirect_uri=" + "http://localhost:8080/kakao/callback");
+        url.append("client_id=" + kakaoClientId);
+        url.append("&redirect_uri=" + kakaoRedirectUrl);
         url.append("&response_type=code");
         return url.toString();
     }
@@ -67,8 +77,8 @@ public class KakaoAuthService {
         try {
             String json = String.format(
                     "grant_type=authorization_code&client_id=%s&redirect_uri=%s&code=%s",
-                    "c5e7d3418384adeea868cb7470027a67",
-                    "http://localhost:8080/kakao/callback",
+                    kakaoClientId,
+                    kakaoRedirectUrl,
                     code
             );
 
@@ -171,6 +181,7 @@ public class KakaoAuthService {
                     .password(passwordEncoder.encode(password))
                     .nickname(nicknameByRandom)
                     .UserType(UserTypeRole.USER)
+                    .profile(profile)
                     .userLoginRole(UserLoginRole.KAKAO_USER_LOGIN)
                     .registerAt(currentTime)
                     .updateAt(currentTime)

@@ -153,7 +153,6 @@ public class LikeService {
         // 좋아요 취소 하면 등록 취소 
         UserLikeEntity userLike = (UserLikeEntity) userLikeRepository.findByPlannerDetailAndUser(plannerDetail,user)
                 .orElseThrow(() -> new LikeException(LikeErrorCode.NO_LIKE_SEARCH_ERROR));
-        System.out.println("userLike.toString() = " + userLike.toString());
 
         userLikeRepository.delete(userLike);
 
