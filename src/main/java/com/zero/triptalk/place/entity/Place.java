@@ -19,9 +19,7 @@ public class Place {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long placeId;
 
-    private String name;
-
-    private String region;
+    private String name; //관광지 이름
 
     private String si;
 
@@ -29,9 +27,9 @@ public class Place {
 
     private String gu;
 
-    private String postCode;
+    private String postCode; // 우편 번호
 
-    private String address;
+    private String roadAddress; // 도로명 // 주소 서울시 종로구 세종로 광화문
 
     private double latitude;
 
