@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.CREATE_PLANNER_DETAIL_FAILED;
@@ -42,7 +43,9 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
 
         //place 저장
-        Place place = placeService.savePlace(request.getPlaceInfo());
+        Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
+        Place place = byRoadAddress.orElseGet(
+                () -> placeService.savePlace(request.getPlaceInfo()));
         //S3 -> url 리스트 변환
         List<String> images = imageService.uploadFiles(files);
 
@@ -65,7 +68,9 @@ public class PlannerApplication {
 
             //상세 일정 저장
             List<PlannerDetail> detailList = requests.stream().map(request -> {
-                Place place = placeService.savePlace(request.getPlaceInfo());
+                Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
+                Place place = byRoadAddress.orElseGet(
+                        () -> placeService.savePlace(request.getPlaceInfo()));
                 return request.toEntity(planner, place, user.getUserId());
             }).collect(Collectors.toList());
 
@@ -87,7 +92,7 @@ public class PlannerApplication {
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
         }
-        imageService.deleteImages(plannerDetail.getImages());
+        imageService.deleteFiles(plannerDetail.getImages());
 
         plannerDetailService.deletePlannerDetail(plannerDetailId);
     }
@@ -112,6 +117,6 @@ public class PlannerApplication {
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
-        return PlannerResponse.of(planner,user,responses);
+        return PlannerResponse.of(planner, user, responses);
     }
 }
