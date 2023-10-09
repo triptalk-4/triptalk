@@ -63,8 +63,12 @@ public class PlannerApplication {
 
         try {
             UserEntity user = plannerDetailService.findByEmail(email);
+            //썸네일 가져오기 (첫번째 상세일정 첫번째 사진, 사진 업로드가 필수라 가능함)
+            // (만약 사진이 필수가 아니라면 stream 으로 사진을 찾던가 추천사진?)
+            String thumbnail = requests.get(0).getImages().get(0);
+
             //일정 생성
-            Planner planner = plannerService.createPlanner(plannerRequest, user);
+            Planner planner = plannerService.createPlanner(plannerRequest, user, thumbnail);
 
             //상세 일정 저장
             List<PlannerDetail> detailList = requests.stream().map(request -> {

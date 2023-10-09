@@ -20,8 +20,8 @@ public class PlannerService {
     private final CustomPlannerRepository customPlannerRepository;
 
 
-    public Planner createPlanner(PlannerRequest request, UserEntity user) {
-        return plannerRepository.save(request.toEntity(user));
+    public Planner createPlanner(PlannerRequest request, UserEntity user, String thumbnail) {
+        return plannerRepository.save(request.toEntity(user, thumbnail));
     }
 
     public Planner findById(Long plannerId) {
