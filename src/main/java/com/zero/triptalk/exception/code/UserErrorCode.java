@@ -13,7 +13,8 @@ public enum UserErrorCode {
     PASSWORD_APPROVAL_DENIED(HttpStatus.BAD_REQUEST, "비밀번호는 특수문자,영어,숫자를 포함해야 하며 , 8글자 이상이여야 합니다."),
     EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일 입니다."),
     NICKNAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 사용중인 닉네임 입니다."),
-    KAKAO_NICKNAME_ERROR(HttpStatus.BAD_REQUEST, "카카오 로그인을 다시 시도해 주세요!")
+    KAKAO_NICKNAME_ERROR(HttpStatus.BAD_REQUEST, "카카오 로그인을 다시 시도해 주세요!"),
+    EMAIL_NOT_FOUND_ERROR(HttpStatus.BAD_REQUEST, "이메일을 찾을 수 없습니다.!")
     ;
 
 
