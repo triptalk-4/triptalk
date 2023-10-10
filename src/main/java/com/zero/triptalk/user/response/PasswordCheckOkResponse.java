@@ -9,4 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 public class PasswordCheckOkResponse {
     private String passwordCheckOk;
+
 }
