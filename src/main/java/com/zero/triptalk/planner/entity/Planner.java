@@ -33,10 +33,11 @@ public class Planner {
 
     private String thumbnail;
 
-    private Long views;
+    @Column(nullable = false, columnDefinition = "default 0")
+    private Long views = 0L;
 
-    //재훈님이 먼저 변경 후 나중에 Integer로 변경
-    private Integer Likes;
+    @Column(nullable = false, columnDefinition = "default 0")
+    private Long likes = 0L;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -55,6 +56,10 @@ public class Planner {
 
     public void increaseViews(){
         this.views++;
+    }
+
+    public void updateLikes(Long newPlannerLikeCount){
+        this.likes = newPlannerLikeCount;
     }
 
 }
