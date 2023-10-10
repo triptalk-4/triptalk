@@ -2,6 +2,8 @@ package com.zero.triptalk.application;
 
 import com.zero.triptalk.exception.custom.PlannerDetailException;
 import com.zero.triptalk.image.service.ImageService;
+import com.zero.triptalk.like.entity.PlannerLike;
+import com.zero.triptalk.like.service.LikeService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.*;
@@ -33,6 +35,8 @@ public class PlannerApplication {
     private final PlaceService placeService;
 
     private final ImageService imageService;
+
+    private final LikeService likeService;
 
     //상세 일정 한개 생성
     @Transactional
@@ -117,11 +121,16 @@ public class PlannerApplication {
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
         UserEntity user = plannerDetailService.findByEmail(email);
+
+        PlannerLike plannerLike = likeService.findByPlannerId(plannerId);
+        Long likeCount = (plannerLike != null) ? plannerLike.getLikeCount() : 0 ;
+
         Planner planner = plannerService.findById(plannerId);
+
         planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
-        return PlannerResponse.of(planner, user, responses);
+        return PlannerResponse.of(planner, user, responses, likeCount);
     }
 }
