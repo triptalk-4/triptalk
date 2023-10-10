@@ -23,10 +23,10 @@ public class DetailPlannerSearchResponse {
     private String place;
     private LocalDateTime date;
     private Long views;
-    private Double likeCount;
+    private Long likeCount;
 
     @Builder
-    public DetailPlannerSearchResponse(Long detailPlannerLikeId, Long plannerDetailId, String nickname, String description, String image, String place, LocalDateTime date, Long views, Double likeCount) {
+    public DetailPlannerSearchResponse(Long detailPlannerLikeId, Long plannerDetailId, String nickname, String description, String image, String place, LocalDateTime date, Long views, Long likeCount) {
         this.detailPlannerLikeId = detailPlannerLikeId;
         this.plannerDetailId = plannerDetailId;
         this.nickname = nickname;
