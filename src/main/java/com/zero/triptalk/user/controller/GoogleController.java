@@ -13,9 +13,9 @@ public class GoogleController {
     private final GoogleAuthService googleAuthService;
 
     @PostMapping
-    public String getLoginUrl(){
+    public ResponseEntity<String> getLoginUrl(){
 
-        return googleAuthService.getLoginUrl();
+        return ResponseEntity.ok(googleAuthService.getLoginUrl());
     }
 
     @GetMapping
