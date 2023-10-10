@@ -1,10 +1,6 @@
 package com.zero.triptalk.exception.handler;
 
-import com.zero.triptalk.exception.custom.LikeException;
-import com.zero.triptalk.exception.custom.ReplyException;
-import com.zero.triptalk.exception.response.GlobalExceptionResponse;
-import com.zero.triptalk.exception.custom.PlannerDetailException;
-import com.zero.triptalk.exception.custom.UserException;
+import com.zero.triptalk.exception.custom.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +28,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ReplyException.class)
     protected ResponseEntity<String> handleReplyException(ReplyException e) {
+
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(SearchException.class)
+    protected ResponseEntity<String> handleSearchException(SearchException e) {
 
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
     }

@@ -1,31 +1,22 @@
 package com.zero.triptalk.config;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
-import org.apache.http.HttpHost;
-import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
+
+import java.net.InetSocketAddress;
 
 @Configuration
-public class ElasticSearchConfig {
+public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
     @Value("${spring.elasticsearch.hostname}")
     private String hostname;
     @Value("${spring.elasticsearch.port}")
     private Integer port;
-    @Bean
-    public ElasticsearchClient getClient() {
 
-        RestClient restClient = RestClient.builder(new HttpHost(hostname, port)).build();
-
-        ElasticsearchTransport transport = new RestClientTransport(
-                restClient, new JacksonJsonpMapper());
-
-        return new ElasticsearchClient(transport);
+    @Override
+    public ClientConfiguration clientConfiguration() {
+        return ClientConfiguration.create(InetSocketAddress.createUnresolved(hostname, port));
     }
 }
-
