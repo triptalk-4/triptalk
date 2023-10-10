@@ -33,11 +33,9 @@ public class Planner {
 
     private String thumbnail;
 
-    @Column(nullable = false, columnDefinition = "default 0")
+    @Builder.Default
     private Long views = 0L;
 
-    @Column(nullable = false, columnDefinition = "default 0")
-    private Long likes = 0L;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -56,10 +54,6 @@ public class Planner {
 
     public void increaseViews(){
         this.views++;
-    }
-
-    public void updateLikes(Long newPlannerLikeCount){
-        this.likes = newPlannerLikeCount;
     }
 
 }
