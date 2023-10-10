@@ -228,19 +228,10 @@ public class AuthenticationService {
     public String S3FileSaveAndOldImageDeleteAndNewProfile(List<String> files, String oldImage) {
 
         String newFile = files.get(0);
-
-        try {
             // 기본 설정 이미지가 아니면 지운다
             if(!(profile.equals(oldImage))) {
-                DeleteObjectRequest request = new DeleteObjectRequest(bucket, oldImage);
-                amazonS3.deleteObject(request);
+                imageService.deleteImage(oldImage);
             }
-        } catch (AmazonServiceException e) {
-            log.error(e.getErrorMessage());
-            throw new ImageException(ImageUploadErrorCode.IMAGE_DELETE_FAILED);
-        }
-
-
         return newFile;
     }
 
