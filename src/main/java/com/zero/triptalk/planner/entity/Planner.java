@@ -48,5 +48,8 @@ public class Planner {
     @Column(updatable = false)
     private LocalDateTime createAt;
 
+    public void increaseViews(){
+        this.views++;
+    }
 
 }

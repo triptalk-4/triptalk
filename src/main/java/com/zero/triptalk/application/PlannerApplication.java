@@ -118,6 +118,7 @@ public class PlannerApplication {
 
         UserEntity user = plannerDetailService.findByEmail(email);
         Planner planner = plannerService.findById(plannerId);
+        planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
