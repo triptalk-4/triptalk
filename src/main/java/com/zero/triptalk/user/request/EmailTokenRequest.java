@@ -9,4 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class EmailTokenRequest {
     private String token;
+    private String password;
+    private String email;
+
 }

@@ -3,6 +3,9 @@ package com.zero.triptalk.user.entity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import lombok.*;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +29,7 @@ public class UserEntity implements UserDetails {
     private Long userId;
 
     private String name;
+
     private String profile;
 
     private String nickname;
@@ -34,8 +38,11 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
-    private LocalDateTime registerAt;
+    private String aboutMe;
 
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
+    private LocalDateTime registerAt;
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime updateAt;
 
     @Enumerated(EnumType.STRING)

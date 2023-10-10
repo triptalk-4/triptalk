@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.zero.triptalk.exception.code.LikeErrorCode.*;
@@ -61,6 +62,8 @@ public class LikeService {
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new LikeException(LikeErrorCode.NO_Planner_Detail_Board));
 
+        LocalDateTime currentTime = LocalDateTime.now();
+
         // 좋아요를 누른 접속자 유저 찾기
         String email = userEmail(); // 이메일 불러오기
         UserEntity userEntity = userRepository.findByEmail(email)
@@ -75,6 +78,7 @@ public class LikeService {
         UserLikeEntity userLike = UserLikeEntity.builder()
                 .plannerDetail(plannerDetail)
                 .planner(plannerDetail.getPlanner())
+                .likeDt(currentTime)
                 .user(userEntity)
                 .build();
         userLikeRepository.save(userLike);
@@ -87,6 +91,7 @@ public class LikeService {
             detailPlannerLike = DetailPlannerLike.builder()
                     .plannerDetail(plannerDetail)
                     .likeCount(1.0)
+                    .likeDt(currentTime)
                     .build();
             detailPlannerLikeRepository.save(detailPlannerLike);
 
@@ -96,6 +101,7 @@ public class LikeService {
             plannerLike = PlannerLike.builder()
                     .planner(plannerDetail.getPlanner())
                     .likeCount(1.0)
+                    .likeDt(currentTime)
                     .build();
 
             plannerLikeRepository.save(plannerLike);

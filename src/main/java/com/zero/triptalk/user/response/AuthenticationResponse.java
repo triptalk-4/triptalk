@@ -12,6 +12,7 @@ public class AuthenticationResponse {
 
     private String token;
     private String registerOk;
+    private String updateOk;
 
 }
 

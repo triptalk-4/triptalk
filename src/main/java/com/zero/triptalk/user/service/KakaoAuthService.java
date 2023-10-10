@@ -175,6 +175,8 @@ public class KakaoAuthService {
             }
             LocalDateTime currentTime = LocalDateTime.now();
 
+        String aboutMe = nickname+"님 안녕하세요 자신을 소개해 주세요!";
+
             var user = UserEntity.builder()
                     .name(nickname)
                     .email(email)
@@ -183,6 +185,7 @@ public class KakaoAuthService {
                     .UserType(UserTypeRole.USER)
                     .profile(profile)
                     .userLoginRole(UserLoginRole.KAKAO_USER_LOGIN)
+                    .aboutMe(aboutMe)
                     .registerAt(currentTime)
                     .updateAt(currentTime)
                     .build();
