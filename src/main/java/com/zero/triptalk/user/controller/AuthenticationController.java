@@ -2,10 +2,7 @@ package com.zero.triptalk.user.controller;
 
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.request.*;
-import com.zero.triptalk.user.response.AuthenticationResponse;
-import com.zero.triptalk.user.response.EmailCheckOkResponse;
-import com.zero.triptalk.user.response.EmailCheckResponse;
-import com.zero.triptalk.user.response.PasswordCheckOkResponse;
+import com.zero.triptalk.user.response.*;
 import com.zero.triptalk.user.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +66,7 @@ public class AuthenticationController {
      * @param files
      * @return
      */
-    @PostMapping("/update/profile")
+    @PutMapping("/update/profile")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<AuthenticationResponse> updateRegister(@RequestPart UpdateRegisterRequest request,
                                             @RequestPart("files") List<MultipartFile> files) {
