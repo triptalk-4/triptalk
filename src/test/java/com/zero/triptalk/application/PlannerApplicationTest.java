@@ -168,9 +168,10 @@ class PlannerApplicationTest {
                 .title("11")
                 .build();
         Place place = placeRequest.toEntity();
+        String thumbnail = "url";
 
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
-        when(plannerService.createPlanner(plannerRequest,user)).thenReturn(planner);
+        when(plannerService.createPlanner(plannerRequest,user,thumbnail)).thenReturn(planner);
         when(placeService.savePlace(any())).thenReturn(place);
 
 
