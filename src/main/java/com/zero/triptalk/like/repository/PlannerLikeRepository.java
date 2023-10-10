@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PlannerLikeRepository extends JpaRepository<PlannerLike, Long> {
 
     PlannerLike findByPlanner(Planner planner);
+
+    PlannerLike findByPlanner_PlannerId(Long plannerId);
 }
