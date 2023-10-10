@@ -16,10 +16,8 @@ public class PlannerListResponse {
     private Long plannerId;
     private String title;
     private String thumbnail;
-    //나중에 Integer로 변경
-    private Double likeCount;
+    private Long likeCount;
     private Long views;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDateTime createAt; //일정 생성 날짜
 
 }

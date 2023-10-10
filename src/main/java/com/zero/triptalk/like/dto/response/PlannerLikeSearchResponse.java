@@ -20,10 +20,10 @@ public class PlannerLikeSearchResponse {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Long views;
-    private Double likeCount;
+    private Long likeCount;
 
     @Builder
-    public PlannerLikeSearchResponse(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, LocalDateTime startDate, LocalDateTime endDate, Long views, Double likeCount) {
+    public PlannerLikeSearchResponse(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likeCount) {
         this.plannerLikeId = plannerLikeId;
         this.plannerId = plannerId;
         this.title = title;
