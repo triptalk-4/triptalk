@@ -42,6 +42,8 @@ public class PlannerDetail {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date;
 
+    private Long views;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
