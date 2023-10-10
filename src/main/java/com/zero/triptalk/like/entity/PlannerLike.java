@@ -23,7 +23,7 @@ public class PlannerLike {
     @JoinColumn(name = "planner_id")
     private Planner planner;
 
-    private Double likeCount;
+    private Long likeCount;
 
     private LocalDateTime likeDt;
 }

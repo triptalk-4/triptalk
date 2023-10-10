@@ -90,7 +90,7 @@ public class LikeService {
             // detailPlannerLike 추가
             detailPlannerLike = DetailPlannerLike.builder()
                     .plannerDetail(plannerDetail)
-                    .likeCount(1.0)
+                    .likeCount(1L)
                     .likeDt(currentTime)
                     .build();
             detailPlannerLikeRepository.save(detailPlannerLike);
@@ -100,7 +100,7 @@ public class LikeService {
         if( plannerLike == null){
             plannerLike = PlannerLike.builder()
                     .planner(plannerDetail.getPlanner())
-                    .likeCount(1.0)
+                    .likeCount((long) 1.0)
                     .likeDt(currentTime)
                     .build();
 
@@ -111,12 +111,12 @@ public class LikeService {
                     .build();
         }
         // detailPlannerLike 추가
-        double currentDetailLikeCount = detailPlannerLike.getLikeCount();
-        double newDetailLikeCount = currentDetailLikeCount + 1;
+        long currentDetailLikeCount = detailPlannerLike.getLikeCount();
+        long newDetailLikeCount = currentDetailLikeCount + 1;
         detailPlannerLike.setLikeCount(newDetailLikeCount);
         // plannerLike 추가
-        double currentPlannerLikeCount = plannerLike.getLikeCount();
-        double newPlannerLikeCount = currentPlannerLikeCount + 1;
+        long currentPlannerLikeCount = plannerLike.getLikeCount();
+        long newPlannerLikeCount = currentPlannerLikeCount + 1;
         plannerLike.setLikeCount(newPlannerLikeCount);
 
         detailPlannerLikeRepository.save(detailPlannerLike);
@@ -136,8 +136,8 @@ public class LikeService {
         // 좋아요 취소 (플레너 디테일 라이크)
         DetailPlannerLike detailPlannerLike = detailPlannerLikeRepository.findByPlannerDetail(plannerDetail);
         //플레너 디테일 좋아요취소
-        double currentDetailLikeCount = detailPlannerLike.getLikeCount();
-        double newDetailLikeCount = currentDetailLikeCount - 1;
+        long currentDetailLikeCount = detailPlannerLike.getLikeCount();
+        long newDetailLikeCount = currentDetailLikeCount - 1;
 
         detailPlannerLike.setLikeCount(newDetailLikeCount);
         detailPlannerLikeRepository.save(detailPlannerLike);
@@ -145,8 +145,8 @@ public class LikeService {
         //좋아요 취소 (일정 좋아요 취소)
         PlannerLike plannerLike = plannerLikeRepository.findByPlanner(plannerDetail.getPlanner());
 
-        double currentPlanerLikeCount = plannerLike.getLikeCount();
-        double newPlannerLikeCount = currentPlanerLikeCount -1;
+        long currentPlanerLikeCount = plannerLike.getLikeCount();
+        long newPlannerLikeCount = currentPlanerLikeCount -1;
 
         plannerLike.setLikeCount(newPlannerLikeCount);
         plannerLikeRepository.save(plannerLike);
