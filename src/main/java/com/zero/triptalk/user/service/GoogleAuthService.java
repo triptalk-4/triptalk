@@ -89,6 +89,7 @@ public class GoogleAuthService {
                 .profile(profile)
                 .email(userInfo.getEmail())
                 .nickname("GOOGLE" + uuid)
+                .aboutMe("GOOGLE" + uuid+"님 안녕하세요 자신을 소개해 주세요!")
                 .password(BCrypt.hashpw(uuid, BCrypt.gensalt()))
                 .build();
 

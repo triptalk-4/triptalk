@@ -1,18 +1,20 @@
 package com.zero.triptalk.user.controller;
 
-import com.zero.triptalk.user.request.AuthenticationRequest;
-import com.zero.triptalk.user.request.EmailCheckRequest;
-import com.zero.triptalk.user.request.EmailTokenRequest;
-import com.zero.triptalk.user.request.RegisterRequest;
+import com.zero.triptalk.user.entity.UserEntity;
+import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.response.AuthenticationResponse;
 import com.zero.triptalk.user.response.EmailCheckOkResponse;
 import com.zero.triptalk.user.response.EmailCheckResponse;
+import com.zero.triptalk.user.response.PasswordCheckOkResponse;
 import com.zero.triptalk.user.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -33,36 +35,56 @@ public class AuthenticationController {
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        try {
+
             AuthenticationResponse response = service.register(request);
             return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
     }
 
     @PostMapping("/register/email/send")
     public ResponseEntity<EmailCheckResponse> registerEmailSend(@RequestBody EmailCheckRequest request) throws MessagingException {
 
-            EmailCheckResponse response = service.emailSend(request);
-            return ResponseEntity.ok(response);
+        EmailCheckResponse response = service.emailSend(request);
+        return ResponseEntity.ok(response);
 
     }
 
     @PostMapping("/register/email/check")
     public ResponseEntity<?> registerEmailCheckToken(@RequestBody EmailTokenRequest request) {
-        try {
+
             EmailCheckOkResponse response = service.registerEmailCheckToken(request);
             return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
     }
 
+    @PostMapping("/update/password/check")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<PasswordCheckOkResponse> updateEmailCheckToken(@RequestBody EmailTokenRequest request) {
+
+        PasswordCheckOkResponse response = service.PasswordCheckToken(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 업데이트
+     * @param request
+     * @param files
+     * @return
+     */
+    @PostMapping("/update/profile")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<AuthenticationResponse> updateRegister(@RequestPart UpdateRegisterRequest request,
+                                            @RequestPart("files") List<MultipartFile> files) {
+
+            AuthenticationResponse response = service.UpdateRegister(request, files);
+            return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/profile")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<UserEntity> SeeMyProfile() {
+
+        UserEntity response = service.SeeMyProfileRegister();
+        return ResponseEntity.ok(response);
+    }
 
 
     /**

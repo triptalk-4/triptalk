@@ -1,8 +1,16 @@
 package com.zero.triptalk.user.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
+import com.zero.triptalk.exception.code.ImageUploadErrorCode;
+import com.zero.triptalk.exception.code.UserErrorCode;
+import com.zero.triptalk.exception.custom.ImageException;
 import com.zero.triptalk.exception.custom.UserException;
+import com.zero.triptalk.image.service.ImageService;
+import com.zero.triptalk.user.request.UpdateRegisterRequest;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
@@ -14,27 +22,31 @@ import com.zero.triptalk.user.request.RegisterRequest;
 import com.zero.triptalk.user.response.AuthenticationResponse;
 import com.zero.triptalk.user.response.EmailCheckOkResponse;
 import com.zero.triptalk.user.response.EmailCheckResponse;
+import com.zero.triptalk.user.response.PasswordCheckOkResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static com.zero.triptalk.exception.code.UserErrorCode.*;
 
+@Slf4j
 @Service
 public class AuthenticationService {
 
@@ -47,23 +59,43 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender mailSender; // Spring MailSender
 
+    private final ImageService imageService;
+
     private final RedisUtil redisUtil;
+
+    private final AmazonS3 amazonS3;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     @Value("${cloud.aws.image}")
     private String profile;
 
     @Value("${spring.mail.username}")
     private String senderMail;
-    public AuthenticationService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, RedisUtil redisUtil) {
+
+    public AuthenticationService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.mailSender = mailSender;
+        this.imageService = imageService;
         this.redisUtil = redisUtil;
+        this.amazonS3 = amazonS3;
     }
 
+    public String userEmail(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        String email = "기본 이메일";
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            email = userDetails.getUsername(); // 사용자 이메일 정보를 추출
+        }
+
+        return email;
+    }
 
     public static String createRandomString() {
         // 사용할 문자셋
@@ -114,6 +146,8 @@ public class AuthenticationService {
             throw new UserException(NICKNAME_ALREADY_EXIST);
         }
 
+        String aboutMe = nickname+"님 안녕하세요 자신을 소개해 주세요!";
+
         var user = UserEntity.builder()
                 .name(request.getName())
                 .email(email)
@@ -124,6 +158,7 @@ public class AuthenticationService {
                 .registerAt(currentTime)
                 .updateAt(currentTime)
                 .profile(profile)
+                .aboutMe(aboutMe)
                 .build();
 
         repository.save(user);
@@ -188,5 +223,144 @@ public class AuthenticationService {
         return EmailCheckOkResponse.builder()
                 .emailVerificationFailed("이메일 인증에 실패하였습니다")
                 .build();
+    }
+
+    public String S3FileSaveAndOldImageDeleteAndNewProfile(List<String> files, String oldImage) {
+
+        String newFile = files.get(0);
+
+        try {
+            // 기본 설정 이미지가 아니면 지운다
+            if(!(profile.equals(oldImage))) {
+                DeleteObjectRequest request = new DeleteObjectRequest(bucket, oldImage);
+                amazonS3.deleteObject(request);
+            }
+        } catch (AmazonServiceException e) {
+            log.error(e.getErrorMessage());
+            throw new ImageException(ImageUploadErrorCode.IMAGE_DELETE_FAILED);
+        }
+
+
+        return newFile;
+    }
+
+
+    public AuthenticationResponse UpdateRegister(UpdateRegisterRequest request,
+                                                 List<MultipartFile> files) {
+        // 요청에서 정보 추출
+        String email = request.getEmail();
+        String newPassword = request.getNewPassword();
+        String newNickname = request.getNewNickname();
+        String newAboutMe = request.getNewAboutMe();
+        AuthenticationResponse authenticationResponse = null;
+
+        // 이메일로 사용자 찾기
+        Optional<UserEntity> existingUserOptional = repository.findByEmail(email);
+
+        if (existingUserOptional.isEmpty()){
+            // 사용자가 해당 이메일로 찾을 수 없는 경우 처리
+            throw new UserException(EMAIL_NOT_FOUND_ERROR);
+        }
+
+        UserEntity existingUser = existingUserOptional.get();
+
+        // 파일 한건 업데이트
+        List<String> filesByListString = imageService.uploadFiles(files);
+
+        // 파일 업로드 및 삭제
+        String newProfile = S3FileSaveAndOldImageDeleteAndNewProfile
+                (filesByListString, existingUser.getProfile());
+
+            if(existingUser.getUserLoginRole().equals(UserLoginRole.KAKAO_USER_LOGIN)
+                    || existingUser.getUserLoginRole().equals(UserLoginRole.GOOGLE_USER_LOGIN)){
+
+                existingUser.setUpdateAt(LocalDateTime.now());
+                existingUser.setNickname(newNickname);
+                existingUser.setAboutMe(newAboutMe);
+                existingUser.setProfile(newProfile);
+
+                repository.save(existingUser);
+
+                // 업데이트된 사용자를 위한 새로운 JWT 토큰 생성
+                String jwtToken = jwtService.generateToken(existingUser);
+
+                // 새로운 JWT 토큰을 사용한 AuthenticationResponse 생성
+                AuthenticationResponse response = new AuthenticationResponse();
+                response.setToken(jwtToken);
+
+                return authenticationResponse.builder()
+                        .updateOk("업데이트가 완료되었습니다.")
+                        .token(jwtToken)
+                        .build();
+            }
+
+            // 새로운 비밀번호가 제공된 경우 비밀번호 업데이트
+            if (newPassword != null && !newPassword.isEmpty()) {
+                String encodedNewPassword = passwordEncoder.encode(newPassword);
+                existingUser.setPassword(encodedNewPassword);
+            }
+
+        // 업데이트 시간
+        existingUser.setUpdateAt(LocalDateTime.now());
+        // 새로운 닉네임
+        existingUser.setNickname(newNickname);
+        // 새로운 소개글
+        existingUser.setAboutMe(newAboutMe);
+        // 새로운 프로필
+        existingUser.setProfile(newProfile);
+
+        // 업데이트된 사용자 엔티티 저장
+        repository.save(existingUser);
+
+        // 업데이트된 사용자를 위한 새로운 JWT 토큰 생성
+        String jwtToken = jwtService.generateToken(existingUser);
+
+        // 새로운 JWT 토큰을 사용한 AuthenticationResponse 생성
+        AuthenticationResponse response = new AuthenticationResponse();
+        response.setToken(jwtToken);
+
+        return authenticationResponse.builder()
+                .updateOk("업데이트가 완료되었습니다.")
+                .token(jwtToken)
+                .build();
+    }
+
+
+    public PasswordCheckOkResponse PasswordCheckToken(EmailTokenRequest request) {
+        Optional<UserEntity> existingUserOptional = repository.findByEmail(request.getEmail());
+
+        if (existingUserOptional.isEmpty()) {
+            // 사용자가 해당 이메일로 찾을 수 없는 경우 처리
+            throw new UserException(EMAIL_NOT_FOUND_ERROR);
+        }
+
+        UserEntity existingUser = existingUserOptional.get();
+        String storedPasswordHash = existingUser.getPassword();
+
+        if (!passwordEncoder.matches(request.getPassword(), storedPasswordHash)) {
+            // 비밀번호가 일치하지 않는 경우 처리
+            throw new UserException(UserErrorCode.PASSWORD_NOT_SAME);
+        }
+
+        return PasswordCheckOkResponse.builder()
+                .passwordCheckOk("패스워드 체크가 완료되었습니다.")
+                .build();
+    }
+
+    public UserEntity SeeMyProfileRegister() {
+        String email =  userEmail();
+
+        Optional<UserEntity> existingUserOptional = repository.findByEmail(email);
+
+        if (existingUserOptional.isEmpty()) {
+            // 사용자가 해당 이메일로 찾을 수 없는 경우 처리
+            throw new UserException(EMAIL_NOT_FOUND_ERROR);
+        }
+        UserEntity existingUser = existingUserOptional.get();
+        return existingUser;
+
+
+
+
     }
 }

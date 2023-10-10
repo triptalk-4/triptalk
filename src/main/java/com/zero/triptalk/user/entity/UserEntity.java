@@ -26,6 +26,7 @@ public class UserEntity implements UserDetails {
     private Long userId;
 
     private String name;
+
     private String profile;
 
     private String nickname;
@@ -33,6 +34,8 @@ public class UserEntity implements UserDetails {
     private String email;
 
     private String password;
+
+    private String aboutMe;
 
     private LocalDateTime registerAt;
 
