@@ -19,7 +19,7 @@ public class PlannerResponse {
     private Long plannerId;
     private String description;
     private String title;
-    private Integer likeCount;
+    private Long likeCount;
     private Long views;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
@@ -28,13 +28,13 @@ public class PlannerResponse {
     private Long userId;
     private List<PlannerDetailResponse> plannerDetailResponse;
 
-    public static PlannerResponse of(Planner planner, UserEntity user, List<PlannerDetailResponse> details){
+    public static PlannerResponse of(Planner planner, UserEntity user, List<PlannerDetailResponse> details, Long likeCount){
 
         return PlannerResponse.builder()
                 .plannerId(planner.getPlannerId())
                 .title(planner.getTitle())
                 .description(planner.getDescription())
-                .likeCount(planner.getLikes())
+                .likeCount(likeCount)
                 .views(planner.getViews())
                 .startDate(planner.getStartDate())
                 .endDate(planner.getEndDate())
