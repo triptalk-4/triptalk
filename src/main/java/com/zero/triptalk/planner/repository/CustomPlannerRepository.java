@@ -6,9 +6,11 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zero.triptalk.like.entity.QPlannerLike;
 import com.zero.triptalk.planner.dto.PlannerListResponse;
-import com.zero.triptalk.planner.dto.PlannerListResult;
 import com.zero.triptalk.planner.entity.QPlanner;
 import com.zero.triptalk.planner.type.SortType;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,17 +26,16 @@ public class CustomPlannerRepository {
         this.queryFactory = queryFactory;
     }
 
-    public PlannerListResult PlannerList(Long lastId, int limit, SortType sortType) {
+    public Slice<PlannerListResponse> PlannerList(Pageable pageable, SortType sortType) {
 
         final ConstructorExpression<PlannerListResponse> plannerListResponse =
                 Projections.constructor(PlannerListResponse.class,
                         QPlanner.planner.plannerId,
                         QPlanner.planner.title,
                         QPlanner.planner.thumbnail,
-                        QPlannerLike.plannerLike.likeCount,
+                        qPlannerLike.likeCount,
                         QPlanner.planner.views,
-                        QPlanner.planner.startDate,
-                        QPlanner.planner.endDate
+                        QPlanner.planner.createAt
                 );
 
 
@@ -43,23 +44,20 @@ public class CustomPlannerRepository {
                 .select(plannerListResponse)
                 .from(qPlanner)
                 .leftJoin(qPlannerLike)
-                .on(qPlanner.plannerId.eq(qPlannerLike.plannerLikeId))
-                .where(qPlanner.plannerId.lt(lastId))
+                .on(qPlanner.eq(qPlannerLike.planner))
+                .offset(pageable.getOffset())
                 .groupBy(qPlanner.plannerId)
                 .orderBy(ordering(sortType))
-                .limit(limit + 1)
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
         boolean hasNext = false;
-        if (result.size() > limit) {
-            result.remove(limit);
+        if (result.size() > pageable.getPageSize()) {
+            result.remove(pageable.getPageSize());
             hasNext = true;
         }
 
-        return PlannerListResult.builder()
-                .plannerListResponses(result)
-                .hasNext(hasNext)
-                .build();
+        return new SliceImpl<>(result, pageable, hasNext);
 
     }
 
