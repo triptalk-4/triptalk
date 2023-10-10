@@ -59,7 +59,7 @@ public class DetailPlannerLikeDocument {
                 .userId(plannerDetail.getUserId())
                 .description(plannerDetail.getDescription())
                 .images(plannerDetail.getImages())
-                .place(plannerDetail.getPlace().getAddress())
+                .place(plannerDetail.getPlace().getRoadAddress())
                 .planner(plannerDetail.getPlanner())
                 .date(plannerDetail.getDate())
                 .views(plannerDetail.getViews())
