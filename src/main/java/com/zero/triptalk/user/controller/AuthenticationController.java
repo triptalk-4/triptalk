@@ -60,6 +60,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/update/nickname/check")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<NicknameCheckOkResponse> nickname(@RequestBody NicknameCheckRequest request) {
+
+        NicknameCheckOkResponse response = service.NicknameCheckToken(request);
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * 업데이트
      * @param request

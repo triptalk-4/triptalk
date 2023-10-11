@@ -10,19 +10,12 @@ import com.zero.triptalk.exception.code.UserErrorCode;
 import com.zero.triptalk.exception.custom.ImageException;
 import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
-import com.zero.triptalk.user.request.UpdateRegisterRequest;
+import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
-import com.zero.triptalk.user.request.AuthenticationRequest;
-import com.zero.triptalk.user.request.EmailCheckRequest;
-import com.zero.triptalk.user.request.EmailTokenRequest;
-import com.zero.triptalk.user.request.RegisterRequest;
-import com.zero.triptalk.user.response.AuthenticationResponse;
-import com.zero.triptalk.user.response.EmailCheckOkResponse;
-import com.zero.triptalk.user.response.EmailCheckResponse;
-import com.zero.triptalk.user.response.PasswordCheckOkResponse;
+import com.zero.triptalk.user.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -245,8 +238,15 @@ public class AuthenticationService {
         String newAboutMe = request.getNewAboutMe();
         AuthenticationResponse authenticationResponse = null;
 
+        Optional<UserEntity> nicknameCheck = repository.findByNickname(newNickname);
+
+        if(nicknameCheck.isPresent()){
+            throw new UserException(NICKNAME_ALREADY_EXIST);
+        }
+
         // 이메일로 사용자 찾기
         Optional<UserEntity> existingUserOptional = repository.findByEmail(email);
+
 
         if (existingUserOptional.isEmpty()){
             // 사용자가 해당 이메일로 찾을 수 없는 경우 처리
@@ -350,8 +350,23 @@ public class AuthenticationService {
         UserEntity existingUser = existingUserOptional.get();
         return existingUser;
 
+    }
 
+    public NicknameCheckOkResponse NicknameCheckToken(NicknameCheckRequest request) {
 
+        Optional<UserEntity> existingUserOptional = repository.findByNickname(request.getNickname());
+
+        if (existingUserOptional.isEmpty()) {
+            // 사용자가 해당 닉네임을 찾을떄 찾을 수 없는 경우 처리
+            return NicknameCheckOkResponse.builder()
+                    .nicknameCheckOkOrNotOk("해당 닉네임("+request.getNickname()+")은 사용이 가능합니다")
+                    .build();
+        }else {
+
+            return NicknameCheckOkResponse.builder()
+                    .nicknameCheckOkOrNotOk("해당 닉네임(" + request.getNickname() + ")은 이미 다른 사용자가 사용하고 있습니다. 다른 닉네임을 설정해 주세요")
+                    .build();
+        }
 
     }
 }
