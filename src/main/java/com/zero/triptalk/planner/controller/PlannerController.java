@@ -50,12 +50,8 @@ public class PlannerController {
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Slice<PlannerListResponse>> getPlannerList(@PageableDefault(size = 6) Pageable pageable,
-                                                                  @RequestParam SortType sortType,
-                                                                  Principal principal) {
-        System.out.println("pageable = " + pageable);
-        System.out.println(pageable.getOffset());
-        System.out.println(pageable.getPageSize());
-        System.out.println("sortType = " + sortType);
+                                                                     @RequestParam SortType sortType,
+                                                                     Principal principal) {
         return ResponseEntity.ok(plannerService.getPlanners(pageable, sortType));
     }
 
@@ -64,7 +60,7 @@ public class PlannerController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<PlannerResponse> getPlanner(@PathVariable Long plannerId,
                                                       Principal principal) {
-        return ResponseEntity.ok(plannerApplication.getPlanner(plannerId,principal.getName()));
+        return ResponseEntity.ok(plannerApplication.getPlanner(plannerId, principal.getName()));
     }
 
 
