@@ -168,7 +168,7 @@ class PlannerApplicationTest {
                 .title("11")
                 .build();
         Place place = placeRequest.toEntity();
-        String thumbnail = "url";
+        String thumbnail = images.get(0);
 
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
         when(plannerService.createPlanner(plannerRequest,user,thumbnail)).thenReturn(planner);

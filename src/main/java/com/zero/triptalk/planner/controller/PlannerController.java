@@ -6,9 +6,8 @@ import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
 import com.zero.triptalk.planner.type.SortType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,9 +48,11 @@ public class PlannerController {
     //일정 목록 조회
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<PlannerListResult> getPlannerList(@PageableDefault(size = 6) Pageable pageable,
-                                                                     @RequestParam SortType sortType,
-                                                                     Principal principal) {
+    public ResponseEntity<PlannerListResult> getPlannerList(@RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "6") int size,
+                                                            @RequestParam SortType sortType,
+                                                            Principal principal) {
+        Pageable pageable = PageRequest.of(page,size);
         return ResponseEntity.ok(plannerService.getPlanners(pageable, sortType));
     }
 
