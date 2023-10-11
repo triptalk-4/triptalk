@@ -38,7 +38,6 @@ public class CustomPlannerRepository {
                         QPlanner.planner.createAt
                 );
 
-
         final List<PlannerListResponse> result = queryFactory
                 .query()
                 .select(plannerListResponse)
@@ -51,10 +50,9 @@ public class CustomPlannerRepository {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        boolean hasNext = false;
-        if (result.size() > pageable.getPageSize()) {
+        boolean hasNext = result.size() > pageable.getPageSize();
+        if (hasNext) {
             result.remove(pageable.getPageSize());
-            hasNext = true;
         }
 
         return new SliceImpl<>(result, pageable, hasNext);
