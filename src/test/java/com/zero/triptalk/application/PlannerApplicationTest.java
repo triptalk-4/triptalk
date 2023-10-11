@@ -84,11 +84,10 @@ class PlannerApplicationTest {
         Place place = Place.builder()
                 .placeId(1L)
                 .name("남산")
-                .region("한국")
                 .si("서울시")
                 .gun("서울군")
                 .gu("서울구")
-                .address("남산상세")
+                .roadAddress("남산상세")
                 .latitude(10)
                 .longitude(10)
                 .build();
@@ -101,7 +100,7 @@ class PlannerApplicationTest {
                 .id(1L)
                 .date(LocalDateTime.now())
                 .description("테스트 요청입니다.")
-                .placeInfo(new PlaceRequest("남산", "한국", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
                 .build();
 
         List<String> images =
@@ -137,11 +136,10 @@ class PlannerApplicationTest {
         Long plannerId = 1L;
         String email = "test@exam.com";
         PlaceRequest placeRequest = PlaceRequest.builder().name("남산")
-                .region("한국")
                 .si("서울시")
                 .gun("서울군")
                 .gu("서울구")
-                .address("남산상세")
+                .roadAddress("남산상세")
                 .latitude(10)
                 .longitude(10)
                 .build();
@@ -170,9 +168,10 @@ class PlannerApplicationTest {
                 .title("11")
                 .build();
         Place place = placeRequest.toEntity();
+        String thumbnail = "url";
 
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
-        when(plannerService.createPlanner(plannerRequest,user)).thenReturn(planner);
+        when(plannerService.createPlanner(plannerRequest,user,thumbnail)).thenReturn(planner);
         when(placeService.savePlace(any())).thenReturn(place);
 
 
@@ -206,7 +205,7 @@ class PlannerApplicationTest {
         plannerApplication.deletePlannerDetail(plannerDetailId,email);
         //then
 
-        imageService.deleteImages(images);
+        imageService.deleteFiles(images);
         verify(plannerDetailService).deletePlannerDetail(plannerDetailId);
     }
 
@@ -227,7 +226,7 @@ class PlannerApplicationTest {
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
         when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
         //then
-        imageService.deleteImages(images);
+        imageService.deleteFiles(images);
         Assertions.assertThrows(PlannerDetailException.class,
                 () -> plannerApplication.deletePlannerDetail(plannerDetailId,email));
     }

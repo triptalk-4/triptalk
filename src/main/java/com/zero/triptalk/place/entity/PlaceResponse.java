@@ -30,11 +30,10 @@ public class PlaceResponse {
     public static PlaceResponse from(Place place){
         return PlaceResponse.builder()
                 .name(place.getName())
-                .region(place.getRegion())
                 .si(place.getSi())
                 .gun(place.getGun())
                 .gu(place.getGu())
-                .address(place.getAddress())
+                .address(place.getRoadAddress())
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
                 .build();

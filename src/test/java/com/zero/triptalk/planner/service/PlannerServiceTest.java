@@ -47,11 +47,12 @@ class PlannerServiceTest {
                 .endDate(LocalDateTime.now())
                 .build();
         UserEntity user = new UserEntity();
+        String thumbnail = "url";
 
         //when
         when(plannerRepository.save(any(Planner.class))).thenReturn(result);
         //then
-        Planner planner = plannerService.createPlanner(request, user);
+        Planner planner = plannerService.createPlanner(request, user,thumbnail);
         Assertions.assertEquals(planner.getTitle(), result.getTitle());
 
     }

@@ -30,11 +30,12 @@ public class PlannerRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endDate;
 
-    public Planner toEntity(UserEntity user) {
+    public Planner toEntity(UserEntity user, String thumbnail) {
 
         return Planner.builder()
                 .title(title)
                 .user(user)
+                .thumbnail(thumbnail)
                 .description(description)
                 .startDate(startDate)
                 .endDate(endDate)

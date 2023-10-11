@@ -30,12 +30,12 @@ public class PlannerLikeDocument {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime endDate;
     private Long views;
-    private Double likeCount;
+    private Long likeCount;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime likeDt;
 
     @Builder
-    public PlannerLikeDocument(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, PlannerStatus plannerStatus, LocalDateTime startDate, LocalDateTime endDate, Long views, Double likeCount, LocalDateTime likeDt) {
+    public PlannerLikeDocument(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, PlannerStatus plannerStatus, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likeCount, LocalDateTime likeDt) {
         this.plannerLikeId = plannerLikeId;
         this.plannerId = plannerId;
         this.title = title;

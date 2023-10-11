@@ -30,12 +30,12 @@ public class DetailPlannerLikeDocument {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime date;
     private Long views;
-    private Double likeCount;
+    private Long likeCount;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime likeDt;
 
     @Builder
-    public DetailPlannerLikeDocument(Long detailPlannerLikeId, Long plannerDetailId, Long userId, String description, List<String> images, String place, Planner planner, LocalDateTime date, Long views, Double likeCount, LocalDateTime likeDt) {
+    public DetailPlannerLikeDocument(Long detailPlannerLikeId, Long plannerDetailId, Long userId, String description, List<String> images, String place, Planner planner, LocalDateTime date, Long views, Long likeCount, LocalDateTime likeDt) {
         this.detailPlannerLikeId = detailPlannerLikeId;
         this.plannerDetailId = plannerDetailId;
         this.userId = userId;
@@ -59,7 +59,7 @@ public class DetailPlannerLikeDocument {
                 .userId(plannerDetail.getUserId())
                 .description(plannerDetail.getDescription())
                 .images(plannerDetail.getImages())
-                .place(plannerDetail.getPlace().getAddress())
+                .place(plannerDetail.getPlace().getRoadAddress())
                 .planner(plannerDetail.getPlanner())
                 .date(plannerDetail.getDate())
                 .views(plannerDetail.getViews())

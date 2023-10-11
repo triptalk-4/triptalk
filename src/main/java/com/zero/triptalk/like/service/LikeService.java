@@ -168,4 +168,8 @@ public class LikeService {
                 .detailPlannerCount(newDetailLikeCount)
                 .build();
     }
+
+    public PlannerLike findByPlannerId(Long plannerId) {
+        return plannerLikeRepository.findByPlanner_PlannerId(plannerId);
+    }
 }

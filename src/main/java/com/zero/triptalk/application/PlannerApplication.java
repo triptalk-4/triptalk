@@ -2,6 +2,8 @@ package com.zero.triptalk.application;
 
 import com.zero.triptalk.exception.custom.PlannerDetailException;
 import com.zero.triptalk.image.service.ImageService;
+import com.zero.triptalk.like.entity.PlannerLike;
+import com.zero.triptalk.like.service.LikeService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.*;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.CREATE_PLANNER_DETAIL_FAILED;
@@ -33,6 +36,8 @@ public class PlannerApplication {
 
     private final ImageService imageService;
 
+    private final LikeService likeService;
+
     //상세 일정 한개 생성
     @Transactional
     public boolean createPlannerDetail(Long plannerId, List<MultipartFile> files,
@@ -42,7 +47,9 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
 
         //place 저장
-        Place place = placeService.savePlace(request.getPlaceInfo());
+        Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
+        Place place = byRoadAddress.orElseGet(
+                () -> placeService.savePlace(request.getPlaceInfo()));
         //S3 -> url 리스트 변환
         List<String> images = imageService.uploadFiles(files);
 
@@ -60,12 +67,18 @@ public class PlannerApplication {
 
         try {
             UserEntity user = plannerDetailService.findByEmail(email);
+            //썸네일 가져오기 (첫번째 상세일정 첫번째 사진, 사진 업로드가 필수라 가능함)
+            // (만약 사진이 필수가 아니라면 stream 으로 사진을 찾던가 추천사진?)
+            String thumbnail = requests.get(0).getImages().get(0);
+
             //일정 생성
-            Planner planner = plannerService.createPlanner(plannerRequest, user);
+            Planner planner = plannerService.createPlanner(plannerRequest, user, thumbnail);
 
             //상세 일정 저장
             List<PlannerDetail> detailList = requests.stream().map(request -> {
-                Place place = placeService.savePlace(request.getPlaceInfo());
+                Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
+                Place place = byRoadAddress.orElseGet(
+                        () -> placeService.savePlace(request.getPlaceInfo()));
                 return request.toEntity(planner, place, user.getUserId());
             }).collect(Collectors.toList());
 
@@ -87,7 +100,7 @@ public class PlannerApplication {
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
         }
-        imageService.deleteImages(plannerDetail.getImages());
+        imageService.deleteFiles(plannerDetail.getImages());
 
         plannerDetailService.deletePlannerDetail(plannerDetailId);
     }
@@ -108,10 +121,16 @@ public class PlannerApplication {
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
         UserEntity user = plannerDetailService.findByEmail(email);
+
+        PlannerLike plannerLike = likeService.findByPlannerId(plannerId);
+        Long likeCount = (plannerLike != null) ? plannerLike.getLikeCount() : 0 ;
+
         Planner planner = plannerService.findById(plannerId);
+
+        planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
-        return PlannerResponse.of(planner,user,responses);
+        return PlannerResponse.of(planner, user, responses, likeCount);
     }
 }

@@ -33,10 +33,9 @@ public class Planner {
 
     private String thumbnail;
 
-    private Long views;
+    @Builder.Default
+    private Long views = 0L;
 
-    //재훈님이 먼저 변경 후 나중에 Integer로 변경
-    private Integer Likes;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -53,5 +52,8 @@ public class Planner {
     @Column(updatable = false)
     private LocalDateTime createAt;
 
+    public void increaseViews(){
+        this.views++;
+    }
 
 }
