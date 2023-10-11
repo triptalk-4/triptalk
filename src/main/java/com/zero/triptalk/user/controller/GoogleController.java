@@ -1,5 +1,6 @@
 package com.zero.triptalk.user.controller;
 
+import com.zero.triptalk.user.response.AuthenticationResponse;
 import com.zero.triptalk.user.service.GoogleAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class GoogleController {
     }
 
     @GetMapping
-    public ResponseEntity<String> loginGoogle(@RequestParam(value = "code") String code){
+    public ResponseEntity<AuthenticationResponse> loginGoogle(@RequestParam(value = "code") String code){
 
         return ResponseEntity.ok(googleAuthService.doSocialLogin(code));
     }

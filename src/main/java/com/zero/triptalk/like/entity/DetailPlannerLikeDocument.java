@@ -1,5 +1,6 @@
 package com.zero.triptalk.like.entity;
 
+import com.querydsl.core.Tuple;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import lombok.AccessLevel;
@@ -13,14 +14,19 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+import static com.zero.triptalk.like.entity.QDetailPlannerLike.detailPlannerLike;
+import static com.zero.triptalk.planner.entity.QPlannerDetail.plannerDetail;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Document(indexName = "detail_planner")
 public class DetailPlannerLikeDocument {
     @Id
-    private Long detailPlannerLikeId;
     private Long plannerDetailId;
     private Long userId;
     private String description;
@@ -35,8 +41,7 @@ public class DetailPlannerLikeDocument {
     private LocalDateTime likeDt;
 
     @Builder
-    public DetailPlannerLikeDocument(Long detailPlannerLikeId, Long plannerDetailId, Long userId, String description, List<String> images, String place, Planner planner, LocalDateTime date, Long views, Long likeCount, LocalDateTime likeDt) {
-        this.detailPlannerLikeId = detailPlannerLikeId;
+    public DetailPlannerLikeDocument(Long plannerDetailId, Long userId, String description, List<String> images, String place, Planner planner, LocalDateTime date, Long views, Long likeCount, LocalDateTime likeDt) {
         this.plannerDetailId = plannerDetailId;
         this.userId = userId;
         this.description = description;
@@ -54,7 +59,6 @@ public class DetailPlannerLikeDocument {
         PlannerDetail plannerDetail = detailPlannerLike.getPlannerDetail();
 
         return DetailPlannerLikeDocument.builder()
-                .detailPlannerLikeId(detailPlannerLike.detailPlannerLikeId)
                 .plannerDetailId(plannerDetail.getPlannerDetailId())
                 .userId(plannerDetail.getUserId())
                 .description(plannerDetail.getDescription())
@@ -66,5 +70,32 @@ public class DetailPlannerLikeDocument {
                 .likeCount(detailPlannerLike.getLikeCount())
                 .likeDt(detailPlannerLike.getLikeDt())
                 .build();
+    }
+
+    public static List<DetailPlannerLikeDocument> ofTuple(List<Tuple> tuples) {
+
+        if(tuples.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<DetailPlannerLikeDocument> list = new ArrayList<>();
+        for(Tuple x : tuples) {
+            PlannerDetail xPlannerDetail = x.get(plannerDetail);
+
+            list.add(DetailPlannerLikeDocument.builder()
+                        .plannerDetailId(Objects.requireNonNull(xPlannerDetail).getPlannerDetailId())
+                        .userId(xPlannerDetail.getUserId())
+                        .description(xPlannerDetail.getDescription())
+                        .images(xPlannerDetail.getImages())
+                        .place(xPlannerDetail.getPlace().getAddress())
+                        .planner(xPlannerDetail.getPlanner())
+                        .date(xPlannerDetail.getDate())
+                        .views(xPlannerDetail.getViews())
+                        .likeCount(x.get(detailPlannerLike.likeCount))
+                        .likeDt(x.get(detailPlannerLike.likeDt))
+                        .build());
+        }
+
+        return list;
     }
 }
