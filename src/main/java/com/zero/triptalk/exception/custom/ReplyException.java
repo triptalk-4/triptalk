@@ -1,6 +1,5 @@
 package com.zero.triptalk.exception.custom;
 
-import com.zero.triptalk.exception.code.LikeErrorCode;
 import com.zero.triptalk.exception.code.ReplyErrorCode;
 import lombok.Getter;
 
