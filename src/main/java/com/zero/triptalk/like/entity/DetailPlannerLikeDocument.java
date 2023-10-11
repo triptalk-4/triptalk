@@ -63,7 +63,7 @@ public class DetailPlannerLikeDocument {
                 .planner(plannerDetail.getPlanner())
                 .date(plannerDetail.getDate())
                 .views(plannerDetail.getViews())
-                .likeCount(Double.valueOf(detailPlannerLike.getLikeCount()))
+                .likeCount(detailPlannerLike.getLikeCount())
                 .likeDt(detailPlannerLike.getLikeDt())
                 .build();
     }

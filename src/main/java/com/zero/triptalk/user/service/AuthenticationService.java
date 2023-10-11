@@ -230,7 +230,7 @@ public class AuthenticationService {
         String newFile = files.get(0);
             // 기본 설정 이미지가 아니면 지운다
             if(!(profile.equals(oldImage))) {
-                imageService.deleteImage(oldImage);
+                imageService.deleteFile(oldImage);
             }
         return newFile;
     }
