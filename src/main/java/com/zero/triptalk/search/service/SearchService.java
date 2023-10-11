@@ -1,4 +1,4 @@
-package com.zero.triptalk.search;
+package com.zero.triptalk.search.service;
 
 import com.zero.triptalk.like.dto.response.DetailPlannerSearchResponse;
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;

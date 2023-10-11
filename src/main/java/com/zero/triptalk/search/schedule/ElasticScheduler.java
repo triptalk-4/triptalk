@@ -1,4 +1,4 @@
-package com.zero.triptalk.search;
+package com.zero.triptalk.search.schedule;
 
 import com.zero.triptalk.like.entity.DetailPlannerLikeDocument;
 import com.zero.triptalk.like.entity.PlannerLike;
@@ -6,6 +6,7 @@ import com.zero.triptalk.like.entity.PlannerLikeDocument;
 import com.zero.triptalk.like.repository.DetailPlannerLikeSearchRepository;
 import com.zero.triptalk.like.repository.PlannerLikeRepository;
 import com.zero.triptalk.like.repository.PlannerLikeSearchRepository;
+import com.zero.triptalk.search.repository.CustomElasticRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class ElasticSearchScheduler {
+public class ElasticScheduler {
 
     LocalDateTime now = LocalDateTime.now();
     LocalTime time = LocalTime.of(now.getHour(), 0);
@@ -29,7 +30,7 @@ public class ElasticSearchScheduler {
     private final PlannerLikeRepository plannerLikeRepository;
     private final PlannerLikeSearchRepository plannerLikeSearchRepository;
     private final DetailPlannerLikeSearchRepository detailPlannerLikeSearchRepository;
-    private final CustomSearchRepository customSearchRepository;
+    private final CustomElasticRepository customElasticRepository;
 
     @Scheduled(cron = "${scheduler.elasticsearch}")
     public void savePlannersByLikesUpdateDt() {
@@ -47,7 +48,7 @@ public class ElasticSearchScheduler {
     public void saveDetailPlannerByDateAndViewsAndLikesUpdateDt() {
 
         List<DetailPlannerLikeDocument> documents =
-                customSearchRepository.findAllByDateAndViewsAndLikesUpdateDt(from, to);
+                customElasticRepository.findAllByDateAndViewsAndLikesUpdateDt(from, to);
 
         detailPlannerLikeSearchRepository.saveAll(documents);
         log.info(LocalDateTime.now() + "=====================");

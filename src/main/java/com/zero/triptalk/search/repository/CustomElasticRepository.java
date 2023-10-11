@@ -1,4 +1,4 @@
-package com.zero.triptalk.search;
+package com.zero.triptalk.search.repository;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,7 +14,7 @@ import static com.zero.triptalk.planner.entity.QPlannerDetail.plannerDetail;
 
 @Repository
 @RequiredArgsConstructor
-public class CustomSearchRepository {
+public class CustomElasticRepository {
 
     private final JPAQueryFactory queryFactory;
 

@@ -87,7 +87,7 @@ public class DetailPlannerLikeDocument {
                         .userId(xPlannerDetail.getUserId())
                         .description(xPlannerDetail.getDescription())
                         .images(xPlannerDetail.getImages())
-                        .place(xPlannerDetail.getPlace().getAddress())
+                        .place(xPlannerDetail.getPlace().getRoadAddress())
                         .planner(xPlannerDetail.getPlanner())
                         .date(xPlannerDetail.getDate())
                         .views(xPlannerDetail.getViews())
