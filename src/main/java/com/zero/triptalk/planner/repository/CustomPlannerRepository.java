@@ -6,10 +6,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zero.triptalk.like.entity.QPlannerLike;
 import com.zero.triptalk.planner.dto.PlannerListResponse;
+import com.zero.triptalk.planner.dto.PlannerListResult;
 import com.zero.triptalk.planner.entity.QPlanner;
 import com.zero.triptalk.planner.type.SortType;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +26,7 @@ public class CustomPlannerRepository {
         this.queryFactory = queryFactory;
     }
 
-    public Slice<PlannerListResponse> PlannerList(Pageable pageable, SortType sortType) {
+    public PlannerListResult PlannerList(Pageable pageable, SortType sortType) {
 
         final ConstructorExpression<PlannerListResponse> plannerListResponse =
                 Projections.constructor(PlannerListResponse.class,
@@ -55,7 +55,10 @@ public class CustomPlannerRepository {
             result.remove(pageable.getPageSize());
         }
 
-        return new SliceImpl<>(result, pageable, hasNext);
+        return PlannerListResult.builder()
+                .plannerListResponses(new SliceImpl<>(result, pageable, hasNext))
+                .hasNext(hasNext)
+                .build();
 
     }
 

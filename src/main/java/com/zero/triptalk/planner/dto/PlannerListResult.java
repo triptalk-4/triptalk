@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -13,6 +14,6 @@ import java.util.List;
 @Builder
 public class PlannerListResult {
 
-    List<PlannerListResponse> plannerListResponses;
+    Slice<PlannerListResponse> plannerListResponses;
     boolean hasNext;
 }

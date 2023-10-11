@@ -49,7 +49,7 @@ public class PlannerController {
     //일정 목록 조회
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Slice<PlannerListResponse>> getPlannerList(@PageableDefault(size = 6) Pageable pageable,
+    public ResponseEntity<PlannerListResult> getPlannerList(@PageableDefault(size = 6) Pageable pageable,
                                                                      @RequestParam SortType sortType,
                                                                      Principal principal) {
         return ResponseEntity.ok(plannerService.getPlanners(pageable, sortType));

@@ -36,7 +36,7 @@ public class PlannerService {
         plannerRepository.deleteById(plannerId);
     }
 
-    public Slice<PlannerListResponse> getPlanners(Pageable pageable, SortType sortType) {
+    public PlannerListResult getPlanners(Pageable pageable, SortType sortType) {
         return customPlannerRepository.PlannerList(pageable, sortType);
 
     }
