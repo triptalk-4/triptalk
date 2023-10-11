@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PlannerLikeSearchResponse {
 
-    private Long plannerLikeId;
     private Long plannerId;
     private String title;
     private String thumbnail;
@@ -20,11 +19,10 @@ public class PlannerLikeSearchResponse {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Long views;
-    private Double likeCount;
+    private Long likeCount;
 
     @Builder
-    public PlannerLikeSearchResponse(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, LocalDateTime startDate, LocalDateTime endDate, Long views, Double likeCount) {
-        this.plannerLikeId = plannerLikeId;
+    public PlannerLikeSearchResponse(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likeCount) {
         this.plannerId = plannerId;
         this.title = title;
         this.thumbnail = thumbnail;
@@ -38,7 +36,6 @@ public class PlannerLikeSearchResponse {
     public static PlannerLikeSearchResponse ofEntity(PlannerLikeDocument document) {
 
         return PlannerLikeSearchResponse.builder()
-                .plannerLikeId(document.getPlannerLikeId())
                 .plannerId(document.getPlannerId())
                 .title(document.getTitle())
                 .thumbnail(document.getThumbnail())

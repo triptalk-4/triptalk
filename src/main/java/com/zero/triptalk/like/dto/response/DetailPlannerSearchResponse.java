@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DetailPlannerSearchResponse {
 
-    private Long detailPlannerLikeId;
     private Long plannerDetailId;
     private String nickname;
     private String description;
@@ -23,11 +22,10 @@ public class DetailPlannerSearchResponse {
     private String place;
     private LocalDateTime date;
     private Long views;
-    private Double likeCount;
+    private Long likeCount;
 
     @Builder
-    public DetailPlannerSearchResponse(Long detailPlannerLikeId, Long plannerDetailId, String nickname, String description, String image, String place, LocalDateTime date, Long views, Double likeCount) {
-        this.detailPlannerLikeId = detailPlannerLikeId;
+    public DetailPlannerSearchResponse(Long plannerDetailId, String nickname, String description, String image, String place, LocalDateTime date, Long views, Long likeCount) {
         this.plannerDetailId = plannerDetailId;
         this.nickname = nickname;
         this.description = description;
@@ -43,7 +41,6 @@ public class DetailPlannerSearchResponse {
         Planner planner = document.getPlanner();
 
         return DetailPlannerSearchResponse.builder()
-                .detailPlannerLikeId(document.getDetailPlannerLikeId())
                 .plannerDetailId(document.getPlannerDetailId())
                 .nickname(planner.getUser().getNickname())
                 .description(document.getDescription())

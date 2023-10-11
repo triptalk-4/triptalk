@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @Document(indexName = "planner")
 public class PlannerLikeDocument {
     @Id
-    private Long plannerLikeId;
     private Long plannerId;
     private String title;
     private String thumbnail;
@@ -30,13 +29,12 @@ public class PlannerLikeDocument {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime endDate;
     private Long views;
-    private Double likeCount;
+    private Long likeCount;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime likeDt;
 
     @Builder
-    public PlannerLikeDocument(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, PlannerStatus plannerStatus, LocalDateTime startDate, LocalDateTime endDate, Long views, Double likeCount, LocalDateTime likeDt) {
-        this.plannerLikeId = plannerLikeId;
+    public PlannerLikeDocument(Long plannerId, String title, String thumbnail, String nickname, PlannerStatus plannerStatus, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likeCount, LocalDateTime likeDt) {
         this.plannerId = plannerId;
         this.title = title;
         this.thumbnail = thumbnail;
@@ -54,7 +52,6 @@ public class PlannerLikeDocument {
         Planner planner = plannerLike.getPlanner();
 
         return PlannerLikeDocument.builder()
-                .plannerLikeId(plannerLike.getPlannerLikeId())
                 .plannerId(planner.getPlannerId())
                 .title(planner.getTitle())
                 .thumbnail(planner.getThumbnail())
