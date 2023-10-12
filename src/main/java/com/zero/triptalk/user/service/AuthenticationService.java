@@ -1,13 +1,9 @@
 package com.zero.triptalk.user.service;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.exception.code.ImageUploadErrorCode;
 import com.zero.triptalk.exception.code.UserErrorCode;
-import com.zero.triptalk.exception.custom.ImageException;
 import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.user.request.*;

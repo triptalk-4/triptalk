@@ -11,10 +11,8 @@ import com.zero.triptalk.like.entity.UserLikeEntity;
 import com.zero.triptalk.like.repository.DetailPlannerLikeRepository;
 import com.zero.triptalk.like.repository.PlannerLikeRepository;
 import com.zero.triptalk.like.repository.UserLikeRepository;
-import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
-import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.zero.triptalk.exception.code.LikeErrorCode.*;
 
