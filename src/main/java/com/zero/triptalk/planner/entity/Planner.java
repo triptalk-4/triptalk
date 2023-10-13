@@ -2,10 +2,7 @@ package com.zero.triptalk.planner.entity;
 
 import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -16,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Entity
 @EntityListeners(value = {AuditingEntityListener.class})
 @AllArgsConstructor
@@ -35,7 +33,6 @@ public class Planner {
 
     @Builder.Default
     private Long views = 0L;
-
 
     @ManyToOne
     @JoinColumn(name = "user_id")
