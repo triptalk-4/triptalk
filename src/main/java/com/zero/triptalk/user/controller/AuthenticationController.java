@@ -4,7 +4,9 @@ import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.response.*;
 import com.zero.triptalk.user.service.AuthenticationService;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -102,6 +104,30 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request
     ){
         return ResponseEntity.ok(service.authenticate(request));
+    }
+
+    @GetMapping("/planners/byUser")
+    public Page<Object[]> getPlannersByUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
+        UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
+        if (user != null) {
+            Pageable pageable = PageRequest.of(page, pageSize);
+            return service.getPlannersByUser(user, pageable);
+        } else {
+            // 유저가 존재하지 않을 경우 예외 처리
+            return Page.empty();
+        }
+    }
+
+    @GetMapping("/planners/userLike")
+    public Page<Object[]> getPlannersUserLike(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
+        UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
+        if (user != null) {
+            Pageable pageable = PageRequest.of(page, pageSize);
+            return service.getPlannersByUserLike(user, pageable);
+        } else {
+            // 유저가 존재하지 않을 경우 예외 처리
+            return Page.empty();
+        }
     }
 
 

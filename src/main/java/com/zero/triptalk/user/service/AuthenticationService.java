@@ -1,15 +1,13 @@
 package com.zero.triptalk.user.service;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.exception.code.ImageUploadErrorCode;
 import com.zero.triptalk.exception.code.UserErrorCode;
-import com.zero.triptalk.exception.custom.ImageException;
 import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
+import com.zero.triptalk.like.repository.UserLikeRepository;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
@@ -19,6 +17,8 @@ import com.zero.triptalk.user.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,15 +47,16 @@ public class AuthenticationService {
 
     private final UserRepository repository;
 
+    private final PlannerRepository plannerRepository;
+
+    private final UserLikeRepository userLikeRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender mailSender; // Spring MailSender
-
     private final ImageService imageService;
-
     private final RedisUtil redisUtil;
-
     private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -67,8 +68,10 @@ public class AuthenticationService {
     @Value("${spring.mail.username}")
     private String senderMail;
 
-    public AuthenticationService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3) {
+    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3) {
         this.repository = repository;
+        this.plannerRepository = plannerRepository;
+        this.userLikeRepository = userLikeRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -332,7 +335,6 @@ public class AuthenticationService {
             // 비밀번호가 일치하지 않는 경우 처리
             throw new UserException(UserErrorCode.PASSWORD_NOT_SAME);
         }
-
         return PasswordCheckOkResponse.builder()
                 .passwordCheckOk("패스워드 체크가 완료되었습니다.")
                 .build();
@@ -367,6 +369,30 @@ public class AuthenticationService {
                     .nicknameCheckOkOrNotOk("해당 닉네임(" + request.getNickname() + ")은 이미 다른 사용자가 사용하고 있습니다. 다른 닉네임을 설정해 주세요")
                     .build();
         }
+    }
+
+    public UserEntity getUserByEmail() {
+        String userEmail = userEmail();
+
+        Optional<UserEntity> user = repository.findByEmail(userEmail);
+
+        UserEntity existingUser = user.get();
+
+        return existingUser;
+
+    }
+
+    public Page<Object[]> getPlannersByUser(UserEntity user, Pageable pageable) {
+        Page<Object[]> plannersPage = plannerRepository.findPlannersWithLikeCount(user, pageable);
+
+        return plannersPage;
+    }
+
+    public Page<Object[]> getPlannersByUserLike(UserEntity user, Pageable pageable) {
+
+        Page<Object[]> plannersPage = userLikeRepository.findPlannersLikedByUserWithLikeCount(user, pageable);
+
+        return plannersPage;
 
     }
 }
