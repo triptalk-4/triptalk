@@ -1,7 +1,8 @@
-package com.zero.triptalk.search;
+package com.zero.triptalk.search.controller;
 
 import com.zero.triptalk.like.dto.response.DetailPlannerSearchResponse;
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
+import com.zero.triptalk.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

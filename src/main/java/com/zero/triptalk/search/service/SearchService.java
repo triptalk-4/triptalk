@@ -1,10 +1,8 @@
-package com.zero.triptalk.search;
+package com.zero.triptalk.search.service;
 
 import com.zero.triptalk.like.dto.response.DetailPlannerSearchResponse;
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
-import com.zero.triptalk.like.entity.DetailPlannerLike;
 import com.zero.triptalk.like.entity.DetailPlannerLikeDocument;
-import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.entity.PlannerLikeDocument;
 import com.zero.triptalk.like.repository.*;
 import lombok.RequiredArgsConstructor;
