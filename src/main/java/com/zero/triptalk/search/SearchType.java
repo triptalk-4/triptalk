@@ -10,13 +10,15 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum SearchType {
-    date,
-    likeCount,
-    views;
+    DATE("date"),
+    LIKE("likeCount"),
+    VIEW("views");
+
+    private final String field;
 
     public static String getSearchType(String searchType) {
         return Arrays.stream(SearchType.values()).filter(
-                x -> x.name().equals(searchType)).findFirst().orElseThrow(() ->
+                x -> x.getField().equals(searchType)).findFirst().orElseThrow(() ->
                 new SearchException(SearchErrorCode.INVALID_REQUEST)).toString();
     }
 }

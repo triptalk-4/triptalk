@@ -54,24 +54,6 @@ public class DetailPlannerLikeDocument {
         this.likeDt = likeDt;
     }
 
-    public static DetailPlannerLikeDocument ofEntity(DetailPlannerLike detailPlannerLike) {
-
-        PlannerDetail plannerDetail = detailPlannerLike.getPlannerDetail();
-
-        return DetailPlannerLikeDocument.builder()
-                .plannerDetailId(plannerDetail.getPlannerDetailId())
-                .userId(plannerDetail.getUserId())
-                .description(plannerDetail.getDescription())
-                .images(plannerDetail.getImages())
-                .place(plannerDetail.getPlace().getRoadAddress())
-                .planner(plannerDetail.getPlanner())
-                .date(plannerDetail.getDate())
-                .views(plannerDetail.getViews())
-                .likeCount(detailPlannerLike.getLikeCount())
-                .likeDt(detailPlannerLike.getLikeDt())
-                .build();
-    }
-
     public static List<DetailPlannerLikeDocument> ofTuple(List<Tuple> tuples) {
 
         if(tuples.isEmpty()) {

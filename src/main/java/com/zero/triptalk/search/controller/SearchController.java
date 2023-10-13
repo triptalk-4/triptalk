@@ -6,10 +6,7 @@ import com.zero.triptalk.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +28,12 @@ public class SearchController {
             @PathVariable String region, @PathVariable String searchType, Pageable pageable) {
 
      return ResponseEntity.ok(searchService.searchByRegionAnySort(region, searchType, pageable));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<String>> getUserNicknameList(@RequestParam String keyword) {
+
+        return ResponseEntity.ok(searchService.getUserNicknameList(keyword));
     }
 
 }
