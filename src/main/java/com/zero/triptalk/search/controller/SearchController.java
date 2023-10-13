@@ -3,6 +3,7 @@ package com.zero.triptalk.search.controller;
 import com.zero.triptalk.like.dto.response.DetailPlannerSearchResponse;
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
 import com.zero.triptalk.search.service.SearchService;
+import com.zero.triptalk.user.dto.UserSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,6 @@ import java.util.List;
 public class SearchController {
 
     private final SearchService searchService;
-
     @GetMapping("/main")
     public ResponseEntity<List<PlannerLikeSearchResponse>> getTop6Planners() {
 
@@ -31,9 +31,9 @@ public class SearchController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<String>> getUserNicknameList(@RequestParam String keyword) {
+    public ResponseEntity<List<UserSearchResponse>> getUserNicknameList(@RequestParam String keyword, Pageable pageable) {
 
-        return ResponseEntity.ok(searchService.getUserNicknameList(keyword));
+        return ResponseEntity.ok(searchService.getUserNicknameList(keyword, pageable));
     }
 
 }

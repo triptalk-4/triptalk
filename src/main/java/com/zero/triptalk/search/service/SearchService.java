@@ -4,8 +4,11 @@ import com.zero.triptalk.like.dto.response.DetailPlannerSearchResponse;
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
 import com.zero.triptalk.like.entity.DetailPlannerLikeDocument;
 import com.zero.triptalk.like.entity.PlannerLikeDocument;
-import com.zero.triptalk.like.repository.*;
-import com.zero.triptalk.user.repository.UserRepository;
+import com.zero.triptalk.like.repository.DetailPlannerLikeSearchCustomRepository;
+import com.zero.triptalk.like.repository.PlannerLikeSearchRepository;
+import com.zero.triptalk.user.dto.UserSearchResponse;
+import com.zero.triptalk.user.entity.UserDocument;
+import com.zero.triptalk.user.repository.UserSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,7 @@ public class SearchService {
 
     private final PlannerLikeSearchRepository plannerLikeSearchRepository;
     private final DetailPlannerLikeSearchCustomRepository detailPlannerLikeSearchCustomRepository;
-    private final UserRepository userRepository;
+    private final UserSearchRepository userSearchRepository;
 
     public List<PlannerLikeSearchResponse> getTop6PlannersWithLikes() {
 
@@ -43,14 +46,14 @@ public class SearchService {
 
     }
 
-    public List<String> getUserNicknameList(String keyword) {
+    public List<UserSearchResponse> getUserNicknameList(String keyword, Pageable pageable) {
 
-        List<String> nicknames= userRepository.findByNicknameContains(keyword);
+        List<UserDocument> documents = userSearchRepository.findByNicknameContains(keyword, pageable);
 
-        if (nicknames.isEmpty()) {
+        if (documents.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return nicknames;
+        return documents.stream().map(UserSearchResponse::ofDocument).collect(Collectors.toList());
     }
 }

@@ -18,7 +18,7 @@ public enum SearchType {
 
     public static String getSearchType(String searchType) {
         return Arrays.stream(SearchType.values()).filter(
-                x -> x.getField().equals(searchType)).findFirst().orElseThrow(() ->
-                new SearchException(SearchErrorCode.INVALID_REQUEST)).toString();
+                x -> x.name().equals(searchType)).findFirst().orElseThrow(() ->
+                new SearchException(SearchErrorCode.INVALID_REQUEST)).getField();
     }
 }
