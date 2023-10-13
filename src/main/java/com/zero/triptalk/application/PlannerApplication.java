@@ -1,6 +1,8 @@
 package com.zero.triptalk.application;
 
+import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.custom.PlannerDetailException;
+import com.zero.triptalk.exception.custom.PlannerException;
 import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.service.LikeService;
@@ -123,7 +125,7 @@ public class PlannerApplication {
         UserEntity user = plannerDetailService.findByEmail(email);
 
         PlannerLike plannerLike = likeService.findByPlannerId(plannerId);
-        Long likeCount = (plannerLike != null) ? plannerLike.getLikeCount() : 0 ;
+        Long likeCount = (plannerLike != null) ? plannerLike.getLikeCount() : 0;
 
         Planner planner = plannerService.findById(plannerId);
 
@@ -132,5 +134,35 @@ public class PlannerApplication {
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
         return PlannerResponse.of(planner, user, responses, likeCount);
+    }
+
+    //일정 수정
+    @Transactional
+    public boolean updatePlanner(Long plannerId, UpdatePlannerInfo info, String email) {
+        UserEntity byEmail = plannerDetailService.findByEmail(email);
+        Planner planner = plannerService.findById(plannerId);
+
+
+        try {
+
+            planner.updatePlanner(info.getPlannerRequest());
+            List<PlannerDetail> result = info.getPlannerDetailListRequests().stream().map(
+                    request -> {
+                        Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
+                        Place place = byRoadAddress.orElseGet(
+                                () -> placeService.savePlace(request.getPlaceInfo())
+                        );
+
+                        //옛날 사진을 S3에서 삭제하는 과정
+
+
+                        return request.toEntity(planner, place, byEmail.getUserId());
+                    }).collect(Collectors.toList());
+            plannerDetailService.savePlannerDetailList(result);
+        } catch (Exception e) {
+            throw new PlannerException(PlannerErrorCode.UPDATE_PLANNER_FAILED);
+        }
+
+        return true;
     }
 }
