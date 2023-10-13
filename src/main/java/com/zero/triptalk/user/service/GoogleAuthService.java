@@ -11,6 +11,7 @@ import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
+import com.zero.triptalk.user.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +45,7 @@ public class GoogleAuthService {
     @Value("${cloud.aws.image}")
     private String profile;
 
-    public String doSocialLogin(String code) {
+    public AuthenticationResponse doSocialLogin(String code) {
 
         GoogleRequestToken googleRequestToken = GoogleRequestToken.builder()
                                                                 .clientId(googleClientId)
@@ -66,7 +67,9 @@ public class GoogleAuthService {
 
         UserEntity user = optionalUser.orElseGet(() -> saveGoogleUser(googleUserInfoResponse));
 
-        return jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtService.generateToken(user))
+                .build();
     }
 
     public String getLoginUrl() {

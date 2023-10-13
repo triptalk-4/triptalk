@@ -1,6 +1,5 @@
 package com.zero.triptalk.user.repository;
 
-import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +11,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByNickname(String nickname);
 
+    boolean existsByEmail(String userEmail);
 }

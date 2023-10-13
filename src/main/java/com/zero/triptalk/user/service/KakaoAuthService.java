@@ -197,6 +197,4 @@ public class KakaoAuthService {
             return jwtToken;
     }
 
-
-
 }
