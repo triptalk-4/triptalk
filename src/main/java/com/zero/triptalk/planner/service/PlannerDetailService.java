@@ -5,7 +5,6 @@ import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
-import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.NOT_FOUND_PLANNER_DETAIL;
-import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_USER_PLANNER;
 import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 
 @Service
@@ -80,28 +78,4 @@ public class PlannerDetailService {
         }
         return byPlanner;
     }
-
-    public boolean updatePlannerDetail(List<MultipartFile> files,
-                                       PlannerDetailRequest request, String email) {
-
-        // file 검증
-
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserException(USER_NOT_FOUND));
-
-        PlannerDetail plannerDetail = plannerDetailRepository.findById(request.getId()).orElseThrow(() ->
-                new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL));
-
-        if (!user.getUserId().equals(plannerDetail.getUserId())) {
-            throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
-        }
-
-        //장소 업데이트
-
-        plannerDetail.updatePlannerDetail(request);
-
-        return true;
-    }
-
-
 }
