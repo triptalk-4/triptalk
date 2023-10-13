@@ -29,7 +29,7 @@ public class PlannerDetailListResponse {
         List<PlannerDetailListResponse> list = new ArrayList<>();
         for (PlannerDetail x : plannerDetails) {
             list.add(PlannerDetailListResponse.builder()
-                    .location(x.getPlace().getName())
+                    .location(x.getPlace().getPlaceName())
                     .build());
         }
 

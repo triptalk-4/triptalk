@@ -11,17 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlaceResponse {
 
-    private String name;
+    private String placeName;
 
-    private String region;
-
-    private String si;
-
-    private String gun;
-
-    private String gu;
-
-    private String address;
+    private String roadAddress;
+    private String addressName;
 
     private double latitude;
 
@@ -29,11 +22,9 @@ public class PlaceResponse {
 
     public static PlaceResponse from(Place place){
         return PlaceResponse.builder()
-                .name(place.getName())
-                .si(place.getSi())
-                .gun(place.getGun())
-                .gu(place.getGu())
-                .address(place.getRoadAddress())
+                .placeName(place.getPlaceName())
+                .roadAddress(place.getRoadAddress())
+                .addressName(place.getAddressName())
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
                 .build();
