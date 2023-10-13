@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class PlannerController {
                                                             @RequestParam(defaultValue = "6") int size,
                                                             @RequestParam SortType sortType,
                                                             Principal principal) {
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(plannerService.getPlanners(pageable, sortType));
     }
 
@@ -92,14 +93,14 @@ public class PlannerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    //일정 수정하기
     @PatchMapping("/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> updatePlannerDetail(@PathVariable Long plannerId,
-                                                 @RequestPart List<MultipartFile> files,
-                                                 @RequestPart PlannerDetailRequest request,
+    public ResponseEntity<Boolean> updatePlanner(@PathVariable Long plannerId,
+                                                 @RequestBody @Valid UpdatePlannerInfo info,
                                                  Principal principal) {
+        return ResponseEntity.ok(plannerApplication.updatePlanner(plannerId, info, principal.getName()));
 
-        return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
     }
 
 }
