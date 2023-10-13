@@ -243,13 +243,8 @@ public class AuthenticationService {
 
         Optional<UserEntity> nicknameCheck = repository.findByNickname(newNickname);
 
-        if(nicknameCheck.isPresent()){
-            throw new UserException(NICKNAME_ALREADY_EXIST);
-        }
-
         // 이메일로 사용자 찾기
         Optional<UserEntity> existingUserOptional = repository.findByEmail(email);
-
 
         if (existingUserOptional.isEmpty()){
             // 사용자가 해당 이메일로 찾을 수 없는 경우 처리
