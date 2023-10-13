@@ -141,10 +141,7 @@ public class PlannerApplication {
     public boolean updatePlanner(Long plannerId, UpdatePlannerInfo info, String email) {
         UserEntity byEmail = plannerDetailService.findByEmail(email);
         Planner planner = plannerService.findById(plannerId);
-
-
         try {
-
             planner.updatePlanner(info.getPlannerRequest());
             List<PlannerDetail> result = info.getPlannerDetailListRequests().stream().map(
                     request -> {
@@ -152,10 +149,6 @@ public class PlannerApplication {
                         Place place = byRoadAddress.orElseGet(
                                 () -> placeService.savePlace(request.getPlaceInfo())
                         );
-
-                        //옛날 사진을 S3에서 삭제하는 과정
-
-
                         return request.toEntity(planner, place, byEmail.getUserId());
                     }).collect(Collectors.toList());
             plannerDetailService.savePlannerDetailList(result);
