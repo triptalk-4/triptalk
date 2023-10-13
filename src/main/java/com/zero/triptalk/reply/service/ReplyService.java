@@ -1,9 +1,7 @@
 package com.zero.triptalk.reply.service;
 
-import com.zero.triptalk.exception.code.LikeErrorCode;
 import com.zero.triptalk.exception.code.ReplyErrorCode;
 import com.zero.triptalk.exception.code.UserErrorCode;
-import com.zero.triptalk.exception.custom.LikeException;
 import com.zero.triptalk.exception.custom.ReplyException;
 import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.planner.entity.PlannerDetail;
