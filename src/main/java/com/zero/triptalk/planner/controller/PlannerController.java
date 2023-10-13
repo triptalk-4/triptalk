@@ -102,4 +102,6 @@ public class PlannerController {
         return ResponseEntity.ok(plannerDetailService.updatePlannerDetail(files, request, principal.getName()));
     }
 
+
+
 }
