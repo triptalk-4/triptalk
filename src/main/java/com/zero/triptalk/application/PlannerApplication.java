@@ -1,6 +1,8 @@
 package com.zero.triptalk.application;
 
+import com.zero.triptalk.exception.code.ImageUploadErrorCode;
 import com.zero.triptalk.exception.code.PlannerErrorCode;
+import com.zero.triptalk.exception.custom.ImageException;
 import com.zero.triptalk.exception.custom.PlannerDetailException;
 import com.zero.triptalk.exception.custom.PlannerException;
 import com.zero.triptalk.image.service.ImageService;
@@ -15,6 +17,7 @@ import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +31,7 @@ import static com.zero.triptalk.exception.code.PlannerDetailErrorCode.UNMATCHED_
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PlannerApplication {
 
     private final PlannerService plannerService;
@@ -143,19 +147,28 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         try {
             planner.updatePlanner(info.getPlannerRequest());
-            List<PlannerDetail> result = info.getPlannerDetailListRequests().stream().map(
+            List<PlannerDetail> result = info.getUpdatePlannerDetailListRequests().stream().map(
                     request -> {
                         Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
                         Place place = byRoadAddress.orElseGet(
                                 () -> placeService.savePlace(request.getPlaceInfo())
                         );
-                        return request.toEntity(planner, place, byEmail.getUserId());
+                        //상세일정을 찾아서 수정
+                        PlannerDetail byId = plannerDetailService.findById(request.getPlannerDetailId());
+                        byId.updatePlannerDetail(request, planner, place, byEmail.getUserId());
+                        return byId;
                     }).collect(Collectors.toList());
             plannerDetailService.savePlannerDetailList(result);
         } catch (Exception e) {
             throw new PlannerException(PlannerErrorCode.UPDATE_PLANNER_FAILED);
         }
-
+        //일정 수정 이후 S3 삭제
+        try {
+            System.out.println(info.getDeletedUrls());
+            imageService.deleteFiles(info.getDeletedUrls());
+        }catch (Exception e){
+            throw new ImageException(ImageUploadErrorCode.IMAGE_DELETE_FAILED);
+        }
         return true;
     }
 }
