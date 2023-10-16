@@ -3,7 +3,6 @@ package com.zero.triptalk.planner.service;
 import com.zero.triptalk.exception.custom.PlannerDetailException;
 import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
-import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
 import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.entity.PlannerDetail;
@@ -26,7 +25,6 @@ public class PlannerDetailService {
     private final PlannerDetailRepository plannerDetailRepository;
 
     private final UserRepository userRepository;
-    private final PlaceService placeService;
     private final ImageService imageService;
 
 
@@ -73,7 +71,7 @@ public class PlannerDetailService {
 
     public List<PlannerDetail> findByPlannerId(Long plannerId) {
         List<PlannerDetail> byPlanner = plannerDetailRepository.findByPlanner_PlannerId(plannerId);
-        if (byPlanner.isEmpty()){
+        if (byPlanner.isEmpty()) {
             throw new PlannerDetailException(NOT_FOUND_PLANNER_DETAIL);
         }
         return byPlanner;

@@ -84,10 +84,7 @@ class PlannerApplicationTest {
 
         Place place = Place.builder()
                 .placeId(1L)
-                .name("남산")
-                .si("서울시")
-                .gun("서울군")
-                .gu("서울구")
+                .placeName("남산")
                 .roadAddress("남산상세")
                 .latitude(10)
                 .longitude(10)
@@ -101,7 +98,7 @@ class PlannerApplicationTest {
                 .id(1L)
                 .date(LocalDateTime.now())
                 .description("테스트 요청입니다.")
-                .placeInfo(new PlaceRequest("남산", "서울시", "서울군", "서울구","123", "남산상세", 10, 10))
+                .placeInfo(new PlaceRequest("남산", "123", "남산상세", 10, 10))
                 .build();
 
         List<String> images =
@@ -136,10 +133,8 @@ class PlannerApplicationTest {
 
         Long plannerId = 1L;
         String email = "test@exam.com";
-        PlaceRequest placeRequest = PlaceRequest.builder().name("남산")
-                .si("서울시")
-                .gun("서울군")
-                .gu("서울구")
+        PlaceRequest placeRequest = PlaceRequest.builder()
+                .placeName("남산")
                 .roadAddress("남산상세")
                 .latitude(10)
                 .longitude(10)
