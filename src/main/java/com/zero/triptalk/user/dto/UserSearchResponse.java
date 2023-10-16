@@ -10,17 +10,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSearchResponse {
 
+    private Long userId;
     private String nickname;
     private String aboutMe;
 
     @Builder
-    public UserSearchResponse(String nickname, String aboutMe) {
+    public UserSearchResponse(Long userId, String nickname, String aboutMe) {
+        this.userId = userId;
         this.nickname = nickname;
         this.aboutMe = aboutMe;
     }
 
     public static UserSearchResponse ofDocument(UserDocument document) {
         return UserSearchResponse.builder()
+                .userId(document.getUserId())
                 .nickname(document.getNickname())
                 .aboutMe(document.getAboutMe())
                 .build();

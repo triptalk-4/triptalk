@@ -43,7 +43,7 @@ public class ReplyService {
         return email;
     }
 
-    public Object ReplyOk(Long plannerDetailId,ReplyRequest request) {
+    public ReplyResponse replyOk(Long plannerDetailId,ReplyRequest request) {
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_Planner_Detail_Board));
@@ -69,7 +69,7 @@ public class ReplyService {
                 .build();
     }
 
-    public Object ReplyUpdateOk(Long replyId,ReplyRequest request) {
+    public ReplyResponse replyUpdateOk(Long replyId,ReplyRequest request) {
         LocalDateTime currentTime = LocalDateTime.now();
 
         ReplyEntity reply = replyRepository.findById(replyId)
@@ -95,7 +95,7 @@ public class ReplyService {
                 .build();
     }
 
-    public Object ReplyDeleteOk(Long replyId) {
+    public ReplyResponse replyDeleteOk(Long replyId) {
 
         ReplyEntity reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_Planner_Detail_Reply_Board));

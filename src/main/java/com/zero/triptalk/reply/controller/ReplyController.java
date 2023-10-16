@@ -1,6 +1,7 @@
 package com.zero.triptalk.reply.controller;
 
 import com.zero.triptalk.reply.dto.request.ReplyRequest;
+import com.zero.triptalk.reply.dto.response.ReplyResponse;
 import com.zero.triptalk.reply.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,32 +22,32 @@ public class ReplyController {
      */
     @PostMapping("/detail/{plannerDetailId}/reply")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Object> ReplyOk(@PathVariable Long plannerDetailId,
-                                          @RequestBody ReplyRequest request) {
+    public ReplyResponse ReplyOk(@PathVariable Long plannerDetailId,
+                                 @RequestBody ReplyRequest request) {
 
         // 댓글 달기
-        Object response = replyService.ReplyOk(plannerDetailId,request);
+        ReplyResponse response = replyService.replyOk(plannerDetailId,request);
 
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     @PutMapping("/detail/reply/{replyId}/update")
-    public ResponseEntity<Object> ReplyUpdateOk(@PathVariable Long replyId,
+    public ReplyResponse ReplyUpdateOk(@PathVariable Long replyId,
                                           @RequestBody ReplyRequest request) {
 
         // 댓글 달기
-        Object response = replyService.ReplyUpdateOk(replyId,request);
+        ReplyResponse response = replyService.replyUpdateOk(replyId,request);
 
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     @DeleteMapping("/detail/reply/{replyId}/delete")
-    public ResponseEntity<Object> ReplyDeleteOk(@PathVariable Long replyId) {
+    public ReplyResponse ReplyDeleteOk(@PathVariable Long replyId) {
 
         // 댓글 달기
-        Object response = replyService.ReplyDeleteOk(replyId);
+        ReplyResponse response = replyService.replyDeleteOk(replyId);
 
-        return ResponseEntity.ok(response);
+        return response;
     }
 
 
