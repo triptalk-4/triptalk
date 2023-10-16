@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.exception.custom.UserException;
+import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
+import com.zero.triptalk.user.repository.UserSearchRepository;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -35,7 +37,7 @@ public class KakaoAuthService {
     private final LocalDateTime currentTime = LocalDateTime.now();
 
     private final UserRepository repository;
-
+    private final UserSearchRepository userSearchRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -50,8 +52,9 @@ public class KakaoAuthService {
     @Value("${cloud.aws.image}")
     private String profile;
 
-    public KakaoAuthService(UserRepository repository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender) throws IOException {
+    public KakaoAuthService(UserRepository repository, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender) throws IOException {
         this.repository = repository;
+        this.userSearchRepository = userSearchRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -191,6 +194,7 @@ public class KakaoAuthService {
                     .build();
 
             repository.save(user);
+            userSearchRepository.save(UserDocument.ofEntity(user));
 
             var jwtToken = jwtService.generateToken(user);
 
