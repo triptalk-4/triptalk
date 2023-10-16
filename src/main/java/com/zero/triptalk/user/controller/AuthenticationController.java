@@ -34,7 +34,7 @@ public class AuthenticationController {
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
 
             AuthenticationResponse response = service.register(request);
             return ResponseEntity.ok(response);
@@ -108,7 +108,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/planners/byUser")
-    public Page<Object[]> getPlannersByUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
+    public Page<MyPlannerBoardResponse> getPlannersByUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
         UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
         if (user != null) {
             Pageable pageable = PageRequest.of(page, pageSize);
@@ -120,7 +120,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/planners/userLike")
-    public Page<Object[]> getPlannersUserLike(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
+    public Page<LikePlannerResponse> getPlannersUserLike(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
         UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
         if (user != null) {
             Pageable pageable = PageRequest.of(page, pageSize);
