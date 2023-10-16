@@ -166,7 +166,7 @@ public class PlannerApplication {
         try {
             System.out.println(info.getDeletedUrls());
             imageService.deleteFiles(info.getDeletedUrls());
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ImageException(ImageUploadErrorCode.IMAGE_DELETE_FAILED);
         }
         return true;
