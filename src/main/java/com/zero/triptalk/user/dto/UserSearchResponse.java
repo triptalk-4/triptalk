@@ -13,12 +13,14 @@ public class UserSearchResponse {
     private Long userId;
     private String nickname;
     private String aboutMe;
+    private String profile;
 
     @Builder
-    public UserSearchResponse(Long userId, String nickname, String aboutMe) {
+    public UserSearchResponse(Long userId, String nickname, String aboutMe, String profile) {
         this.userId = userId;
         this.nickname = nickname;
         this.aboutMe = aboutMe;
+        this.profile = profile;
     }
 
     public static UserSearchResponse ofDocument(UserDocument document) {
@@ -26,6 +28,7 @@ public class UserSearchResponse {
                 .userId(document.getUserId())
                 .nickname(document.getNickname())
                 .aboutMe(document.getAboutMe())
+                .profile(document.getProfile())
                 .build();
     }
 }
