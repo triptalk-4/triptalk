@@ -6,7 +6,10 @@ import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.exception.code.UserErrorCode;
 import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
+import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.repository.UserLikeRepository;
+import com.zero.triptalk.planner.dto.PlannerResponse;
+import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.repository.UserSearchRepository;
@@ -20,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -36,8 +40,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.zero.triptalk.exception.code.UserErrorCode.*;
 
@@ -46,13 +52,9 @@ import static com.zero.triptalk.exception.code.UserErrorCode.*;
 public class AuthenticationService {
 
     private final LocalDateTime currentTime = LocalDateTime.now();
-
     private final UserRepository repository;
-
     private final PlannerRepository plannerRepository;
-
     private final UserLikeRepository userLikeRepository;
-
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -384,17 +386,55 @@ public class AuthenticationService {
 
     }
 
-    public Page<Object[]> getPlannersByUser(UserEntity user, Pageable pageable) {
+    public Page<MyPlannerBoardResponse> getPlannersByUser(UserEntity user, Pageable pageable) {
         Page<Object[]> plannersPage = plannerRepository.findPlannersWithLikeCount(user, pageable);
 
-        return plannersPage;
+        List<MyPlannerBoardResponse> myPlannerBoardResponses =  plannersPage
+                .stream()
+                .map(data -> {
+                    Planner planner = (Planner) data[0];
+
+                    PlannerLike plannerLike = (PlannerLike) data[1];
+                    Long likeCount = plannerLike.getLikeCount();
+
+                    MyPlannerBoardResponse response = new MyPlannerBoardResponse();
+                    response.setPlannerId(planner.getPlannerId());
+                    response.setTitle(planner.getTitle());
+                    response.setThumbnail(planner.getThumbnail());
+                    response.setViews(planner.getViews());
+                    response.setCreateAt(planner.getCreateAt().toString());
+                    response.setLikeCount(likeCount);
+
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(myPlannerBoardResponses, pageable, plannersPage.getTotalElements());
     }
 
-    public Page<Object[]> getPlannersByUserLike(UserEntity user, Pageable pageable) {
-
+    public Page<LikePlannerResponse> getPlannersByUserLike(UserEntity user, Pageable pageable) {
         Page<Object[]> plannersPage = userLikeRepository.findPlannersLikedByUserWithLikeCount(user, pageable);
 
-        return plannersPage;
+        List<LikePlannerResponse> likePlannerResponses = plannersPage
+                .stream()
+                .map(data -> {
+                    Planner planner = (Planner) data[0];
+                    Long likeCount = (Long) data[1];
 
+                    LikePlannerResponse response = new LikePlannerResponse();
+                    response.setPlannerId(planner.getPlannerId());
+                    response.setTitle(planner.getTitle());
+                    response.setThumbnail(planner.getThumbnail());
+                    response.setViews(planner.getViews());
+                    response.setCreateAt(planner.getCreateAt().toString());
+                    response.setLikeCount(likeCount);
+
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(likePlannerResponses, pageable, plannersPage.getTotalElements());
     }
+
+
 }
