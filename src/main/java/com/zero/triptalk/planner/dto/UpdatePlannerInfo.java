@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UpdatePlannerInfo {
 
-    private List<PlannerDetailListRequest> plannerDetailListRequests;
+    private List<UpdatePlannerDetailListRequest> updatePlannerDetailListRequests;
     private PlannerRequest plannerRequest;
+    private List<String> deletedUrls;
 }
