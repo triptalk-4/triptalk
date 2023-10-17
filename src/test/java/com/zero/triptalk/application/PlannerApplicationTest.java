@@ -1,4 +1,4 @@
-/*
+
 package com.zero.triptalk.application;
 
 import com.zero.triptalk.exception.custom.PlannerDetailException;
@@ -228,4 +228,4 @@ class PlannerApplicationTest {
     }
 
 }
-*/
+
