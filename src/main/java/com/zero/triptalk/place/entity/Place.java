@@ -29,6 +29,6 @@ public class Place {
 
     private double longitude;
 
-    private Long PlaceLike;
+    private Long placeLike;
 
 }

@@ -1,7 +1,7 @@
 package com.zero.triptalk.search.controller;
 
-import com.zero.triptalk.like.dto.response.DetailPlannerSearchResponse;
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
+import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
 import com.zero.triptalk.search.service.SearchService;
 import com.zero.triptalk.user.dto.UserSearchResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class SearchController {
     }
 
     @GetMapping("/search/{region}/{searchType}")
-    public ResponseEntity<List<DetailPlannerSearchResponse>> searchByRegionAndSearchType(
+    public ResponseEntity<List<PlannerDetailSearchResponse>> searchByRegionAndSearchType(
             @PathVariable String region, @PathVariable String searchType, Pageable pageable) {
 
      return ResponseEntity.ok(searchService.searchByRegionAnySort(region, searchType, pageable));

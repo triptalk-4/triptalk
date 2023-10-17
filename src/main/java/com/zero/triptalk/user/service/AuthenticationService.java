@@ -1,6 +1,5 @@
 package com.zero.triptalk.user.service;
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.exception.code.UserErrorCode;
@@ -8,16 +7,15 @@ import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.repository.UserLikeRepository;
-import com.zero.triptalk.planner.dto.PlannerResponse;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserDocument;
-import com.zero.triptalk.user.repository.UserSearchRepository;
-import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
+import com.zero.triptalk.user.repository.UserSearchRepository;
+import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -40,7 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,17 +48,16 @@ import static com.zero.triptalk.exception.code.UserErrorCode.*;
 @Service
 public class AuthenticationService {
 
-    private final LocalDateTime currentTime = LocalDateTime.now();
+    private LocalDateTime currentTime = LocalDateTime.now();
     private final UserRepository repository;
     private final PlannerRepository plannerRepository;
     private final UserLikeRepository userLikeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final JavaMailSender mailSender; // Spring MailSender
+    private final JavaMailSender mailSender;
     private final ImageService imageService;
     private final RedisUtil redisUtil;
-    private final AmazonS3 amazonS3;
     private final UserSearchRepository userSearchRepository;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -73,7 +69,7 @@ public class AuthenticationService {
     @Value("${spring.mail.username}")
     private String senderMail;
 
-    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3, UserSearchRepository userSearchRepository) {
+    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, UserSearchRepository userSearchRepository) {
         this.repository = repository;
         this.plannerRepository = plannerRepository;
         this.userLikeRepository = userLikeRepository;
@@ -83,11 +79,10 @@ public class AuthenticationService {
         this.mailSender = mailSender;
         this.imageService = imageService;
         this.redisUtil = redisUtil;
-        this.amazonS3 = amazonS3;
         this.userSearchRepository = userSearchRepository;
     }
 
-    public String userEmail(){
+    private String userEmail(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String email = "기본 이메일";

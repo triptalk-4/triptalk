@@ -49,7 +49,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/email/check")
-    public ResponseEntity<?> registerEmailCheckToken(@RequestBody EmailTokenRequest request) {
+    public ResponseEntity<EmailCheckOkResponse> registerEmailCheckToken(@RequestBody EmailTokenRequest request) {
 
             EmailCheckOkResponse response = service.registerEmailCheckToken(request);
             return ResponseEntity.ok(response);
