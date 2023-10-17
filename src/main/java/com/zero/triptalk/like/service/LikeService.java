@@ -5,14 +5,16 @@ import com.zero.triptalk.exception.code.UserErrorCode;
 import com.zero.triptalk.exception.custom.LikeException;
 import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.like.dto.response.LikenOnePlusMinusResponse;
-import com.zero.triptalk.like.entity.DetailPlannerLike;
+import com.zero.triptalk.like.dto.response.UserLikeAndSaveYnResponse;
+import com.zero.triptalk.like.dto.response.UserSaveAndCancelResponse;
 import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.entity.UserLikeEntity;
-import com.zero.triptalk.like.repository.DetailPlannerLikeRepository;
+import com.zero.triptalk.like.entity.UserSave;
 import com.zero.triptalk.like.repository.PlannerLikeRepository;
 import com.zero.triptalk.like.repository.UserLikeRepository;
-import com.zero.triptalk.planner.entity.PlannerDetail;
-import com.zero.triptalk.planner.repository.PlannerDetailRepository;
+import com.zero.triptalk.like.repository.UserSaveRepository;
+import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +34,11 @@ import static com.zero.triptalk.exception.code.LikeErrorCode.*;
 @RequiredArgsConstructor
 public class LikeService {
 
-    private final PlannerDetailRepository plannerDetailRepository;
-    private final DetailPlannerLikeRepository detailPlannerLikeRepository;
+    private final PlannerRepository plannerRepository;
+    private final UserSaveRepository userSaveRepository;
+    private final PlannerLikeRepository plannerLikeRepository;
     private final UserRepository userRepository;
     private final UserLikeRepository userLikeRepository;
-
-    private final PlannerLikeRepository plannerLikeRepository;
 
     /**
      * 토큰 값안의 이메일 불러오기
@@ -55,97 +56,70 @@ public class LikeService {
         return email;
     }
     @Transactional
-    public Object createLikeOrPlusPlannerDetail(Long plannerDetailId) {
-        PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
-                .orElseThrow(() -> new LikeException(LikeErrorCode.NO_Planner_Detail_Board));
+    public LikenOnePlusMinusResponse createLikeOrPlusPlanner(Long plannerId) {
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
 
-        LocalDateTime currentTime = LocalDateTime.now();
+        // DetailPlannerLike 업데이트 또는 생성
+        PlannerLike plannerLike = plannerLikeRepository.findByPlanner(planner);
 
-        // 좋아요를 누른 접속자 유저 찾기
         String email = userEmail(); // 이메일 불러오기
-        UserEntity userEntity = userRepository.findByEmail(email)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
 
         // 이미 좋아요를 한 경우 처리
-        if (userLikeRepository.existsByPlannerDetailAndUser(plannerDetail, userEntity)) {
+        if (userLikeRepository.existsByPlannerAndUser(planner, user)) {
             throw new LikeException(LikeErrorCode.NO_LIKE_DUPLICATE_ERROR);
         }
 
-        // 좋아요  한 유저 저장
+        // 좋아요 한 유저 저장
         UserLikeEntity userLike = UserLikeEntity.builder()
-                .plannerDetail(plannerDetail)
-                .planner(plannerDetail.getPlanner())
-                .likeDt(currentTime)
-                .user(userEntity)
+                .planner(planner)
+                .likeDt(LocalDateTime.now())
+                .user(user)
                 .build();
         userLikeRepository.save(userLike);
 
-        // DetailPlannerLike 업데이트 또는 생성
-        DetailPlannerLike detailPlannerLike = detailPlannerLikeRepository.findByPlannerDetail(plannerDetail);
-        PlannerLike plannerLike = plannerLikeRepository.findByPlanner(plannerDetail.getPlanner());
-        if (detailPlannerLike == null) {
-            // detailPlannerLike 추가
-            detailPlannerLike = DetailPlannerLike.builder()
-                    .plannerDetail(plannerDetail)
-                    .likeCount(1L)
-                    .likeDt(currentTime)
-                    .build();
-            detailPlannerLikeRepository.save(detailPlannerLike);
-
-        }
-
         if( plannerLike == null){
             plannerLike = PlannerLike.builder()
-                    .planner(plannerDetail.getPlanner())
+                    .planner(planner)
                     .likeCount((long) 1.0)
-                    .likeDt(currentTime)
+                    .likeDt(LocalDateTime.now())
                     .build();
 
             plannerLikeRepository.save(plannerLike);
 
             return LikenOnePlusMinusResponse.builder()
                     .ok("좋아요가 완료되었습니다")
+                    .plannerCount(1l)
                     .build();
         }
-        // detailPlannerLike 추가
-        long currentDetailLikeCount = detailPlannerLike.getLikeCount();
-        long newDetailLikeCount = currentDetailLikeCount + 1;
-        detailPlannerLike.setLikeCount(newDetailLikeCount);
         // plannerLike 추가
         long currentPlannerLikeCount = plannerLike.getLikeCount();
         long newPlannerLikeCount = currentPlannerLikeCount + 1;
         plannerLike.setLikeCount(newPlannerLikeCount);
 
-        detailPlannerLikeRepository.save(detailPlannerLike);
         plannerLikeRepository.save(plannerLike);
 
         return LikenOnePlusMinusResponse.builder()
                 .ok("좋아요가 완료되었습니다")
                 .plannerCount(newPlannerLikeCount)
-                .detailPlannerCount(newDetailLikeCount)
                 .build();
     }
 
     @Transactional
-    public Object LikeOneMinus(Long plannerDetailId) {
-        PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
+    public LikenOnePlusMinusResponse LikeOneMinus(Long plannerDetailId) {
+        Planner planner = plannerRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
-        // 좋아요 취소 (플레너 디테일 라이크)
-        DetailPlannerLike detailPlannerLike = detailPlannerLikeRepository.findByPlannerDetail(plannerDetail);
+
+        PlannerLike plannerLike = plannerLikeRepository.findByPlanner(planner);
+
         //플레너 디테일 좋아요취소
-        long currentDetailLikeCount = detailPlannerLike.getLikeCount();
-        long newDetailLikeCount = currentDetailLikeCount - 1;
+        long currentDetailLikeCount = plannerLike.getLikeCount();
+        long newLikeCount = currentDetailLikeCount - 1;
 
-        detailPlannerLike.setLikeCount(newDetailLikeCount);
-        detailPlannerLikeRepository.save(detailPlannerLike);
+        plannerLike.setLikeCount(newLikeCount);
 
-        //좋아요 취소 (일정 좋아요 취소)
-        PlannerLike plannerLike = plannerLikeRepository.findByPlanner(plannerDetail.getPlanner());
-
-        long currentPlanerLikeCount = plannerLike.getLikeCount();
-        long newPlannerLikeCount = currentPlanerLikeCount -1;
-
-        plannerLike.setLikeCount(newPlannerLikeCount);
         plannerLikeRepository.save(plannerLike);
 
         // 좋아요를 누른 접속자 유저 찾기
@@ -153,20 +127,107 @@ public class LikeService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
 
-        // 좋아요 취소 하면 등록 취소 
-        UserLikeEntity userLike = (UserLikeEntity) userLikeRepository.findByPlannerDetailAndUser(plannerDetail,user)
+        // 좋아요 취소 하면 등록 취소
+        UserLikeEntity userLike = (UserLikeEntity) userLikeRepository.findByPlannerAndUser(planner,user)
                 .orElseThrow(() -> new LikeException(LikeErrorCode.NO_LIKE_SEARCH_ERROR));
 
         userLikeRepository.delete(userLike);
 
         return LikenOnePlusMinusResponse.builder()
                 .ok("좋아요가 취소되었습니다")
-                .plannerCount(newPlannerLikeCount)
-                .detailPlannerCount(newDetailLikeCount)
+                .plannerCount(newLikeCount)
                 .build();
     }
 
     public PlannerLike findByPlannerId(Long plannerId) {
         return plannerLikeRepository.findByPlanner_PlannerId(plannerId);
+    }
+
+    public UserSaveAndCancelResponse userSavePlus(Long plannerId) {
+        // 게시글 찾기
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
+
+        String userEmail = userEmail();
+
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new LikeException(No_User_Search));
+
+        UserSave userSave = userSaveRepository.findByPlannerAndUser(planner,user);
+
+        if(userSave != null){
+            throw new LikeException(LikeErrorCode.NO_SAVE_DUPLICATE_ERROR);
+        }
+
+
+        if(userSave == null){
+            UserSave userSaveFin = UserSave.builder()
+                    .planner(planner)
+                    .user(user)
+                    .saveDt(LocalDateTime.now())
+                    .build();
+
+            userSaveRepository.save(userSaveFin);
+        }
+        return UserSaveAndCancelResponse.builder()
+                .ok("저장 추가가 완료되었습니다.")
+                .build();
+    }
+
+    public UserSaveAndCancelResponse userCancel(Long plannerId) {
+
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
+
+        String userEmail = userEmail();
+
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new LikeException(No_User_Search));
+
+        UserSave userSaveDelete = userSaveRepository.findByPlannerAndUser(planner,user);
+
+        if(userSaveDelete == null) {
+            throw new LikeException(NO_SAVE_EXIST_ERROR);
+        }
+
+
+        if(!(userSaveDelete == null)) {
+            userSaveRepository.delete(userSaveDelete);
+        }
+        return UserSaveAndCancelResponse.builder()
+                .ok("저장함 삭제가 완료되었습니다.")
+                .build();
+    }
+
+    public UserLikeAndSaveYnResponse userCheckYn(Long plannerId) {
+
+        String userSaveYn = "no";
+        String userLikeYn = "no";
+
+        Planner planner = plannerRepository.findById(plannerId)
+                .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
+
+        String userEmail = userEmail();
+
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new LikeException(No_User_Search));
+
+        Boolean userSaveYnCheck = userSaveRepository.existsByPlannerAndUser(planner,user);
+        Boolean userLikeYnCheck = userLikeRepository.existsByPlannerAndUser(planner,user);
+
+        if(userSaveYnCheck == true){
+            userSaveYn = "ok";
+        }
+
+        if(userLikeYnCheck == true){
+            userLikeYn = "ok";
+        }
+
+        return UserLikeAndSaveYnResponse.builder()
+                .userSaveYn(userSaveYn)
+                .userLikeYn(userLikeYn)
+                .build();
+
+
     }
 }
