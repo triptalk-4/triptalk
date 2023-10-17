@@ -38,4 +38,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
     }
 
+    @ExceptionHandler(PlannerException.class)
+    protected ResponseEntity<String> handlePlannerException(PlannerException e) {
+
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ImageException.class)
+    protected ResponseEntity<String> handleImageException(ImageException e) {
+
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PlaceException.class)
+    protected ResponseEntity<String> handlePlaceException(PlaceException e) {
+
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+    }
 }
