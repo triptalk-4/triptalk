@@ -2,7 +2,6 @@ package com.zero.triptalk.like.repository;
 
 import com.zero.triptalk.like.entity.UserSave;
 import com.zero.triptalk.planner.entity.Planner;
-import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.user.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +15,13 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
     UserSave findByPlannerAndUser(Planner planner, UserEntity user);
 
     Boolean existsByPlannerAndUser(Planner planner, UserEntity user);
+
+    @Query("SELECT pl.planner, pl.likeCount as likeCount\n" +
+            "FROM UserSave ple\n" +
+            "JOIN PlannerLike pl ON ple.planner = pl.planner\n" +
+            "WHERE ple.user = :user\n" +
+            "GROUP BY pl.planner")
+    Page<Object[]> findPlannersSavedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
 //    boolean existsByPlannerDetailAndUser(PlannerDetail plannerDetail, UserEntity userEntity);
 //

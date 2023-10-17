@@ -8,7 +8,7 @@ import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.repository.UserLikeRepository;
-import com.zero.triptalk.planner.dto.PlannerResponse;
+import com.zero.triptalk.like.repository.UserSaveRepository;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserDocument;
@@ -35,12 +35,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +53,9 @@ public class AuthenticationService {
     private final UserRepository repository;
     private final PlannerRepository plannerRepository;
     private final UserLikeRepository userLikeRepository;
+
+    private final UserSaveRepository userSaveRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -73,10 +74,11 @@ public class AuthenticationService {
     @Value("${spring.mail.username}")
     private String senderMail;
 
-    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3, UserSearchRepository userSearchRepository) {
+    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, UserSaveRepository userSaveRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3, UserSearchRepository userSearchRepository) {
         this.repository = repository;
         this.plannerRepository = plannerRepository;
         this.userLikeRepository = userLikeRepository;
+        this.userSaveRepository = userSaveRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -412,7 +414,7 @@ public class AuthenticationService {
     }
 
     public Page<LikePlannerResponse> getPlannersByUserLike(UserEntity user, Pageable pageable) {
-        Page<Object[]> plannersPage = userLikeRepository.findPlannersLikedByUserWithLikeCount(user, pageable);
+        Page<Object[]> plannersPage = userSaveRepository.findPlannersSavedByUserWithLikeCount(user, pageable);
 
         List<LikePlannerResponse> likePlannerResponses = plannersPage
                 .stream()
