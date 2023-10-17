@@ -15,10 +15,9 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
     Page<Planner> findByUser(UserEntity user, Pageable pageable);
 
 
-    @Query("SELECT p, pll as likeCount " +
-            "FROM Planner p " +
-            "LEFT JOIN PlannerLike pll ON p.id = pll.planner.id " +
-            "WHERE p.user = :user " +
-            "GROUP BY p")
+    @Query("SELECT p, COALESCE(pll.likeCount, 0) as likeCount\n" +
+            "FROM Planner p\n" +
+            "LEFT JOIN PlannerLike pll ON p.id = pll.planner.id\n" +
+            "WHERE p.user = :user")
     Page<Object[]> findPlannersWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 }
