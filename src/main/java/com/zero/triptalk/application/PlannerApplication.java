@@ -115,6 +115,9 @@ public class PlannerApplication {
     @Transactional
     public void deletePlanner(Long plannerId, String email) {
 
+        //일정이 존재하는지
+        plannerService.findById(plannerId);
+
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
         List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
         byPlanner.forEach(details -> deletePlannerDetail(details.getPlannerDetailId(), email));
@@ -136,6 +139,9 @@ public class PlannerApplication {
         planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
+
+        //댓글
+
 
         return PlannerResponse.of(planner, user, responses, likeCount);
     }
