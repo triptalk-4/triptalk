@@ -2,6 +2,7 @@ package com.zero.triptalk.planner.entity;
 
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.UpdatePlannerDetailListRequest;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -64,13 +65,13 @@ public class PlannerDetail {
         this.date = date;
     }
 
-    public void updatePlannerDetail(PlannerDetailRequest request) {
-        this.modifiedAt = request.getDate();
-        this.description = request.getDescription();
-    }
-
-    public void updatePlannerDetailPlace(Place place) {
+    public void updatePlannerDetail(UpdatePlannerDetailListRequest request,
+                                    Planner planner, Place place, Long userId) {
+        this.images = request.getImages();
         this.place = place;
+        this.planner = planner;
+        this.userId = userId;
+        this.description = request.getDescription();
     }
 
     public static PlannerDetail buildPlannerDetail(

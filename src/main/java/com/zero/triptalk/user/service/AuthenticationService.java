@@ -11,6 +11,8 @@ import com.zero.triptalk.like.repository.UserLikeRepository;
 import com.zero.triptalk.planner.dto.PlannerResponse;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerRepository;
+import com.zero.triptalk.user.entity.UserDocument;
+import com.zero.triptalk.user.repository.UserSearchRepository;
 import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
@@ -60,6 +62,7 @@ public class AuthenticationService {
     private final ImageService imageService;
     private final RedisUtil redisUtil;
     private final AmazonS3 amazonS3;
+    private final UserSearchRepository userSearchRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -70,7 +73,7 @@ public class AuthenticationService {
     @Value("${spring.mail.username}")
     private String senderMail;
 
-    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3) {
+    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3, UserSearchRepository userSearchRepository) {
         this.repository = repository;
         this.plannerRepository = plannerRepository;
         this.userLikeRepository = userLikeRepository;
@@ -81,6 +84,7 @@ public class AuthenticationService {
         this.imageService = imageService;
         this.redisUtil = redisUtil;
         this.amazonS3 = amazonS3;
+        this.userSearchRepository = userSearchRepository;
     }
 
     public String userEmail(){
@@ -160,6 +164,7 @@ public class AuthenticationService {
                 .build();
 
         repository.save(user);
+        userSearchRepository.save(UserDocument.ofEntity(user));
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -266,6 +271,7 @@ public class AuthenticationService {
                 existingUser.setProfile(newProfile);
 
                 repository.save(existingUser);
+                userSearchRepository.save(UserDocument.ofEntity(existingUser));
 
                 // 업데이트된 사용자를 위한 새로운 JWT 토큰 생성
                 String jwtToken = jwtService.generateToken(existingUser);
@@ -294,8 +300,13 @@ public class AuthenticationService {
                 // 새로운 프로필
                 existingUser.setProfile(newProfile);
 
+
                 // 업데이트된 사용자 엔티티 저장
                 repository.save(existingUser);
+
+        // 업데이트된 사용자 엔티티 저장
+        repository.save(existingUser);
+        userSearchRepository.save(UserDocument.ofEntity(existingUser));
 
                 // 업데이트된 사용자를 위한 새로운 JWT 토큰 생성
                 String jwtToken = jwtService.generateToken(existingUser);

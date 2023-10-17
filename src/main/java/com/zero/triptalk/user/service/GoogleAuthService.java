@@ -7,10 +7,12 @@ import com.zero.triptalk.user.dto.GoogleAuthResponse;
 import com.zero.triptalk.user.dto.GoogleRequestToken;
 import com.zero.triptalk.user.dto.GoogleUserInfoResponse;
 import com.zero.triptalk.config.JwtService;
+import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
+import com.zero.triptalk.user.repository.UserSearchRepository;
 import com.zero.triptalk.user.response.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class GoogleAuthService {
     private final FeignClientGoogleAuth feignClientGoogleAuth;
     private final FeignClientGoogleUser feignClientGoogleUser;
     private final UserRepository userRepository;
+    private final UserSearchRepository userSearchRepository;
     private final JwtService jwtService;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
@@ -97,6 +100,7 @@ public class GoogleAuthService {
                 .build();
 
         userRepository.saveAndFlush(user);
+        userSearchRepository.save(UserDocument.ofEntity(user));
 
         return user;
     }

@@ -1,5 +1,6 @@
 package com.zero.triptalk.planner.entity;
 
+import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
@@ -51,6 +52,13 @@ public class Planner {
 
     public void increaseViews(){
         this.views++;
+    }
+
+    public void updatePlanner(PlannerRequest request){
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
     }
 
 }

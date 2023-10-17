@@ -11,17 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlaceRequest {
 
-    private String name;
-
-    private String si;
-
-    private String gun;
-
-    private String gu;
-
-    private String postCode;
+    private String placeName;
 
     private String roadAddress;
+
+    private String addressName;
 
     private double latitude;
 
@@ -29,12 +23,9 @@ public class PlaceRequest {
 
     public Place toEntity(){
         return Place.builder()
-                .name(name)
-                .si(si)
-                .gun(gun)
-                .gu(gu)
-                .postCode(postCode)
+                .placeName(placeName)
                 .roadAddress(roadAddress)
+                .addressName(addressName)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();

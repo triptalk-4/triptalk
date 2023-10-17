@@ -29,9 +29,8 @@ public class ImageController {
     //S3에서 사진 삭제
     @DeleteMapping("/images")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Void> deleteImage(@RequestBody ImageRequest request){
+    public ResponseEntity<Void> deleteImage(@RequestBody ImageRequest request) {
         imageService.deleteFile(request.getUrl());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

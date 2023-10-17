@@ -19,12 +19,9 @@ public class PlaceService {
 
         //정보가 수정된 장소라면? -> 너무 많은 예외가 있으니 그냥 새로 등록.
         Place place = Place.builder()
-                .name(placeRequest.getName())
-                .si(placeRequest.getSi())
-                .gun(placeRequest.getGun())
-                .gu(placeRequest.getGu())
-                .postCode(placeRequest.getPostCode())
+                .placeName(placeRequest.getPlaceName())
                 .roadAddress(placeRequest.getRoadAddress())
+                .addressName(placeRequest.getAddressName())
                 .latitude(placeRequest.getLatitude())
                 .longitude(placeRequest.getLongitude())
                 .build();
