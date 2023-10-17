@@ -223,27 +223,26 @@ public class AuthenticationService {
                 .build();
     }
 
-    public String S3FileSaveAndOldImageDeleteAndNewProfile(List<String> files, String oldImage) {
+    public String S3FileSaveAndOldImageDeleteAndNewProfile(String files, String oldImage) {
 
-        String newFile = files.get(0);
             // 기본 설정 이미지가 아니면 지운다
             if(!(profile.equals(oldImage))) {
                 imageService.deleteFile(oldImage);
             }
-        return newFile;
+        return files;
     }
 
 
-    public AuthenticationResponse UpdateRegister(UpdateRegisterRequest request,
-                                                 List<MultipartFile> files) {
+    public AuthenticationResponse UpdateRegister(UpdateRegisterRequest request) {
         // 요청에서 정보 추출
         String email = request.getEmail();
         String newPassword = request.getNewPassword();
         String newNickname = request.getNewNickname();
         String newAboutMe = request.getNewAboutMe();
-        AuthenticationResponse authenticationResponse = null;
+        String oldImage = request.getOldImage();
+        String newImage = request.getNewImage();
 
-        Optional<UserEntity> nicknameCheck = repository.findByNickname(newNickname);
+        AuthenticationResponse authenticationResponse = null;
 
         // 이메일로 사용자 찾기
         Optional<UserEntity> existingUserOptional = repository.findByEmail(email);
@@ -254,14 +253,10 @@ public class AuthenticationService {
         }
 
         UserEntity existingUser = existingUserOptional.get();
-
-        // 파일 한건 업데이트
-        List<String> filesByListString = imageService.uploadFiles(files);
-
         // 파일 업로드 및 삭제
-        String newProfile = S3FileSaveAndOldImageDeleteAndNewProfile
-                (filesByListString, existingUser.getProfile());
+        String newProfile = S3FileSaveAndOldImageDeleteAndNewProfile(newImage, oldImage);
 
+        // 최종 업데이트 코드
             if(existingUser.getUserLoginRole().equals(UserLoginRole.KAKAO_USER_LOGIN)
                     || existingUser.getUserLoginRole().equals(UserLoginRole.GOOGLE_USER_LOGIN)){
 
@@ -283,37 +278,37 @@ public class AuthenticationService {
                         .updateOk("업데이트가 완료되었습니다.")
                         .token(jwtToken)
                         .build();
+            }else {
+
+                // 새로운 비밀번호가 제공된 경우 비밀번호 업데이트
+                if (newPassword != null && !newPassword.isEmpty()) {
+                    String encodedNewPassword = passwordEncoder.encode(newPassword);
+                    existingUser.setPassword(encodedNewPassword);
+                }
+                // 업데이트 시간
+                existingUser.setUpdateAt(LocalDateTime.now());
+                // 새로운 닉네임
+                existingUser.setNickname(newNickname);
+                // 새로운 소개글
+                existingUser.setAboutMe(newAboutMe);
+                // 새로운 프로필
+                existingUser.setProfile(newProfile);
+
+                // 업데이트된 사용자 엔티티 저장
+                repository.save(existingUser);
+
+                // 업데이트된 사용자를 위한 새로운 JWT 토큰 생성
+                String jwtToken = jwtService.generateToken(existingUser);
+
+                // 새로운 JWT 토큰을 사용한 AuthenticationResponse 생성
+                AuthenticationResponse response = new AuthenticationResponse();
+                response.setToken(jwtToken);
+
+                return authenticationResponse.builder()
+                        .updateOk("업데이트가 완료되었습니다.")
+                        .token(jwtToken)
+                        .build();
             }
-
-            // 새로운 비밀번호가 제공된 경우 비밀번호 업데이트
-            if (newPassword != null && !newPassword.isEmpty()) {
-                String encodedNewPassword = passwordEncoder.encode(newPassword);
-                existingUser.setPassword(encodedNewPassword);
-            }
-
-        // 업데이트 시간
-        existingUser.setUpdateAt(LocalDateTime.now());
-        // 새로운 닉네임
-        existingUser.setNickname(newNickname);
-        // 새로운 소개글
-        existingUser.setAboutMe(newAboutMe);
-        // 새로운 프로필
-        existingUser.setProfile(newProfile);
-
-        // 업데이트된 사용자 엔티티 저장
-        repository.save(existingUser);
-
-        // 업데이트된 사용자를 위한 새로운 JWT 토큰 생성
-        String jwtToken = jwtService.generateToken(existingUser);
-
-        // 새로운 JWT 토큰을 사용한 AuthenticationResponse 생성
-        AuthenticationResponse response = new AuthenticationResponse();
-        response.setToken(jwtToken);
-
-        return authenticationResponse.builder()
-                .updateOk("업데이트가 완료되었습니다.")
-                .token(jwtToken)
-                .build();
     }
 
 
