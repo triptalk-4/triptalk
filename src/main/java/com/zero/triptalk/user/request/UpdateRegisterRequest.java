@@ -12,7 +12,8 @@ public class UpdateRegisterRequest {
     private String newPassword;
     private String newNickname;
     private String newAboutMe;
-
+    private String oldImage;
+    private String newImage;
 
 
 }

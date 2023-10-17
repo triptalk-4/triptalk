@@ -79,10 +79,9 @@ public class AuthenticationController {
      */
     @PutMapping("/update/profile")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<AuthenticationResponse> updateRegister(@RequestPart UpdateRegisterRequest request,
-                                                                 @RequestPart("files") List<MultipartFile> files) {
+    public ResponseEntity<AuthenticationResponse> updateRegister(@RequestBody UpdateRegisterRequest request) {
 
-        AuthenticationResponse response = service.UpdateRegister(request, files);
+        AuthenticationResponse response = service.UpdateRegister(request);
         return ResponseEntity.ok(response);
     }
 
