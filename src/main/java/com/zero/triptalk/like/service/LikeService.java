@@ -91,7 +91,7 @@ public class LikeService {
 
             return LikenOnePlusMinusResponse.builder()
                     .ok("좋아요가 완료되었습니다")
-                    .plannerCount(1l)
+                    .plannerCount(1L)
                     .build();
         }
         // plannerLike 추가
