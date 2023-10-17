@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.zero.triptalk.like.entity.QDetailPlannerLike.detailPlannerLike;
+import static com.zero.triptalk.like.entity.QPlannerLike.plannerLike;
+import static com.zero.triptalk.planner.entity.QPlanner.planner;
 import static com.zero.triptalk.planner.entity.QPlannerDetail.plannerDetail;
+import static com.zero.triptalk.user.entity.QUserEntity.userEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,19 +19,26 @@ public class CustomPlannerDetailRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Tuple> findAllByDateAndViewsAndLikesUpdateDt(
-                                                    LocalDateTime from, LocalDateTime to) {
+    public List<Tuple> getPlannerDetailListByLikeAndViewUpdateDt(LocalDateTime from, LocalDateTime to) {
 
+        List<Long> ids = queryFactory.select(planner.plannerId)
+                                        .from(planner)
+                                        .join(plannerLike)
+                                        .on(planner.eq(plannerLike.planner))
+                                        .join(userEntity)
+                                        .on(userEntity.eq(planner.user))
+                                        .where(plannerLike.likeDt.between(from, to)
+                                            .or(planner.modifiedAt.between(from, to)))
+                                        .groupBy(planner.plannerId)
+                                        .fetch();
 
-        return queryFactory.select(plannerDetail,
-                            detailPlannerLike.likeDt, detailPlannerLike.likeCount)
-                        .from(plannerDetail)
-                        .join(detailPlannerLike)
-                        .on(plannerDetail.plannerDetailId.eq(detailPlannerLike.plannerDetail.plannerDetailId))
-                        .where(plannerDetail.modifiedAt.between(from, to)
-                                .or(detailPlannerLike.likeDt.between(from, to)))
-                        .groupBy(plannerDetail.plannerDetailId)
-                        .fetch();
+        return queryFactory.select(plannerDetail, plannerLike.likeCount)
+                .from(plannerDetail)
+                .join(plannerLike)
+                .on(plannerLike.planner.eq(plannerDetail.planner))
+                .where(plannerDetail.planner.plannerId.in(ids))
+                .fetch();
+
     }
 
 }

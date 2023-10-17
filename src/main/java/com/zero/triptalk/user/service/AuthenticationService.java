@@ -1,6 +1,5 @@
 package com.zero.triptalk.user.service;
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.exception.code.UserErrorCode;
@@ -49,7 +48,7 @@ import static com.zero.triptalk.exception.code.UserErrorCode.*;
 @Service
 public class AuthenticationService {
 
-    private final LocalDateTime currentTime = LocalDateTime.now();
+    private LocalDateTime currentTime = LocalDateTime.now();
     private final UserRepository repository;
     private final PlannerRepository plannerRepository;
     private final UserLikeRepository userLikeRepository;
@@ -59,10 +58,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final JavaMailSender mailSender; // Spring MailSender
+    private final JavaMailSender mailSender;
     private final ImageService imageService;
     private final RedisUtil redisUtil;
-    private final AmazonS3 amazonS3;
     private final UserSearchRepository userSearchRepository;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -74,7 +72,7 @@ public class AuthenticationService {
     @Value("${spring.mail.username}")
     private String senderMail;
 
-    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, UserSaveRepository userSaveRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, AmazonS3 amazonS3, UserSearchRepository userSearchRepository) {
+    public AuthenticationService(UserRepository repository, PlannerRepository plannerRepository, UserLikeRepository userLikeRepository, UserSaveRepository userSaveRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender, ImageService imageService, RedisUtil redisUtil, UserSearchRepository userSearchRepository) {
         this.repository = repository;
         this.plannerRepository = plannerRepository;
         this.userLikeRepository = userLikeRepository;
@@ -85,7 +83,6 @@ public class AuthenticationService {
         this.mailSender = mailSender;
         this.imageService = imageService;
         this.redisUtil = redisUtil;
-        this.amazonS3 = amazonS3;
         this.userSearchRepository = userSearchRepository;
     }
 

@@ -1,7 +1,6 @@
-package com.zero.triptalk.like.dto.response;
+package com.zero.triptalk.planner.dto;
 
-import com.zero.triptalk.like.entity.DetailPlannerLikeDocument;
-import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DetailPlannerSearchResponse {
+public class PlannerDetailSearchResponse {
 
     private Long plannerDetailId;
     private String nickname;
@@ -25,7 +24,7 @@ public class DetailPlannerSearchResponse {
     private Long likeCount;
 
     @Builder
-    public DetailPlannerSearchResponse(Long plannerDetailId, String nickname, String description, String image, String place, LocalDateTime date, Long views, Long likeCount) {
+    public PlannerDetailSearchResponse(Long plannerDetailId, String nickname, String description, String image, String place, LocalDateTime date, Long views, Long likeCount) {
         this.plannerDetailId = plannerDetailId;
         this.nickname = nickname;
         this.description = description;
@@ -36,19 +35,17 @@ public class DetailPlannerSearchResponse {
         this.likeCount = likeCount;
     }
 
-    public static DetailPlannerSearchResponse ofEntity(DetailPlannerLikeDocument document) {
+    public static PlannerDetailSearchResponse ofEntity(PlannerDetailDocument document) {
 
-        Planner planner = document.getPlanner();
-
-        return DetailPlannerSearchResponse.builder()
+        return PlannerDetailSearchResponse.builder()
                 .plannerDetailId(document.getPlannerDetailId())
-                .nickname(planner.getUser().getNickname())
+                .nickname(document.getNickname())
                 .description(document.getDescription())
                 .image(getOneImage(document.getImages()))
                 .place(document.getPlace())
                 .date(document.getDate())
                 .views(document.getViews())
-                .likeCount(document.getLikeCount())
+                .likeCount(document.getLikes())
                 .build();
     }
 
