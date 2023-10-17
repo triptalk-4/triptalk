@@ -44,7 +44,7 @@ public class LikeService {
      * 토큰 값안의 이메일 불러오기
      * @return
      */
-    public String userEmail(){
+    private String userEmail(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String email = "기본 이메일";
@@ -212,14 +212,14 @@ public class LikeService {
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new LikeException(No_User_Search));
 
-        Boolean userSaveYnCheck = userSaveRepository.existsByPlannerAndUser(planner,user);
-        Boolean userLikeYnCheck = userLikeRepository.existsByPlannerAndUser(planner,user);
+        boolean userSaveYnCheck = userSaveRepository.existsByPlannerAndUser(planner,user);
+        boolean userLikeYnCheck = userLikeRepository.existsByPlannerAndUser(planner,user);
 
-        if(userSaveYnCheck == true){
+        if(userSaveYnCheck){
             userSaveYn = "ok";
         }
 
-        if(userLikeYnCheck == true){
+        if(userLikeYnCheck){
             userLikeYn = "ok";
         }
 
