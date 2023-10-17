@@ -80,10 +80,10 @@ public class AuthenticationController {
     @PutMapping("/update/profile")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<AuthenticationResponse> updateRegister(@RequestPart UpdateRegisterRequest request,
-                                            @RequestPart("files") List<MultipartFile> files) {
+                                                                 @RequestPart("files") List<MultipartFile> files) {
 
-            AuthenticationResponse response = service.UpdateRegister(request, files);
-            return ResponseEntity.ok(response);
+        AuthenticationResponse response = service.UpdateRegister(request, files);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/profile")
