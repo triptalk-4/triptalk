@@ -26,11 +26,11 @@ public class AuthenticationTest {
     private JwtService jwtService;
 
     @Test
-    @DisplayName("이메일 형식 확인")
+    @DisplayName("이메일 형식 확인 - mail@mail.com")
     public void register() {
 
         RegisterRequest request = new RegisterRequest();
-        request.setEmail("123");
+        request.setEmail("123"); // 형식에 안맞음
 
         // Assert that a UserException is thrown when registering
         assertThrows(UserException.class, () -> {

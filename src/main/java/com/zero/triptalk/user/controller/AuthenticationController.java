@@ -11,10 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -118,7 +116,7 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/planners/userLike")
+    @GetMapping("/planners/userSave")
     public Page<LikePlannerResponse> getPlannersUserLike(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
         UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
         if (user != null) {
