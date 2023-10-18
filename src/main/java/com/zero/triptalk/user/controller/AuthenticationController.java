@@ -4,17 +4,14 @@ import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.response.*;
 import com.zero.triptalk.user.service.AuthenticationService;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -49,7 +46,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/email/check")
-    public ResponseEntity<?> registerEmailCheckToken(@RequestBody EmailTokenRequest request) {
+    public ResponseEntity<EmailCheckOkResponse> registerEmailCheckToken(@RequestBody EmailTokenRequest request) {
 
             EmailCheckOkResponse response = service.registerEmailCheckToken(request);
             return ResponseEntity.ok(response);
@@ -74,15 +71,13 @@ public class AuthenticationController {
     /**
      * 업데이트
      * @param request
-     * @param files
      * @return
      */
     @PutMapping("/update/profile")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<AuthenticationResponse> updateRegister(@RequestPart UpdateRegisterRequest request,
-                                                                 @RequestPart("files") List<MultipartFile> files) {
+    public ResponseEntity<AuthenticationResponse> updateRegister(@RequestBody UpdateRegisterRequest request) {
 
-        AuthenticationResponse response = service.UpdateRegister(request, files);
+        AuthenticationResponse response = service.UpdateRegister(request);
         return ResponseEntity.ok(response);
     }
 
@@ -119,7 +114,7 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/planners/userLike")
+    @GetMapping("/planners/userSave")
     public Page<LikePlannerResponse> getPlannersUserLike(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
         UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
         if (user != null) {

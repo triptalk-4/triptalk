@@ -5,6 +5,7 @@ import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -49,6 +50,10 @@ public class Planner {
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createAt;
+
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime modifiedAt;
 
     public void increaseViews(){
         this.views++;

@@ -1,10 +1,10 @@
-package com.zero.triptalk.like.repository;
+package com.zero.triptalk.planner.repository;
 
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import com.zero.triptalk.exception.code.SearchErrorCode;
 import com.zero.triptalk.exception.custom.SearchException;
-import com.zero.triptalk.like.entity.DetailPlannerLikeDocument;
-import com.zero.triptalk.search.SearchType;
+import com.zero.triptalk.planner.entity.PlannerDetailDocument;
+import com.zero.triptalk.search.type.SearchType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class DetailPlannerLikeSearchCustomRepository {
+public class CustomPlannerDetailSearchRepository {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
-    public List<DetailPlannerLikeDocument> searchByRegionAndSearchType(String region, String searchType, Pageable pageable) {
+    public List<PlannerDetailDocument> searchByRegionAndSearchType(String region, String searchType, Pageable pageable) {
 
         Criteria criteria = Criteria.where("place").contains(region);
 
@@ -35,7 +35,7 @@ public class DetailPlannerLikeSearchCustomRepository {
                 .build();
 
         try {
-            return elasticsearchOperations.search(query, DetailPlannerLikeDocument.class)
+            return elasticsearchOperations.search(query, PlannerDetailDocument.class)
                                     .stream().map(SearchHit::getContent).collect(Collectors.toList());
         } catch (ElasticsearchException e) {
             log.error(getClass() + " 의 Exception -> " + e.getMessage());

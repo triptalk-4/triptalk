@@ -1,9 +1,6 @@
 package com.zero.triptalk.planner.dto;
 
-import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
-import com.zero.triptalk.planner.entity.Planner;
-import com.zero.triptalk.planner.entity.PlannerDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

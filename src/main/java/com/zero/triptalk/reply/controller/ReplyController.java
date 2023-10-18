@@ -4,7 +4,6 @@ import com.zero.triptalk.reply.dto.request.ReplyRequest;
 import com.zero.triptalk.reply.dto.response.ReplyResponse;
 import com.zero.triptalk.reply.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

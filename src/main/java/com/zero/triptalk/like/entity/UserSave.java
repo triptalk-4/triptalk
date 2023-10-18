@@ -1,6 +1,7 @@
 package com.zero.triptalk.like.entity;
 
-import com.zero.triptalk.planner.entity.PlannerDetail;
+import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -14,18 +15,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DetailPlannerLike {
+public class UserSave {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long detailPlannerLikeId;
+    Long userSaveId;
 
     @ManyToOne
-    @JoinColumn(name = "planner_detail_Id")
-    private PlannerDetail plannerDetail;
+    @JoinColumn(name = "planner_id")
+    private Planner planner;
 
-    private Long likeCount;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
-    private LocalDateTime likeDt;
-
-
+    private LocalDateTime saveDt;
 }
