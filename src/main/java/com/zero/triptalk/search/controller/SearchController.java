@@ -1,6 +1,6 @@
 package com.zero.triptalk.search.controller;
 
-import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
+import com.zero.triptalk.planner.dto.PlannerSearchResponse;
 import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
 import com.zero.triptalk.search.service.SearchService;
 import com.zero.triptalk.user.dto.UserSearchResponse;
@@ -18,7 +18,7 @@ public class SearchController {
 
     private final SearchService searchService;
     @GetMapping("/main")
-    public ResponseEntity<List<PlannerLikeSearchResponse>> getTop6Planners() {
+    public ResponseEntity<List<PlannerSearchResponse>> getTop6Planners() {
 
         return ResponseEntity.ok(searchService.getTop6PlannersWithLikes());
     }

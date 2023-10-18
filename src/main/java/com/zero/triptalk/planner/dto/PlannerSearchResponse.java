@@ -1,6 +1,6 @@
-package com.zero.triptalk.like.dto.response;
+package com.zero.triptalk.planner.dto;
 
-import com.zero.triptalk.like.entity.PlannerDocument;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PlannerLikeSearchResponse {
+public class PlannerSearchResponse {
 
     private Long plannerId;
     private String title;
@@ -22,7 +22,7 @@ public class PlannerLikeSearchResponse {
     private Long likeCount;
 
     @Builder
-    public PlannerLikeSearchResponse(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likeCount) {
+    public PlannerSearchResponse(Long plannerLikeId, Long plannerId, String title, String thumbnail, String nickname, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likeCount) {
         this.plannerId = plannerId;
         this.title = title;
         this.thumbnail = thumbnail;
@@ -33,9 +33,9 @@ public class PlannerLikeSearchResponse {
         this.likeCount = likeCount;
     }
 
-    public static PlannerLikeSearchResponse ofEntity(PlannerDocument document) {
+    public static PlannerSearchResponse ofEntity(PlannerDocument document) {
 
-        return PlannerLikeSearchResponse.builder()
+        return PlannerSearchResponse.builder()
                 .plannerId(document.getPlannerId())
                 .title(document.getTitle())
                 .thumbnail(document.getThumbnail())

@@ -1,7 +1,7 @@
 package com.zero.triptalk.search.service;
 
-import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
-import com.zero.triptalk.like.entity.PlannerDocument;
+import com.zero.triptalk.planner.dto.PlannerSearchResponse;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerDetailSearchRepository;
@@ -26,12 +26,12 @@ public class SearchService {
     private final CustomPlannerDetailSearchRepository customPlannerDetailSearchRepository;
     private final UserSearchRepository userSearchRepository;
 
-    public List<PlannerLikeSearchResponse> getTop6PlannersWithLikes() {
+    public List<PlannerSearchResponse> getTop6PlannersWithLikes() {
 
         List<PlannerDocument> top6ByOrderByLikeCountDesc =
                 plannerSearchRepository.findTop6ByOrderByLikesDesc();
 
-        return top6ByOrderByLikeCountDesc.stream().map(PlannerLikeSearchResponse::ofEntity)
+        return top6ByOrderByLikeCountDesc.stream().map(PlannerSearchResponse::ofEntity)
                                                            .collect(Collectors.toList());
     }
 

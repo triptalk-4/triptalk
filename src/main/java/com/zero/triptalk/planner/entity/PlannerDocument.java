@@ -1,7 +1,6 @@
-package com.zero.triptalk.like.entity;
+package com.zero.triptalk.planner.entity;
 
 import com.querydsl.core.Tuple;
-import com.zero.triptalk.planner.entity.Planner;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

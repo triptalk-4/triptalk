@@ -1,7 +1,7 @@
 package com.zero.triptalk.search.schedule;
 
 import com.querydsl.core.Tuple;
-import com.zero.triptalk.like.entity.PlannerDocument;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;

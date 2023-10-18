@@ -1,6 +1,6 @@
 package com.zero.triptalk.planner.repository;
 
-import com.zero.triptalk.like.entity.PlannerDocument;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;
