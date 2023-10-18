@@ -19,26 +19,28 @@ public class CustomPlannerDetailRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Tuple> getPlannerDetailListByLikeAndViewUpdateDt(LocalDateTime from, LocalDateTime to) {
+    public List<Tuple> getPlannerListByLikeAndViewUpdateDt(LocalDateTime from, LocalDateTime to) {
 
-        List<Long> ids = queryFactory.select(planner.plannerId)
-                                        .from(planner)
-                                        .join(plannerLike)
-                                        .on(planner.eq(plannerLike.planner))
-                                        .join(userEntity)
-                                        .on(userEntity.eq(planner.user))
-                                        .where(plannerLike.likeDt.between(from, to)
-                                            .or(planner.modifiedAt.between(from, to)))
-                                        .groupBy(planner.plannerId)
-                                        .fetch();
+        return queryFactory.select(planner, plannerLike.likeCount)
+                            .from(planner)
+                            .join(plannerLike)
+                            .on(planner.eq(plannerLike.planner))
+                            .join(userEntity)
+                            .on(userEntity.eq(planner.user))
+                            .where(plannerLike.likeDt.between(from, to)
+                                    .or(planner.modifiedAt.between(from, to)))
+                            .groupBy(planner.plannerId)
+                            .fetch();
+    }
+
+    public List<Tuple> getPlannerDetailListByPlannerId(List<Long> ids) {
 
         return queryFactory.select(plannerDetail, plannerLike.likeCount)
-                .from(plannerDetail)
-                .join(plannerLike)
-                .on(plannerLike.planner.eq(plannerDetail.planner))
-                .where(plannerDetail.planner.plannerId.in(ids))
-                .fetch();
-
+                            .from(plannerDetail)
+                            .join(plannerLike)
+                            .on(plannerLike.planner.eq(plannerDetail.planner))
+                            .where(plannerDetail.planner.plannerId.in(ids))
+                            .fetch();
     }
 
 }
