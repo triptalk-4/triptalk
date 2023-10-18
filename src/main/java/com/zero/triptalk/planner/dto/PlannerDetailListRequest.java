@@ -29,6 +29,7 @@ public class PlannerDetailListRequest {
         return PlannerDetail.builder()
                 .planner(planner)
                 .userId(userId)
+                .date(date)
                 .description(description)
                 .images(images)
                 .place(place)
