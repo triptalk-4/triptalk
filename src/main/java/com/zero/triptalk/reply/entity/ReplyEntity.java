@@ -3,10 +3,12 @@ package com.zero.triptalk.reply.entity;
 import com.zero.triptalk.base.BaseEntity;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.user.entity.UserEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Builder

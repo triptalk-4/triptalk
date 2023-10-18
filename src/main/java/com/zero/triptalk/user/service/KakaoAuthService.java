@@ -145,9 +145,8 @@ public class KakaoAuthService {
             int randomNumber = 100000 + random.nextInt(900000);
 
             // Convert the random number to a string
-            String randomString = String.valueOf(randomNumber);
 
-            return randomString;
+         return String.valueOf(randomNumber);
         }
 
 
@@ -168,8 +167,7 @@ public class KakaoAuthService {
                 );
                 var user = repository.findByEmail(email)
                         .orElseThrow();
-                var jwtToken = jwtService.generateToken(user);
-                return jwtToken;
+                return jwtService.generateToken(user);
             }
 
             Optional<UserEntity> existingNickname = repository.findByNickname(nicknameByRandom);
@@ -196,9 +194,7 @@ public class KakaoAuthService {
             repository.save(user);
             userSearchRepository.save(UserDocument.ofEntity(user));
 
-            var jwtToken = jwtService.generateToken(user);
-
-            return jwtToken;
+        return jwtService.generateToken(user);
     }
 
 }
