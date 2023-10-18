@@ -129,18 +129,18 @@ public class PlannerApplication {
     //일정 상세페이지 조회
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
-        UserEntity user = plannerDetailService.findByEmail(email);
+        //로그인 유저 검증
+        plannerDetailService.findByEmail(email);
 
         PlannerLike plannerLike = likeService.findByPlannerId(plannerId);
         Long likeCount = (plannerLike != null) ? plannerLike.getLikeCount() : 0;
 
         Planner planner = plannerService.findById(plannerId);
+        UserEntity user = planner.getUser();
 
         planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
-
-        //댓글
 
 
         return PlannerResponse.of(planner, user, responses, likeCount);
