@@ -1,6 +1,6 @@
 package com.zero.triptalk.like.dto.response;
 
-import com.zero.triptalk.like.entity.PlannerLikeDocument;
+import com.zero.triptalk.like.entity.PlannerDocument;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class PlannerLikeSearchResponse {
         this.likeCount = likeCount;
     }
 
-    public static PlannerLikeSearchResponse ofEntity(PlannerLikeDocument document) {
+    public static PlannerLikeSearchResponse ofEntity(PlannerDocument document) {
 
         return PlannerLikeSearchResponse.builder()
                 .plannerId(document.getPlannerId())
@@ -43,7 +43,7 @@ public class PlannerLikeSearchResponse {
                 .startDate(document.getStartDate())
                 .endDate(document.getEndDate())
                 .views(document.getViews())
-                .likeCount(document.getLikeCount())
+                .likeCount(document.getLikes())
                 .build();
     }
 }

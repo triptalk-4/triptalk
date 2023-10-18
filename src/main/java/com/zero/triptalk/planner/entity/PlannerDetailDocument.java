@@ -22,18 +22,22 @@ import static com.zero.triptalk.planner.entity.QPlannerDetail.plannerDetail;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Document(indexName = "detail_planner")
+@Document(indexName = "planner_detail")
 public class PlannerDetailDocument {
     @Id
+    @Field(type = FieldType.Keyword)
     private Long plannerDetailId;
     private String nickname;
     private String description;
     private List<String> images;
     private String place;
+    @Field(type = FieldType.Keyword)
     private Long plannerId;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime date;
+    @Field(type = FieldType.Integer)
     private Long views;
+    @Field(type = FieldType.Integer)
     private Long likes;
 
     @Builder

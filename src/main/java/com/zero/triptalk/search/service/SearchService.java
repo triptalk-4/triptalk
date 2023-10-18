@@ -1,11 +1,11 @@
 package com.zero.triptalk.search.service;
 
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
-import com.zero.triptalk.like.entity.PlannerLikeDocument;
-import com.zero.triptalk.like.repository.PlannerLikeSearchRepository;
+import com.zero.triptalk.like.entity.PlannerDocument;
 import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerDetailSearchRepository;
+import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.user.dto.UserSearchResponse;
 import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.repository.UserSearchRepository;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,14 +22,14 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class SearchService {
 
-    private final PlannerLikeSearchRepository plannerLikeSearchRepository;
+    private final PlannerSearchRepository plannerSearchRepository;
     private final CustomPlannerDetailSearchRepository customPlannerDetailSearchRepository;
     private final UserSearchRepository userSearchRepository;
 
     public List<PlannerLikeSearchResponse> getTop6PlannersWithLikes() {
 
-        List<PlannerLikeDocument> top6ByOrderByLikeCountDesc =
-                plannerLikeSearchRepository.findTop6ByOrderByLikeCountDesc();
+        List<PlannerDocument> top6ByOrderByLikeCountDesc =
+                plannerSearchRepository.findTop6ByOrderByLikesDesc();
 
         return top6ByOrderByLikeCountDesc.stream().map(PlannerLikeSearchResponse::ofEntity)
                                                            .collect(Collectors.toList());
@@ -52,10 +51,6 @@ public class SearchService {
 
         List<UserDocument> documents = userSearchRepository.findByNicknameContains(keyword, pageable);
 
-        if (documents.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return documents.stream().map(UserSearchResponse::ofDocument).collect(Collectors.toList());
+        return UserSearchResponse.ofDocument(documents);
     }
 }

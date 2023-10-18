@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSearchResponse {
@@ -23,12 +27,22 @@ public class UserSearchResponse {
         this.profile = profile;
     }
 
-    public static UserSearchResponse ofDocument(UserDocument document) {
-        return UserSearchResponse.builder()
-                .userId(document.getUserId())
-                .nickname(document.getNickname())
-                .aboutMe(document.getAboutMe())
-                .profile(document.getProfile())
-                .build();
+    public static List<UserSearchResponse> ofDocument(List<UserDocument> documents) {
+
+        if (documents.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<UserSearchResponse> list = new ArrayList<>();
+        for (UserDocument x : documents) {
+            list.add(UserSearchResponse.builder()
+                                        .userId(x.getUserId())
+                                        .nickname(x.getNickname())
+                                        .aboutMe(x.getAboutMe())
+                                        .profile(x.getProfile())
+                                        .build());
+        }
+
+        return list;
     }
 }
