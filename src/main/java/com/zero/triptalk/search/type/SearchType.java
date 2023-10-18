@@ -1,4 +1,4 @@
-package com.zero.triptalk.search;
+package com.zero.triptalk.search.type;
 
 import com.zero.triptalk.exception.code.SearchErrorCode;
 import com.zero.triptalk.exception.custom.SearchException;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum SearchType {
     DATE("date"),
-    LIKE("likeCount"),
+    LIKE("likes"),
     VIEW("views");
 
     private final String field;

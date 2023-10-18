@@ -1,13 +1,13 @@
 package com.zero.triptalk.search.schedule;
 
 import com.querydsl.core.Tuple;
-import com.zero.triptalk.like.entity.DetailPlannerLikeDocument;
 import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.entity.PlannerLikeDocument;
-import com.zero.triptalk.like.repository.DetailPlannerLikeSearchRepository;
 import com.zero.triptalk.like.repository.PlannerLikeRepository;
 import com.zero.triptalk.like.repository.PlannerLikeSearchRepository;
+import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerDetailRepository;
+import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,8 +30,8 @@ public class ElasticScheduler {
 
     private final PlannerLikeRepository plannerLikeRepository;
     private final PlannerLikeSearchRepository plannerLikeSearchRepository;
-    private final DetailPlannerLikeSearchRepository detailPlannerLikeSearchRepository;
     private final CustomPlannerDetailRepository customPlannerDetailRepository;
+    private final PlannerDetailSearchRepository plannerDetailSearchRepository;
 
     @Scheduled(cron = "${scheduler.elasticsearch}")
     public void savePlannersByLikesUpdateDt() {
@@ -46,15 +46,14 @@ public class ElasticScheduler {
     }
 
     @Scheduled(cron = "${scheduler.elasticsearch}")
-    public void saveDetailPlannerByDateAndViewsAndLikesUpdateDt() {
+    public void saveDetailPlannerByViewsAndLikesUpdateDt() {
 
-        List<Tuple> tuples = customPlannerDetailRepository.findAllByDateAndViewsAndLikesUpdateDt(from, to);
-
-        List<DetailPlannerLikeDocument> documents = DetailPlannerLikeDocument.ofTuple(tuples);
-        detailPlannerLikeSearchRepository.saveAll(documents);
+        List<Tuple> plannerDetails = customPlannerDetailRepository.getPlannerDetailListByLikeAndViewUpdateDt(from, to);
+        List<PlannerDetailDocument> documents = PlannerDetailDocument.ofTuple(plannerDetails);
+        plannerDetailSearchRepository.saveAll(documents);
 
         log.info(LocalDateTime.now() + "=====================");
-        log.info(from + " 부터 " + to + " 까지 DetailPlannerLikeDocuments 저장완료. 총 : " + documents.size() + "개");
+        log.info(from + " 부터 " + to + " 까지 PlannerDetailDocument 저장완료. 총 : " + documents.size() + "개");
     }
 
 }

@@ -1,11 +1,10 @@
 package com.zero.triptalk.user.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zero.triptalk.user.request.KakaoRequest;
 import com.zero.triptalk.user.response.KakaoResponse;
 import com.zero.triptalk.user.service.KakaoAuthService;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +32,7 @@ public class KakaoController {
 
         String url = service.generateKakaoAuthorizationUrl();
 
-        return "redirect:" + url.toString();
+        return "redirect:" + url;
     }
 
     @PostMapping("/login")
