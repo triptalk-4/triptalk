@@ -26,6 +26,7 @@ public class PlannerResponse {
     private String nickname;
     private String profile;
     private Long userId;
+    private String email;
     private List<PlannerDetailResponse> plannerDetailResponse;
 
     public static PlannerResponse of(Planner planner, UserEntity user, List<PlannerDetailResponse> details, Long likeCount){
@@ -41,6 +42,7 @@ public class PlannerResponse {
                 .nickname(user.getNickname())
                 .profile(user.getProfile())
                 .userId(user.getUserId())
+                .email(user.getEmail())
                 .plannerDetailResponse(details)
                 .build();
     }
