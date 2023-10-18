@@ -1,22 +1,20 @@
 package com.zero.triptalk.reply.entity;
 
+import com.zero.triptalk.base.BaseEntity;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.user.entity.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "reply")
-public class ReplyEntity {
+public class ReplyEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long replyId;
@@ -31,8 +29,7 @@ public class ReplyEntity {
 
     private String reply;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime modifiedAt;
-
+    public void setReply(String reply) {
+        this.reply = reply;
+    }
 }
