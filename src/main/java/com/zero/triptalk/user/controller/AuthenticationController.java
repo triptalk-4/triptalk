@@ -4,7 +4,6 @@ import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.response.*;
 import com.zero.triptalk.user.service.AuthenticationService;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +46,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/email/check")
-    public ResponseEntity<?> registerEmailCheckToken(@RequestBody EmailTokenRequest request) {
+    public ResponseEntity<EmailCheckOkResponse> registerEmailCheckToken(@RequestBody EmailTokenRequest request) {
 
             EmailCheckOkResponse response = service.registerEmailCheckToken(request);
             return ResponseEntity.ok(response);
@@ -72,7 +71,6 @@ public class AuthenticationController {
     /**
      * 업데이트
      * @param request
-     * @param files
      * @return
      */
     @PutMapping("/update/profile")

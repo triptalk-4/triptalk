@@ -1,11 +1,11 @@
 package com.zero.triptalk.search.service;
 
-import com.zero.triptalk.like.dto.response.DetailPlannerSearchResponse;
 import com.zero.triptalk.like.dto.response.PlannerLikeSearchResponse;
-import com.zero.triptalk.like.entity.DetailPlannerLikeDocument;
 import com.zero.triptalk.like.entity.PlannerLikeDocument;
-import com.zero.triptalk.like.repository.DetailPlannerLikeSearchCustomRepository;
 import com.zero.triptalk.like.repository.PlannerLikeSearchRepository;
+import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
+import com.zero.triptalk.planner.entity.PlannerDetailDocument;
+import com.zero.triptalk.planner.repository.CustomPlannerDetailSearchRepository;
 import com.zero.triptalk.user.dto.UserSearchResponse;
 import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.repository.UserSearchRepository;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class SearchService {
 
     private final PlannerLikeSearchRepository plannerLikeSearchRepository;
-    private final DetailPlannerLikeSearchCustomRepository detailPlannerLikeSearchCustomRepository;
+    private final CustomPlannerDetailSearchRepository customPlannerDetailSearchRepository;
     private final UserSearchRepository userSearchRepository;
 
     public List<PlannerLikeSearchResponse> getTop6PlannersWithLikes() {
@@ -36,14 +36,14 @@ public class SearchService {
                                                            .collect(Collectors.toList());
     }
 
-    public List<DetailPlannerSearchResponse> searchByRegionAnySort(
+    public List<PlannerDetailSearchResponse> searchByRegionAnySort(
                                         String region, String searchType, Pageable pageable) {
 
-        List<DetailPlannerLikeDocument> searchResponses =
-                detailPlannerLikeSearchCustomRepository.searchByRegionAndSearchType(
+        List<PlannerDetailDocument> searchResponses =
+                customPlannerDetailSearchRepository.searchByRegionAndSearchType(
                                                             region, searchType, pageable);
 
-        return searchResponses.stream().map(DetailPlannerSearchResponse::ofEntity)
+        return searchResponses.stream().map(PlannerDetailSearchResponse::ofEntity)
                                                             .collect(Collectors.toList());
 
     }
