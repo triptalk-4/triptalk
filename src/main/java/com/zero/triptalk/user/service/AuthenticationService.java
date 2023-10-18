@@ -19,6 +19,7 @@ import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -345,13 +346,11 @@ public class AuthenticationService {
     public Page<MyPlannerBoardResponse> getPlannersByUser(UserEntity user, Pageable pageable) {
         Page<Object[]> plannersPage = plannerRepository.findPlannersWithLikeCount(user, pageable);
 
-        List<MyPlannerBoardResponse> myPlannerBoardResponses =  plannersPage
+        List<MyPlannerBoardResponse> myPlannerBoardResponses = plannersPage
                 .stream()
                 .map(data -> {
                     Planner planner = (Planner) data[0];
-
-                    PlannerLike plannerLike = (PlannerLike) data[1];
-                    Long likeCount = plannerLike.getLikeCount();
+                    Object data1 = data[1];
 
                     MyPlannerBoardResponse response = new MyPlannerBoardResponse();
                     response.setPlannerId(planner.getPlannerId());
@@ -359,7 +358,13 @@ public class AuthenticationService {
                     response.setThumbnail(planner.getThumbnail());
                     response.setViews(planner.getViews());
                     response.setCreateAt(planner.getCreateAt().toString());
-                    response.setLikeCount(likeCount);
+
+                    // LikeCount 설정
+                    if (data1 instanceof Long) {
+                        response.setLikeCount((Long) data1);
+                    } else {
+                        response.setLikeCount(0L);
+                    }
 
                     return response;
                 })
@@ -367,9 +372,8 @@ public class AuthenticationService {
 
         return new PageImpl<>(myPlannerBoardResponses, pageable, plannersPage.getTotalElements());
     }
-
     public Page<LikePlannerResponse> getPlannersByUserLike(UserEntity user, Pageable pageable) {
-        Page<Object[]> plannersPage = userSaveRepository.findPlannersSavedByUserWithLikeCount(user, pageable);
+        Page<Object[]> plannersPage = userSaveRepository.findPlannersLikedByUserWithLikeCount(user, pageable);
 
         List<LikePlannerResponse> likePlannerResponses = plannersPage
                 .stream()

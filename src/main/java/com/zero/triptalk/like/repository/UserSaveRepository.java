@@ -19,7 +19,7 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
             "JOIN PlannerLike pl ON ple.planner = pl.planner\n" +
             "WHERE ple.user = :user\n" +
             "GROUP BY pl.planner")
-    Page<Object[]> findPlannersSavedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
+    Page<Object[]> findPlannersLikedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
 //    boolean existsByPlannerDetailAndUser(PlannerDetail plannerDetail, UserEntity userEntity);
 //
