@@ -27,10 +27,6 @@ public class UserLikeEntity {
     private Planner planner;
 
     @ManyToOne
-    @JoinColumn(name = "planner_detail_id")
-    private PlannerDetail plannerDetail;
-
-    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
