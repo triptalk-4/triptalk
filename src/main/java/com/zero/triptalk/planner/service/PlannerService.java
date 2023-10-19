@@ -1,5 +1,6 @@
 package com.zero.triptalk.planner.service;
 
+import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.custom.PlannerException;
 import com.zero.triptalk.planner.dto.PlannerListResult;
@@ -19,6 +20,7 @@ public class PlannerService {
 
     private final PlannerRepository plannerRepository;
     private final CustomPlannerRepository customPlannerRepository;
+    private final RedisUtil redisUtil;
 
 
     public Planner createPlanner(PlannerRequest request, UserEntity user, String thumbnail) {
@@ -36,6 +38,15 @@ public class PlannerService {
 
     public PlannerListResult getPlanners(Pageable pageable, SortType sortType) {
         return customPlannerRepository.PlannerList(pageable, sortType);
+    }
+
+    public void increaseViews(Planner planner){
+        String redisKey = "planner:views:"+planner.getPlannerId();
+        String data = redisUtil.getData(redisKey);
+        if (data.isEmpty()){
+            redisUtil.setData(redisKey,String.valueOf(Integer.parseInt(data)+1));
+        }
+        redisUtil.setData(redisKey,String.valueOf(planner.getViews()));
 
     }
 }
