@@ -58,7 +58,7 @@ public class GoogleAuthService {
                                                                 .redirectUri(redirectUri)
                                                                 .build();
 
-        log.debug("doSocialLogin :::::::::::::::" + code);
+        System.out.println("doSocialLogin:::::::::  " + code);
 
         ResponseEntity<String> accessToken = feignClientGoogleAuth.getAccessToken(googleRequestToken);
 
