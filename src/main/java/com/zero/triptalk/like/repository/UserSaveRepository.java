@@ -35,5 +35,6 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
 //    Page<Object[]> findPlannersLikedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
 
+    void deleteAllByPlannerAndUser(Planner planner, UserEntity user);
 
 }
