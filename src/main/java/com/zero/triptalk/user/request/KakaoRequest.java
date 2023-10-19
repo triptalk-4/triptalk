@@ -8,5 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoRequest {
-    private String token;
+    private String ingaCode;
 }
