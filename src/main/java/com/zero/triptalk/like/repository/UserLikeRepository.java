@@ -16,8 +16,6 @@ public interface UserLikeRepository extends JpaRepository<UserLikeEntity, Long> 
 
     boolean existsByPlannerAndUser(Planner planner, UserEntity userEntity);
 
-    Optional<Object> findByPlannerDetailAndUser(PlannerDetail planner, UserEntity user);
-
     // 다음과 같이 유저가 좋아요 한 플래너만을 가져오는 메서드를 정의합니다.
     @Query("SELECT pl.planner, pl.likeCount as likeCount\n" +
             "FROM UserLikeEntity ple\n" +

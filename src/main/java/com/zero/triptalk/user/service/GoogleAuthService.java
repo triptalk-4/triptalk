@@ -58,6 +58,8 @@ public class GoogleAuthService {
                                                                 .redirectUri(redirectUri)
                                                                 .build();
 
+        log.debug("doSocialLogin :::::::::::::::" + code);
+
         ResponseEntity<String> accessToken = feignClientGoogleAuth.getAccessToken(googleRequestToken);
 
         Gson gson = new Gson();
