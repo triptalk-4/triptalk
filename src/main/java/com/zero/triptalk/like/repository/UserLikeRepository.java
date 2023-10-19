@@ -28,4 +28,6 @@ public interface UserLikeRepository extends JpaRepository<UserLikeEntity, Long> 
 
 
     Optional<Object> findByPlannerAndUser(Planner planner, UserEntity user);
+
+    void deleteAllByPlannerAndUser(Planner planner, UserEntity user);
 }
