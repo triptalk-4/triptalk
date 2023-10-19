@@ -3,7 +3,6 @@ package com.zero.triptalk.reply.controller;
 import com.zero.triptalk.reply.dto.request.ReplyRequest;
 import com.zero.triptalk.reply.dto.response.ReplyGetResponse;
 import com.zero.triptalk.reply.dto.response.ReplyResponse;
-import com.zero.triptalk.reply.entity.ReplyEntity;
 import com.zero.triptalk.reply.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +39,7 @@ public class ReplyController {
      * @param plannerDetailId
      * @return
      */
-    @PostMapping("/detail/{plannerDetailId}/reply")
-
     @PostMapping("/detail/{plannerDetailId}")
-
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<ReplyResponse> ReplyOk(@PathVariable Long plannerDetailId,
                                                  @RequestBody ReplyRequest request, Principal principal) {
@@ -54,7 +50,7 @@ public class ReplyController {
     @PutMapping("/{replyId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<ReplyResponse> ReplyUpdateOk(@PathVariable Long replyId,
-                                          @RequestBody ReplyRequest request, Principal principal) {
+                                                       @RequestBody ReplyRequest request, Principal principal) {
 
         return ResponseEntity.ok(replyService.replyUpdateOk(replyId,request, principal.getName()));
     }
