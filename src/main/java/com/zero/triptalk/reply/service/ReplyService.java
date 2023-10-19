@@ -20,8 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,9 +34,9 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private final PlannerDetailRepository plannerDetailRepository;
 
-    private static  String email = "";
+    private static String email = "";
 
-    public String userEmail(){
+    public String userEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
@@ -49,7 +47,7 @@ public class ReplyService {
         return email;
     }
 
-    public ReplyResponse replyOk(Long plannerDetailId,ReplyRequest request, String email) {
+    public ReplyResponse replyOk(Long plannerDetailId, ReplyRequest request, String email) {
 
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
@@ -72,7 +70,7 @@ public class ReplyService {
                 .build();
     }
 
-    public ReplyResponse replyUpdateOk(Long replyId,ReplyRequest request, String email) {
+    public ReplyResponse replyUpdateOk(Long replyId, ReplyRequest request, String email) {
 
         ReplyEntity reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_PLANNER_DETAIL_REPLY_BOARD));
@@ -81,7 +79,7 @@ public class ReplyService {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
         // 쓴 유저가 아닐때 에러
-        if(!(userEntity.equals(reply.getUser()))){
+        if (!(userEntity.equals(reply.getUser()))) {
             throw new ReplyException(ReplyErrorCode.NO_REPLY_OWNER);
         }
 
@@ -102,7 +100,7 @@ public class ReplyService {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
         // 쓴 유저가 아닐때 에러
-        if(!(userEntity.equals(reply.getUser()))){
+        if (!(userEntity.equals(reply.getUser()))) {
             throw new ReplyException(ReplyErrorCode.NO_REPLY_OWNER);
         }
         replyRepository.delete(reply);
@@ -137,5 +135,10 @@ public class ReplyService {
         response.setReply(replyEntity.getReply());
         response.setCreateDt(replyEntity.getCreatedAt());
         return response;
+    }
+
+    //상세일정 댓글 아이디
+    public List<ReplyEntity> getReplies(PlannerDetail plannerDetail){
+        return replyRepository.findByPlannerDetail(plannerDetail);
     }
 }
