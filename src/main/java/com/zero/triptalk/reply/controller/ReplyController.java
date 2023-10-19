@@ -6,17 +6,23 @@ import com.zero.triptalk.reply.dto.response.ReplyResponse;
 import com.zero.triptalk.reply.entity.ReplyEntity;
 import com.zero.triptalk.reply.service.ReplyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
+
+import java.security.Principal;
+
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/plans")
+@RequestMapping("/api/reply")
 public class ReplyController {
 
     private final ReplyService replyService;
+
 
 
     @GetMapping("/detail/replies/{plannerDetailId}")
@@ -35,33 +41,29 @@ public class ReplyController {
      * @return
      */
     @PostMapping("/detail/{plannerDetailId}/reply")
+
+    @PostMapping("/detail/{plannerDetailId}")
+
     @PreAuthorize("hasAuthority('USER')")
-    public ReplyResponse ReplyOk(@PathVariable Long plannerDetailId,
-                                 @RequestBody ReplyRequest request) {
+    public ResponseEntity<ReplyResponse> ReplyOk(@PathVariable Long plannerDetailId,
+                                                 @RequestBody ReplyRequest request, Principal principal) {
 
-        // 댓글 달기
-        ReplyResponse response = replyService.replyOk(plannerDetailId,request);
-
-        return response;
+        return ResponseEntity.ok(replyService.replyOk(plannerDetailId,request, principal.getName()));
     }
 
-    @PutMapping("/detail/reply/{replyId}/update")
-    public ReplyResponse ReplyUpdateOk(@PathVariable Long replyId,
-                                          @RequestBody ReplyRequest request) {
+    @PutMapping("/{replyId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<ReplyResponse> ReplyUpdateOk(@PathVariable Long replyId,
+                                          @RequestBody ReplyRequest request, Principal principal) {
 
-        // 댓글 달기
-        ReplyResponse response = replyService.replyUpdateOk(replyId,request);
-
-        return response;
+        return ResponseEntity.ok(replyService.replyUpdateOk(replyId,request, principal.getName()));
     }
 
-    @DeleteMapping("/detail/reply/{replyId}/delete")
-    public ReplyResponse ReplyDeleteOk(@PathVariable Long replyId) {
+    @DeleteMapping("/{replyId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<ReplyResponse> ReplyDeleteOk(@PathVariable Long replyId, Principal principal) {
 
-        // 댓글 달기
-        ReplyResponse response = replyService.replyDeleteOk(replyId);
-
-        return response;
+        return ResponseEntity.ok(replyService.replyDeleteOk(replyId, principal.getName()));
     }
 
 

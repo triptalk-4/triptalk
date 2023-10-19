@@ -15,15 +15,14 @@ import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
@@ -33,6 +32,7 @@ public class ReplyService {
     private final UserRepository userRepository;
     private final ReplyRepository replyRepository;
     private final PlannerDetailRepository plannerDetailRepository;
+
     private static  String email = "";
 
     public String userEmail(){
@@ -46,27 +46,25 @@ public class ReplyService {
         return email;
     }
 
-//    public ReplyResponse getReply(Long replyId) {
-//
-//    }
+
 
     public ReplyResponse replyOk(Long plannerDetailId,ReplyRequest request) {
 
+
+    public ReplyResponse replyOk(Long plannerDetailId,ReplyRequest request, String email) {
+
+
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
-                .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_Planner_Detail_Board));
+                .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_PLANNER_DETAIL_BOARD));
 
         // 접속자 유저 찾기 -> 어떤 유저가 댓글을 달았는지 등록할 수 있다
-        String email = userEmail(); // 이메일 불러오기
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
-        LocalDateTime currentTime = LocalDateTime.now();
 
         ReplyEntity reply = ReplyEntity.builder()
                 .plannerDetail(plannerDetail)
                 .user(userEntity)
                 .reply(request.getReply())
-                .createdAt(currentTime)
-                .modifiedAt(currentTime)
                 .build();
 
         replyRepository.save(reply);
@@ -76,25 +74,20 @@ public class ReplyService {
                 .build();
     }
 
-    public ReplyResponse replyUpdateOk(Long replyId,ReplyRequest request) {
-        LocalDateTime currentTime = LocalDateTime.now();
+    public ReplyResponse replyUpdateOk(Long replyId,ReplyRequest request, String email) {
 
         ReplyEntity reply = replyRepository.findById(replyId)
-                .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_Planner_Detail_Reply_Board));
-
+                .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_PLANNER_DETAIL_REPLY_BOARD));
 
         // 좋아요를 누른 접속자 유저 찾기
-        String email = userEmail(); // 이메일 불러오기
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
         // 쓴 유저가 아닐때 에러
         if(!(userEntity.equals(reply.getUser()))){
-            throw new ReplyException(ReplyErrorCode.NO_Reply_Owner);
+            throw new ReplyException(ReplyErrorCode.NO_REPLY_OWNER);
         }
 
         reply.setReply(request.getReply());
-        reply.setModifiedAt(currentTime);
-
         replyRepository.save(reply);
 
         return ReplyResponse.builder()
@@ -102,19 +95,17 @@ public class ReplyService {
                 .build();
     }
 
-    public ReplyResponse replyDeleteOk(Long replyId) {
+    public ReplyResponse replyDeleteOk(Long replyId, String email) {
 
         ReplyEntity reply = replyRepository.findById(replyId)
-                .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_Planner_Detail_Reply_Board));
-
+                .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_PLANNER_DETAIL_REPLY_BOARD));
 
         // 좋아요를 누른 접속자 유저 찾기
-        String email = userEmail(); // 이메일 불러오기
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
         // 쓴 유저가 아닐때 에러
         if(!(userEntity.equals(reply.getUser()))){
-            throw new ReplyException(ReplyErrorCode.NO_Reply_Owner);
+            throw new ReplyException(ReplyErrorCode.NO_REPLY_OWNER);
         }
         replyRepository.delete(reply);
 
