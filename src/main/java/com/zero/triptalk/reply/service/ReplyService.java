@@ -15,6 +15,9 @@ import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 
@@ -45,11 +48,6 @@ public class ReplyService {
 
         return email;
     }
-
-
-
-    public ReplyResponse replyOk(Long plannerDetailId,ReplyRequest request) {
-
 
     public ReplyResponse replyOk(Long plannerDetailId,ReplyRequest request, String email) {
 
