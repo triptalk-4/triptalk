@@ -188,15 +188,14 @@ public class LikeService {
 
         if(userSaveDelete == null) {
             throw new LikeException(NO_SAVE_EXIST_ERROR);
-        }
+        }else {
 
-
-        if(!(userSaveDelete == null)) {
             userSaveRepository.delete(userSaveDelete);
+
+            return UserSaveAndCancelResponse.builder()
+                    .ok("저장함 삭제가 완료되었습니다.")
+                    .build();
         }
-        return UserSaveAndCancelResponse.builder()
-                .ok("저장함 삭제가 완료되었습니다.")
-                .build();
     }
 
     public UserLikeAndSaveYnResponse userCheckYn(Long plannerId) {
@@ -214,6 +213,7 @@ public class LikeService {
 
         boolean userSaveYnCheck = userSaveRepository.existsByPlannerAndUser(planner,user);
         boolean userLikeYnCheck = userLikeRepository.existsByPlannerAndUser(planner,user);
+
 
         if(userSaveYnCheck){
             userSaveYn = "ok";
