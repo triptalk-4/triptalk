@@ -7,6 +7,7 @@ import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
 import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
+import com.zero.triptalk.planner.repository.CustomPlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.user.entity.UserEntity;
@@ -26,7 +27,7 @@ public class PlannerDetailService {
 
     private final PlannerDetailSearchRepository plannerDetailSearchRepository;
     private final PlannerDetailRepository plannerDetailRepository;
-
+    private final CustomPlannerDetailRepository customPlannerDetailRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
 
@@ -72,6 +73,10 @@ public class PlannerDetailService {
     public void deletePlannerDetail(Long id) {
         plannerDetailRepository.deleteById(id);
         plannerDetailSearchRepository.deleteById(id);
+    }
+
+    public void NotInDbDeletePlannerDetail(List<Long> updateIds, Long plannerId){
+        customPlannerDetailRepository.deletePlannerDetail(updateIds,plannerId);
     }
 
     public List<PlannerDetail> findByPlannerId(Long plannerId) {
