@@ -39,7 +39,7 @@ public class PlannerSearchResponse {
                 .plannerId(document.getPlannerId())
                 .title(document.getTitle())
                 .thumbnail(document.getThumbnail())
-                .nickname(document.getNickname())
+                .nickname(document.getUser().getNickname())
                 .startDate(document.getStartDate())
                 .endDate(document.getEndDate())
                 .views(document.getViews())

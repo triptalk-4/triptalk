@@ -9,6 +9,7 @@ import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
+import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
@@ -55,6 +56,9 @@ class PlannerDetailServiceTest {
 
     @InjectMocks
     private PlannerDetailService plannerDetailService;
+
+    @Mock
+    private PlannerDetailSearchRepository plannerDetailSearchRepository;
 
 
     @Test
@@ -147,9 +151,14 @@ class PlannerDetailServiceTest {
     @DisplayName("상세일정 리스트 저장")
     void savePlannerDetailList() {
         //given
-        Planner planner = new Planner();
+
         PlannerDetailRequest plannerDetailRequest = new PlannerDetailRequest();
-        UserEntity user = new UserEntity();
+        UserEntity user = UserEntity.builder()
+                                    .nickname("google")
+                                    .build();
+        Planner planner = Planner.builder()
+                                    .user(user)
+                                    .build();
         Place place = new Place();
         List<String> images = new ArrayList<>();
         List<PlannerDetail> list = new ArrayList<>();
