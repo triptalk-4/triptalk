@@ -112,12 +112,28 @@ public class PlannerApplication {
     @Transactional
     public void deletePlanner(Long plannerId, String email) {
 
-        //일정이 존재하는지
+        //일정,유저 검증
         Planner planner = plannerService.findById(plannerId);
+        UserEntity user = plannerDetailService.findByEmail(email);
 
         //로그인 유저와 작성자가 일치하는지
         if (!planner.getUser().getEmail().equals(email)) {
             throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
+        }
+
+        //UserLikeEntity 삭제
+        if (likeService.UserLikeEntityExist(planner, user)) {
+            likeService.deleteUserLikeEntity(planner, user);
+        }
+
+        //PlannerLike 삭제
+        if (likeService.PlannerLikeExist(planner)) {
+            likeService.deletePlannerLike(planner);
+        }
+
+        // UserSave 삭제
+        if (likeService.UserSaveExist(planner, user)) {
+            likeService.deleteUserSave(planner, user);
         }
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
@@ -141,7 +157,7 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
-        planner.increaseViews();
+//        planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
