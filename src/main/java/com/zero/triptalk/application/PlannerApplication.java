@@ -116,7 +116,12 @@ public class PlannerApplication {
     public void deletePlanner(Long plannerId, String email) {
 
         //일정이 존재하는지
-        plannerService.findById(plannerId);
+        Planner planner = plannerService.findById(plannerId);
+
+        //로그인 유저와 작성자가 일치하는지
+        if (!planner.getUser().getEmail().equals(email)) {
+            throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
+        }
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
         List<PlannerDetail> byPlanner = plannerDetailService.findByPlannerId(plannerId);
@@ -127,6 +132,7 @@ public class PlannerApplication {
     }
 
     //일정 상세페이지 조회
+    @Transactional
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
         //로그인 유저 검증
@@ -149,8 +155,13 @@ public class PlannerApplication {
     //일정 수정
     @Transactional
     public boolean updatePlanner(Long plannerId, UpdatePlannerInfo info, String email) {
+
         UserEntity byEmail = plannerDetailService.findByEmail(email);
         Planner planner = plannerService.findById(plannerId);
+        if (!planner.getUser().getEmail().equals(email)) {
+            throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
+        }
+
         try {
             planner.updatePlanner(info.getPlannerRequest());
             List<PlannerDetail> result = info.getUpdatePlannerDetailListRequests().stream().map(
