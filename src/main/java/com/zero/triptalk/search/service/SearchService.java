@@ -1,11 +1,12 @@
 package com.zero.triptalk.search.service;
 
-import com.zero.triptalk.planner.dto.PlannerSearchResponse;
-import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
+import com.zero.triptalk.planner.dto.PlannerSearchResponse;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerSearchRepository;
+import com.zero.triptalk.user.dto.UserInfoSearchResponse;
 import com.zero.triptalk.user.dto.UserSearchResponse;
 import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.repository.UserSearchRepository;
@@ -52,5 +53,12 @@ public class SearchService {
         List<UserDocument> documents = userSearchRepository.findByNicknameContains(keyword, pageable);
 
         return UserSearchResponse.ofDocument(documents);
+    }
+
+    public UserInfoSearchResponse searchByUserId(Long userId) {
+
+        List<PlannerDocument> plannerDocuments = plannerSearchRepository.findAllByUser(userId);
+
+        return UserInfoSearchResponse.ofDocument(plannerDocuments);
     }
 }
