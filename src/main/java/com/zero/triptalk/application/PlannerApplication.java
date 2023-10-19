@@ -9,12 +9,15 @@ import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.like.service.LikeService;
 import com.zero.triptalk.place.entity.Place;
+import com.zero.triptalk.place.entity.PlaceRequest;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.*;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
+import com.zero.triptalk.reply.entity.ReplyEntity;
+import com.zero.triptalk.reply.service.ReplyService;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +47,11 @@ public class PlannerApplication {
 
     private final LikeService likeService;
 
-    //상세 일정 한개 생성
+    private final ReplyService replyService;
+
+    /**
+     * 상세 일정 한개 생성
+     **/
     @Transactional
     public boolean createPlannerDetail(Long plannerId, List<MultipartFile> files,
                                        PlannerDetailRequest request, String email) {
@@ -53,9 +60,7 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
 
         //place 저장
-        Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
-        Place place = byRoadAddress.orElseGet(
-                () -> placeService.savePlace(request.getPlaceInfo()));
+        Place place = getPlace(request.getPlaceInfo());
         //S3 -> url 리스트 변환
         List<String> images = imageService.uploadFiles(files);
 
@@ -67,7 +72,9 @@ public class PlannerApplication {
         return true;
     }
 
-    //일정 생성(일정 정보와 상세일정 리스트 모두 저장)
+    /**
+     * 일정 생성(일정 정보와 상세일정 리스트 모두 저장)
+     **/
     @Transactional
     public boolean createPlanner(PlannerRequest plannerRequest, List<PlannerDetailListRequest> requests, String email) {
 
@@ -82,9 +89,7 @@ public class PlannerApplication {
 
             //상세 일정 저장
             List<PlannerDetail> detailList = requests.stream().map(request -> {
-                Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
-                Place place = byRoadAddress.orElseGet(
-                        () -> placeService.savePlace(request.getPlaceInfo()));
+                Place place = getPlace(request.getPlaceInfo());
                 return request.toEntity(planner, place, user.getUserId());
             }).collect(Collectors.toList());
 
@@ -96,7 +101,9 @@ public class PlannerApplication {
         return true;
     }
 
-    //상세 일정 삭제
+    /**
+     * 상세 일정 삭제
+     **/
     @Transactional
     public void deletePlannerDetail(Long plannerDetailId, String email) {
 
@@ -108,19 +115,40 @@ public class PlannerApplication {
         }
         imageService.deleteFiles(plannerDetail.getImages());
 
+        //댓글 삭제
+        List<ReplyEntity> replies = replyService.getReplies(plannerDetail);
+        replies.forEach(
+                reply -> replyService.replyDeleteOk(reply.getReplyId(), email)
+        );
         plannerDetailService.deletePlannerDetail(plannerDetailId);
     }
 
-    // 일정 삭제
+    /**
+     * 일정 삭제
+     **/
     @Transactional
     public void deletePlanner(Long plannerId, String email) {
 
-        //일정이 존재하는지
+        //일정,유저 검증
         Planner planner = plannerService.findById(plannerId);
+        UserEntity user = plannerDetailService.findByEmail(email);
 
         //로그인 유저와 작성자가 일치하는지
         if (!planner.getUser().getEmail().equals(email)) {
             throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
+        }
+
+        //UserLikeEntity 삭제
+        if (likeService.UserLikeEntityExist(planner, user)) {
+            likeService.deleteUserLikeEntity(planner, user);
+        }
+        //PlannerLike 삭제
+        if (likeService.PlannerLikeExist(planner)) {
+            likeService.deletePlannerLike(planner);
+        }
+        // UserSave 삭제
+        if (likeService.UserSaveExist(planner, user)) {
+            likeService.deleteUserSave(planner, user);
         }
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
@@ -131,7 +159,9 @@ public class PlannerApplication {
         plannerService.deletePlanner(plannerId);
     }
 
-    //일정 상세페이지 조회
+    /**
+     * 일정 상세페이지 조회
+     **/
     @Transactional
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
@@ -144,7 +174,7 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
-        planner.increaseViews();
+//        planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
@@ -152,40 +182,71 @@ public class PlannerApplication {
         return PlannerResponse.of(planner, user, responses, likeCount);
     }
 
-    //일정 수정
+    /**
+     * 일정 수정
+     **/
     @Transactional
-    public boolean updatePlanner(Long plannerId, UpdatePlannerInfo info, String email) {
+    public void updatePlanner(Long plannerId, UpdatePlannerInfo info, String email) {
 
-        UserEntity byEmail = plannerDetailService.findByEmail(email);
+        UserEntity user = plannerDetailService.findByEmail(email);
         Planner planner = plannerService.findById(plannerId);
         if (!planner.getUser().getEmail().equals(email)) {
             throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
         }
 
         try {
+
+            //변경된 상세일정 리스트 id와 기존 상세일정 리스트 id를 비교해서 삭제
+            List<Long> updateListId = info.getUpdatePlannerDetailListRequests().stream()
+                    .map(UpdatePlannerDetailListRequest::getPlannerDetailId)
+                    .collect(Collectors.toList());
+            List<Long> dbIds = plannerDetailService.findByPlannerId(plannerId).stream()
+                    .map(PlannerDetail::getPlannerDetailId)
+                    .collect(Collectors.toList());
+            List<Long> deletedId = dbIds.stream()
+                    .filter(id -> !updateListId.contains(id))
+                    .collect(Collectors.toList());
+            for (Long id : deletedId) {
+                plannerDetailService.deletePlannerDetail(id);
+            }
+//            plannerDetailService.NotInDbDeletePlannerDetail(updateListId,plannerId);
+
             planner.updatePlanner(info.getPlannerRequest());
             List<PlannerDetail> result = info.getUpdatePlannerDetailListRequests().stream().map(
                     request -> {
-                        Optional<Place> byRoadAddress = placeService.findByRoadAddress(request.getPlaceInfo().getRoadAddress());
-                        Place place = byRoadAddress.orElseGet(
-                                () -> placeService.savePlace(request.getPlaceInfo())
-                        );
-                        //상세일정을 찾아서 수정
-                        PlannerDetail byId = plannerDetailService.findById(request.getPlannerDetailId());
-                        byId.updatePlannerDetail(request, planner, place, byEmail.getUserId());
-                        return byId;
+
+                        // 추가된 상세일정은 추가, 존재하던 상세일정은 변경
+                        Place place = getPlace(request.getPlaceInfo());
+                        if (request.getPlannerDetailId() == null) {
+                            return PlannerDetail.createNewPlannerDetail(
+                                    request, planner, user, place
+                            );
+                        } else {
+                            //상세일정을 찾아서 수정
+                            PlannerDetail plannerDetail = plannerDetailService.findById(request.getPlannerDetailId());
+                            plannerDetail.updatePlannerDetail(request, planner, place, user.getUserId());
+
+                            return plannerDetail;
+                        }
                     }).collect(Collectors.toList());
             plannerDetailService.savePlannerDetailList(result);
+
+
         } catch (Exception e) {
             throw new PlannerException(PlannerErrorCode.UPDATE_PLANNER_FAILED);
         }
         //일정 수정 이후 S3 삭제
         try {
-            System.out.println(info.getDeletedUrls());
             imageService.deleteFiles(info.getDeletedUrls());
         } catch (Exception e) {
             throw new ImageException(ImageUploadErrorCode.IMAGE_DELETE_FAILED);
         }
-        return true;
+    }
+
+    private Place getPlace(PlaceRequest request) {
+        Optional<Place> place = placeService.findByRoadAddress(request.getRoadAddress());
+        return place.orElseGet(
+                () -> placeService.savePlace(request)
+        );
     }
 }

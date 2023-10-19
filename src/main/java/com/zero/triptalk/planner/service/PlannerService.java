@@ -7,7 +7,9 @@ import com.zero.triptalk.planner.dto.PlannerListResult;
 import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.CustomPlannerRepository;
+import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;
+import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.planner.type.SortType;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ public class PlannerService {
 
     private final PlannerRepository plannerRepository;
     private final CustomPlannerRepository customPlannerRepository;
+    private final PlannerSearchRepository plannerSearchRepository;
+    private final PlannerDetailSearchRepository plannerDetailSearchRepository;
     private final RedisUtil redisUtil;
 
 
@@ -34,6 +38,8 @@ public class PlannerService {
 
     public void deletePlanner(Long plannerId) {
         plannerRepository.deleteById(plannerId);
+        plannerSearchRepository.deleteById(plannerId);
+        plannerDetailSearchRepository.deleteAllByPlannerId(plannerId);
     }
 
     public PlannerListResult getPlanners(Pageable pageable, SortType sortType) {

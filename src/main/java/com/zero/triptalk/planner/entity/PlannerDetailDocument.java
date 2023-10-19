@@ -53,6 +53,27 @@ public class PlannerDetailDocument {
         this.likes = likes;
     }
 
+    public static List<PlannerDetailDocument> ofEntity(List<PlannerDetail> plannerDetails) {
+
+        if(plannerDetails.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<PlannerDetailDocument> list = new ArrayList<>();
+        for(PlannerDetail x : plannerDetails) {
+            list.add(PlannerDetailDocument.builder()
+                                            .plannerDetailId(x.getPlannerDetailId())
+                                            .nickname(x.getPlanner().getUser().getNickname())
+                                            .description(x.getDescription())
+                                            .images(x.getImages())
+                                            .place(x.getPlace().getRoadAddress())
+                                            .plannerId(x.getPlanner().getPlannerId())
+                                            .date(x.getDate())
+                                            .build());
+        }
+        return list;
+    }
+
     public static List<PlannerDetailDocument> ofTuple(List<Tuple> tuples) {
 
         if(tuples.isEmpty()) {

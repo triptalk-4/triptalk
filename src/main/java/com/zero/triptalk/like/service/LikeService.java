@@ -139,10 +139,6 @@ public class LikeService {
                 .build();
     }
 
-    public PlannerLike findByPlannerId(Long plannerId) {
-        return plannerLikeRepository.findByPlanner_PlannerId(plannerId);
-    }
-
     public UserSaveAndCancelResponse userSavePlus(Long plannerId) {
         // 게시글 찾기
         Planner planner = plannerRepository.findById(plannerId)
@@ -188,15 +184,14 @@ public class LikeService {
 
         if(userSaveDelete == null) {
             throw new LikeException(NO_SAVE_EXIST_ERROR);
-        }
+        }else {
 
-
-        if(!(userSaveDelete == null)) {
             userSaveRepository.delete(userSaveDelete);
+
+            return UserSaveAndCancelResponse.builder()
+                    .ok("저장함 삭제가 완료되었습니다.")
+                    .build();
         }
-        return UserSaveAndCancelResponse.builder()
-                .ok("저장함 삭제가 완료되었습니다.")
-                .build();
     }
 
     public UserLikeAndSaveYnResponse userCheckYn(Long plannerId) {
@@ -215,6 +210,7 @@ public class LikeService {
         boolean userSaveYnCheck = userSaveRepository.existsByPlannerAndUser(planner,user);
         boolean userLikeYnCheck = userLikeRepository.existsByPlannerAndUser(planner,user);
 
+
         if(userSaveYnCheck){
             userSaveYn = "ok";
         }
@@ -227,7 +223,36 @@ public class LikeService {
                 .userSaveYn(userSaveYn)
                 .userLikeYn(userLikeYn)
                 .build();
-
-
     }
+
+    public PlannerLike findByPlannerId(Long plannerId) {
+        return plannerLikeRepository.findByPlanner_PlannerId(plannerId);
+    }
+
+    //존재하는지
+    public boolean PlannerLikeExist(Planner planner){
+        return plannerLikeRepository.existsByPlanner(planner);
+    }
+
+    public boolean UserLikeEntityExist(Planner planner, UserEntity user){
+        return userLikeRepository.existsByPlannerAndUser(planner,user);
+    }
+
+    public boolean UserSaveExist(Planner planner, UserEntity user){
+        return userSaveRepository.existsByPlannerAndUser(planner,user);
+    }
+
+    //삭제
+    public void deletePlannerLike(Planner planner) {
+        plannerLikeRepository.deleteByPlanner(planner);
+    }
+
+    public void deleteUserLikeEntity(Planner planner, UserEntity user){
+        userLikeRepository.deleteAllByPlannerAndUser(planner, user);
+    }
+
+    public void deleteUserSave(Planner planner,UserEntity user){
+        userSaveRepository.deleteAllByPlannerAndUser(planner,user);
+    }
+
 }

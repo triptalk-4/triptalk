@@ -18,7 +18,8 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
             "FROM UserSave ple\n" +
             "JOIN PlannerLike pl ON ple.planner = pl.planner\n" +
             "WHERE ple.user = :user\n" +
-            "GROUP BY pl.planner")
+            "GROUP BY pl.planner\n" +
+            "ORDER BY ple.saveDt DESC")
     Page<Object[]> findPlannersLikedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
 //    boolean existsByPlannerDetailAndUser(PlannerDetail plannerDetail, UserEntity userEntity);
@@ -34,5 +35,6 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
 //    Page<Object[]> findPlannersLikedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
 
+    void deleteAllByPlannerAndUser(Planner planner, UserEntity user);
 
 }

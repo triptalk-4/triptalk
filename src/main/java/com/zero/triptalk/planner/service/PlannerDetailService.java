@@ -6,7 +6,10 @@ import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.planner.dto.PlannerDetailListResponse;
 import com.zero.triptalk.planner.dto.PlannerDetailResponse;
 import com.zero.triptalk.planner.entity.PlannerDetail;
+import com.zero.triptalk.planner.entity.PlannerDetailDocument;
+import com.zero.triptalk.planner.repository.CustomPlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
+import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +25,9 @@ import static com.zero.triptalk.exception.code.UserErrorCode.USER_NOT_FOUND;
 @RequiredArgsConstructor
 public class PlannerDetailService {
 
+    private final PlannerDetailSearchRepository plannerDetailSearchRepository;
     private final PlannerDetailRepository plannerDetailRepository;
-
+    private final CustomPlannerDetailRepository customPlannerDetailRepository;
     private final UserRepository userRepository;
     private final ImageService imageService;
 
@@ -58,6 +62,7 @@ public class PlannerDetailService {
 
     public void savePlannerDetailList(List<PlannerDetail> plannerDetailList) {
         plannerDetailRepository.saveAll(plannerDetailList);
+        plannerDetailSearchRepository.saveAll(PlannerDetailDocument.ofEntity(plannerDetailList));
     }
 
     public PlannerDetail findById(Long plannerDetailId) {
@@ -67,6 +72,11 @@ public class PlannerDetailService {
 
     public void deletePlannerDetail(Long id) {
         plannerDetailRepository.deleteById(id);
+        plannerDetailSearchRepository.deleteById(id);
+    }
+
+    public void NotInDbDeletePlannerDetail(List<Long> updateIds, Long plannerId){
+        customPlannerDetailRepository.deletePlannerDetail(updateIds,plannerId);
     }
 
     public List<PlannerDetail> findByPlannerId(Long plannerId) {

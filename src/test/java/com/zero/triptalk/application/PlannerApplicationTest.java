@@ -2,20 +2,23 @@
 package com.zero.triptalk.application;
 
 import com.zero.triptalk.exception.custom.PlannerDetailException;
+import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
-import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.PlannerRequest;
-import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
+import com.zero.triptalk.planner.type.PlannerStatus;
+import com.zero.triptalk.reply.dto.response.ReplyResponse;
+import com.zero.triptalk.reply.entity.ReplyEntity;
+import com.zero.triptalk.reply.service.ReplyService;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
@@ -26,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,11 +66,16 @@ class PlannerApplicationTest {
     @Mock
     private PlannerService plannerService;
 
+    @Mock
+    private ReplyService replyService;
+
+    @Spy
     @InjectMocks
     private PlannerApplication plannerApplication;
 
+
     @Test
-    @DisplayName("상세 일정 한개 만들기")
+    @DisplayName("상세 일정 한개 생성 성공")
     void createPlannerDetail() {
 
         //given
@@ -127,7 +136,7 @@ class PlannerApplicationTest {
     }
 
     @Test
-    @DisplayName("일정 생성")
+    @DisplayName("일정 생성 성공")
     void createPlanner() {
         //given
 
@@ -167,7 +176,7 @@ class PlannerApplicationTest {
         String thumbnail = images.get(0);
 
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
-        when(plannerService.createPlanner(plannerRequest,user,thumbnail)).thenReturn(planner);
+        when(plannerService.createPlanner(plannerRequest, user, thumbnail)).thenReturn(planner);
         when(placeService.savePlace(any())).thenReturn(place);
 
 
@@ -183,7 +192,7 @@ class PlannerApplicationTest {
     }
 
     @Test
-    @DisplayName("상세 일정 삭제 - 성공")
+    @DisplayName("상세 일정 삭제 성공")
     void deletePlannerDetail() {
         //given
         Long plannerDetailId = 1L;
@@ -194,15 +203,21 @@ class PlannerApplicationTest {
         PlannerDetail plannerDetail = PlannerDetail.builder()
                 .userId(2L)
                 .build();
-        List<String> images = new ArrayList<>();
+        List<String> images = List.of("urls");
+        List<ReplyEntity> replies = List.of(ReplyEntity.builder()
+                .replyId(1L).build());
         //when
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
         when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
-        plannerApplication.deletePlannerDetail(plannerDetailId,email);
-        //then
-
+        when(replyService.getReplies(plannerDetail)).thenReturn(replies);
+        when(replyService.replyDeleteOk(any(Long.class),any(String.class))).thenReturn(new ReplyResponse());
+        plannerApplication.deletePlannerDetail(plannerDetailId, email);
         imageService.deleteFiles(images);
+
+        //then
         verify(plannerDetailService).deletePlannerDetail(plannerDetailId);
+        verify(imageService).deleteFiles(images);
+        verify(replyService).replyDeleteOk(any(Long.class),any(String.class));
     }
 
     @Test
@@ -224,7 +239,7 @@ class PlannerApplicationTest {
         //then
         imageService.deleteFiles(images);
         Assertions.assertThrows(PlannerDetailException.class,
-                () -> plannerApplication.deletePlannerDetail(plannerDetailId,email));
+                () -> plannerApplication.deletePlannerDetail(plannerDetailId, email));
     }
 
 }

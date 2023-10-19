@@ -24,10 +24,6 @@ public class PlannerLike {
     @JoinColumn(name = "planner_id")
     private Planner planner;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
     private Long likeCount;
 
     private LocalDateTime likeDt;

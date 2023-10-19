@@ -22,25 +22,35 @@ public class CustomPlannerDetailRepository {
     public List<Tuple> getPlannerListByLikeAndViewUpdateDt(LocalDateTime from, LocalDateTime to) {
 
         return queryFactory.select(planner, plannerLike.likeCount)
-                            .from(planner)
-                            .join(plannerLike)
-                            .on(planner.eq(plannerLike.planner))
-                            .join(userEntity)
-                            .on(userEntity.eq(planner.user))
-                            .where(plannerLike.likeDt.between(from, to)
-                                    .or(planner.modifiedAt.between(from, to)))
-                            .groupBy(planner.plannerId)
-                            .fetch();
+                .from(planner)
+                .join(plannerLike)
+                .on(planner.eq(plannerLike.planner))
+                .join(userEntity)
+                .on(userEntity.eq(planner.user))
+                .where(plannerLike.likeDt.between(from, to)
+                        .or(planner.modifiedAt.between(from, to)))
+                .groupBy(planner.plannerId)
+                .fetch();
     }
 
     public List<Tuple> getPlannerDetailListByPlannerId(List<Long> ids) {
 
         return queryFactory.select(plannerDetail, plannerLike.likeCount)
-                            .from(plannerDetail)
-                            .join(plannerLike)
-                            .on(plannerLike.planner.eq(plannerDetail.planner))
-                            .where(plannerDetail.planner.plannerId.in(ids))
-                            .fetch();
+                .from(plannerDetail)
+                .join(plannerLike)
+                .on(plannerLike.planner.eq(plannerDetail.planner))
+                .where(plannerDetail.planner.plannerId.in(ids))
+                .fetch();
+    }
+
+
+    public void deletePlannerDetail(List<Long> updateIds, Long plannerId) {
+
+        queryFactory.delete(plannerDetail)
+                .where(plannerDetail.planner.plannerId.eq(plannerId))
+                .where(plannerDetail.plannerDetailId.notIn(updateIds))
+                .execute();
+
     }
 
 }

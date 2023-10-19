@@ -96,11 +96,11 @@ public class PlannerController {
     //일정 수정하기
     @PatchMapping("/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Boolean> updatePlanner(@PathVariable Long plannerId,
+    public ResponseEntity<Void> updatePlanner(@PathVariable Long plannerId,
                                                  @RequestBody @Valid UpdatePlannerInfo info,
                                                  Principal principal) {
-        return ResponseEntity.ok(plannerApplication.updatePlanner(plannerId, info, principal.getName()));
-
+        plannerApplication.updatePlanner(plannerId, info, principal.getName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
