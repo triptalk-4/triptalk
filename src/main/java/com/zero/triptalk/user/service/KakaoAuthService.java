@@ -126,7 +126,7 @@ public class KakaoAuthService {
             ObjectMapper mapper = new ObjectMapper();
             String responseBody = EntityUtils.toString(response.getEntity());
 
-            System.out.println("responseBody = " + responseBody);
+            System.out.println("responseBody1 = " + responseBody);
 
             return mapper.readTree(responseBody);
 

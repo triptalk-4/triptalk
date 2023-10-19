@@ -130,7 +130,7 @@ public class ReplyService {
         ReplyGetResponse response = new ReplyGetResponse();
         response.setReplyId(replyEntity.getReplyId());
         // 다른 필드를 ReplyEntity에서 가져와서 설정
-        response.setName(replyEntity.getUser().getName()); // 예시: UserEntity에서 이름을 가져옴
+        response.setNickname(replyEntity.getUser().getNickname()); // 예시: UserEntity에서 이름을 가져옴
         response.setProfile(replyEntity.getUser().getProfile()); // 예시: UserEntity에서 프로필을 가져옴
         response.setReply(replyEntity.getReply());
         response.setCreateDt(replyEntity.getCreatedAt());

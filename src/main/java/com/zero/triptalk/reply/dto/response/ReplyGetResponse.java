@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReplyGetResponse {
     private Long replyId;
-    private String name;
+    private String nickname;
     private String profile;
     private String reply;
     private LocalDateTime createDt;

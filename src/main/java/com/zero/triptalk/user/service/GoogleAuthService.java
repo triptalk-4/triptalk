@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,10 +53,12 @@ public class GoogleAuthService {
         GoogleRequestToken googleRequestToken = GoogleRequestToken.builder()
                                                                 .clientId(googleClientId)
                                                                 .clientSecret(googleClientPw)
-                                                                .code(java.net.URLDecoder.decode(code, StandardCharsets.UTF_8))
+                                                                .code(code)
                                                                 .grantType(grantType)
                                                                 .redirectUri(redirectUri)
                                                                 .build();
+
+        System.out.println("doSocialLogin:::::::::  " + code);
 
         ResponseEntity<String> accessToken = feignClientGoogleAuth.getAccessToken(googleRequestToken);
 
