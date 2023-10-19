@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface UserLikeRepository extends JpaRepository<UserLikeEntity, Long> {
 
     boolean existsByPlannerAndUser(Planner planner, UserEntity userEntity);
-  
+
     Optional<Object> findByPlannerAndUser(Planner planner, UserEntity user);
+
+    void deleteAllByPlannerAndUser(Planner planner, UserEntity user);
 }

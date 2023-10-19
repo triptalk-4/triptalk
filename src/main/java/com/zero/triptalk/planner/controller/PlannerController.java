@@ -100,7 +100,7 @@ public class PlannerController {
                                                  @RequestBody @Valid UpdatePlannerInfo info,
                                                  Principal principal) {
         plannerApplication.updatePlanner(plannerId, info, principal.getName());
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

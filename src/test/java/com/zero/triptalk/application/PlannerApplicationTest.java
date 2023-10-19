@@ -16,26 +16,31 @@ import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
 import com.zero.triptalk.planner.type.PlannerStatus;
+import com.zero.triptalk.reply.dto.response.ReplyResponse;
+import com.zero.triptalk.reply.entity.ReplyEntity;
+import com.zero.triptalk.reply.service.ReplyService;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.inject.Singleton;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PlannerApplicationTest {
@@ -60,6 +65,9 @@ class PlannerApplicationTest {
 
     @Mock
     private PlannerService plannerService;
+
+    @Mock
+    private ReplyService replyService;
 
     @Spy
     @InjectMocks
@@ -195,15 +203,21 @@ class PlannerApplicationTest {
         PlannerDetail plannerDetail = PlannerDetail.builder()
                 .userId(2L)
                 .build();
-        List<String> images = new ArrayList<>();
+        List<String> images = List.of("urls");
+        List<ReplyEntity> replies = List.of(ReplyEntity.builder()
+                .replyId(1L).build());
         //when
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
         when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
+        when(replyService.getReplies(plannerDetail)).thenReturn(replies);
+        when(replyService.replyDeleteOk(any(Long.class),any(String.class))).thenReturn(new ReplyResponse());
         plannerApplication.deletePlannerDetail(plannerDetailId, email);
-        //then
-
         imageService.deleteFiles(images);
+
+        //then
         verify(plannerDetailService).deletePlannerDetail(plannerDetailId);
+        verify(imageService).deleteFiles(images);
+        verify(replyService).replyDeleteOk(any(Long.class),any(String.class));
     }
 
     @Test
