@@ -19,6 +19,7 @@ import java.util.List;
 public class PlannerDetailResponse {
 
     private Long userId;
+    private Long plannerDetailId;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date;
     private PlaceResponse placeResponse;
@@ -31,6 +32,7 @@ public class PlannerDetailResponse {
 
         return PlannerDetailResponse.builder()
                 .userId(dto.getUserId())
+                .plannerDetailId(dto.getPlannerDetailId())
                 .date(dto.getDate())
                 .placeResponse(PlaceResponse.from(place))
                 .description(dto.getDescription())

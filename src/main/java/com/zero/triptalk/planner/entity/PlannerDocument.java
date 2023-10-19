@@ -1,6 +1,7 @@
 package com.zero.triptalk.planner.entity;
 
 import com.querydsl.core.Tuple;
+import com.zero.triptalk.user.entity.UserEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class PlannerDocument {
     private Long plannerId;
     private String title;
     private String thumbnail;
-    private String nickname;
+    private UserEntity user;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime startDate;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
@@ -40,11 +41,11 @@ public class PlannerDocument {
     private Long likes;
 
     @Builder
-    public PlannerDocument(Long plannerId, String title, String thumbnail, String nickname, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likes) {
+    public PlannerDocument(Long plannerId, String title, String thumbnail, UserEntity user, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likes) {
         this.plannerId = plannerId;
         this.title = title;
         this.thumbnail = thumbnail;
-        this.nickname = nickname;
+        this.user = user;
         this.startDate = startDate;
         this.endDate = endDate;
         this.views = views;
@@ -65,7 +66,7 @@ public class PlannerDocument {
                                     .plannerId(Objects.requireNonNull(xPlanner).getPlannerId())
                                     .title(xPlanner.getTitle())
                                     .thumbnail(xPlanner.getThumbnail())
-                                    .nickname(xPlanner.getUser().getNickname())
+                                    .user(xPlanner.getUser())
                                     .startDate(xPlanner.getStartDate())
                                     .endDate(xPlanner.getEndDate())
                                     .views(xPlanner.getViews())

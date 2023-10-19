@@ -2,7 +2,9 @@ package com.zero.triptalk.planner.service;
 
 import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;
+import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
@@ -25,6 +27,13 @@ class PlannerServiceTest {
 
     @InjectMocks
     private PlannerService plannerService;
+
+    @Mock
+    private PlannerSearchRepository plannerSearchRepository;
+
+    @Mock
+    private PlannerDetailSearchRepository plannerDetailSearchRepository;
+
 
     @Test
     @DisplayName("일정 만들기")

@@ -1,8 +1,9 @@
 package com.zero.triptalk.search.controller;
 
-import com.zero.triptalk.planner.dto.PlannerSearchResponse;
 import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
+import com.zero.triptalk.planner.dto.PlannerSearchResponse;
 import com.zero.triptalk.search.service.SearchService;
+import com.zero.triptalk.user.dto.UserInfoSearchResponse;
 import com.zero.triptalk.user.dto.UserSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,12 @@ public class SearchController {
     public ResponseEntity<List<UserSearchResponse>> getUserNicknameList(@RequestParam String keyword, Pageable pageable) {
 
         return ResponseEntity.ok(searchService.getUserNicknameList(keyword, pageable));
+    }
+
+    @GetMapping("/search/user/{userId}")
+    public ResponseEntity<UserInfoSearchResponse> searchByUserId(@PathVariable Long userId) {
+
+        return ResponseEntity.ok(searchService.searchByUserId(userId));
     }
 
 }
