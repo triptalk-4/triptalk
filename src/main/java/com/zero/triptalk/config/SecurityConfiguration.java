@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 ).permitAll()
                 .antMatchers("/api/plans/**").hasAuthority("USER")
                 .antMatchers("/api/likes/**").hasAuthority("USER")
-                .antMatchers("/kakao/**").permitAll()
+                .antMatchers("/api/social/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
