@@ -16,7 +16,6 @@ import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
-import com.zero.triptalk.reply.entity.ReplyEntity;
 import com.zero.triptalk.reply.service.ReplyService;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -113,14 +112,10 @@ public class PlannerApplication {
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
         }
-        imageService.deleteFiles(plannerDetail.getImages());
 
-        //댓글 삭제
-        List<ReplyEntity> replies = replyService.getReplies(plannerDetail);
-        replies.forEach(
-                reply -> replyService.replyDeleteOk(reply.getReplyId(), email)
-        );
+        replyService.deleteAllByPlannerDetail(plannerDetail);
         plannerDetailService.deletePlannerDetail(plannerDetailId);
+        imageService.deleteFiles(plannerDetail.getImages());
     }
 
     /**
@@ -139,16 +134,16 @@ public class PlannerApplication {
         }
 
         //UserLikeEntity 삭제
-        if (likeService.UserLikeEntityExist(planner, user)) {
-            likeService.deleteUserLikeEntity(planner, user);
+        if (likeService.UserLikeEntityExist(planner)) {
+            likeService.deleteUserLikeEntity(planner);
         }
         //PlannerLike 삭제
         if (likeService.PlannerLikeExist(planner)) {
             likeService.deletePlannerLike(planner);
         }
         // UserSave 삭제
-        if (likeService.UserSaveExist(planner, user)) {
-            likeService.deleteUserSave(planner, user);
+        if (likeService.UserSaveExist(planner)) {
+            likeService.deleteUserSave(planner);
         }
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
