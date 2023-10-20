@@ -234,25 +234,25 @@ public class LikeService {
         return plannerLikeRepository.existsByPlanner(planner);
     }
 
-    public boolean UserLikeEntityExist(Planner planner, UserEntity user){
-        return userLikeRepository.existsByPlannerAndUser(planner,user);
+    public boolean UserLikeEntityExist(Planner planner){
+        return userLikeRepository.existsByPlanner(planner);
     }
 
-    public boolean UserSaveExist(Planner planner, UserEntity user){
-        return userSaveRepository.existsByPlannerAndUser(planner,user);
+    public boolean UserSaveExist(Planner planner){
+        return userSaveRepository.existsByPlanner(planner);
     }
 
     //삭제
     public void deletePlannerLike(Planner planner) {
-        plannerLikeRepository.deleteByPlanner(planner);
+        plannerLikeRepository.deleteAllByPlanner(planner);
     }
 
-    public void deleteUserLikeEntity(Planner planner, UserEntity user){
-        userLikeRepository.deleteAllByPlannerAndUser(planner, user);
+    public void deleteUserLikeEntity(Planner planner){
+        userLikeRepository.deleteAllByPlanner(planner);
     }
 
-    public void deleteUserSave(Planner planner,UserEntity user){
-        userSaveRepository.deleteAllByPlannerAndUser(planner,user);
+    public void deleteUserSave(Planner planner){
+        userSaveRepository.deleteAllByPlanner(planner);
     }
 
 }

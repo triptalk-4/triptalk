@@ -11,17 +11,12 @@ import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
-import com.zero.triptalk.planner.repository.PlannerDetailRepository;
-import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
 import com.zero.triptalk.planner.type.PlannerStatus;
-import com.zero.triptalk.reply.dto.response.ReplyResponse;
-import com.zero.triptalk.reply.entity.ReplyEntity;
 import com.zero.triptalk.reply.service.ReplyService;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserTypeRole;
-import com.zero.triptalk.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,19 +41,10 @@ import static org.mockito.Mockito.when;
 class PlannerApplicationTest {
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private PlaceService placeService;
 
     @Mock
     private ImageService imageService;
-
-    @Mock
-    private PlannerRepository plannerRepository;
-
-    @Mock
-    private PlannerDetailRepository plannerDetailRepository;
 
     @Mock
     private PlannerDetailService plannerDetailService;
@@ -151,7 +137,7 @@ class PlannerApplicationTest {
         List<String> images =
                 List.of("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg");
         UserEntity user = UserEntity.builder()
-                .userId(1L)
+                .userId(plannerId)
                 .UserType(UserTypeRole.USER)
                 .nickname("11")
                 .email("test@exam.com")
@@ -204,20 +190,16 @@ class PlannerApplicationTest {
                 .userId(2L)
                 .build();
         List<String> images = List.of("urls");
-        List<ReplyEntity> replies = List.of(ReplyEntity.builder()
-                .replyId(1L).build());
         //when
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
         when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
-        when(replyService.getReplies(plannerDetail)).thenReturn(replies);
-        when(replyService.replyDeleteOk(any(Long.class),any(String.class))).thenReturn(new ReplyResponse());
         plannerApplication.deletePlannerDetail(plannerDetailId, email);
         imageService.deleteFiles(images);
 
         //then
         verify(plannerDetailService).deletePlannerDetail(plannerDetailId);
         verify(imageService).deleteFiles(images);
-        verify(replyService).replyDeleteOk(any(Long.class),any(String.class));
+        verify(replyService).deleteAllByPlannerDetail(plannerDetail);
     }
 
     @Test

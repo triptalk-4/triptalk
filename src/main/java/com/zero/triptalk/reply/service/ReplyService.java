@@ -137,8 +137,7 @@ public class ReplyService {
         return response;
     }
 
-    //상세일정 댓글 아이디
-    public List<ReplyEntity> getReplies(PlannerDetail plannerDetail){
-        return replyRepository.findByPlannerDetail(plannerDetail);
+    public void deleteAllByPlannerDetail(PlannerDetail plannerDetail){
+        replyRepository.deleteAllByPlannerDetail(plannerDetail);
     }
 }

@@ -26,6 +26,6 @@ public interface PlannerLikeRepository extends JpaRepository<PlannerLike, Long> 
 
     boolean existsByPlanner(Planner planner);
 
-    void deleteByPlanner(Planner planner);
+    void deleteAllByPlanner(Planner planner);
 
 }
