@@ -13,9 +13,14 @@ import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.planner.type.SortType;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PlannerService {
@@ -24,7 +29,7 @@ public class PlannerService {
     private final CustomPlannerRepository customPlannerRepository;
     private final PlannerSearchRepository plannerSearchRepository;
     private final PlannerDetailSearchRepository plannerDetailSearchRepository;
-    private final RedisUtil redisUtil;
+    private final StringRedisTemplate stringRedisTemplate;
 
 
     public Planner createPlanner(PlannerRequest request, UserEntity user, String thumbnail) {
@@ -46,13 +51,15 @@ public class PlannerService {
         return customPlannerRepository.PlannerList(pageable, sortType);
     }
 
+
     public void increaseViews(Planner planner){
         String redisKey = "planner:views:"+planner.getPlannerId();
-        String data = redisUtil.getData(redisKey);
-        if (data.isEmpty()){
-            redisUtil.setData(redisKey,String.valueOf(Integer.parseInt(data)+1));
+        Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(redisKey, String.valueOf(planner.getViews() + 1), 4L, TimeUnit.MINUTES);
+        if (Boolean.FALSE.equals(result)){
+        stringRedisTemplate.opsForValue().increment(redisKey);
+        stringRedisTemplate.expire(redisKey,4L,TimeUnit.MINUTES);
         }
-        redisUtil.setData(redisKey,String.valueOf(planner.getViews()));
+
 
     }
 }
