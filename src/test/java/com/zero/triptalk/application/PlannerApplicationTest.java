@@ -137,7 +137,7 @@ class PlannerApplicationTest {
         List<String> images =
                 List.of("https://triptalk-s3.s3.ap-northeast-2.amazonaws.com/8437334e-ee54-4138-b9ad-63f7f498429f.jpg");
         UserEntity user = UserEntity.builder()
-                .userId(1L)
+                .userId(plannerId)
                 .UserType(UserTypeRole.USER)
                 .nickname("11")
                 .email("test@exam.com")
