@@ -34,7 +34,7 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
 //            "GROUP BY pl.planner")
 //    Page<Object[]> findPlannersLikedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
+    boolean existsByPlanner(Planner planner);
 
-    void deleteAllByPlannerAndUser(Planner planner, UserEntity user);
-
+    void deleteAllByPlanner(Planner planner);
 }
