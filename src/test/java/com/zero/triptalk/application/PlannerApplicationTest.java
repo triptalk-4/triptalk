@@ -11,17 +11,12 @@ import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
-import com.zero.triptalk.planner.repository.PlannerDetailRepository;
-import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
 import com.zero.triptalk.planner.type.PlannerStatus;
-import com.zero.triptalk.reply.dto.response.ReplyResponse;
-import com.zero.triptalk.reply.entity.ReplyEntity;
 import com.zero.triptalk.reply.service.ReplyService;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserTypeRole;
-import com.zero.triptalk.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,19 +41,10 @@ import static org.mockito.Mockito.when;
 class PlannerApplicationTest {
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private PlaceService placeService;
 
     @Mock
     private ImageService imageService;
-
-    @Mock
-    private PlannerRepository plannerRepository;
-
-    @Mock
-    private PlannerDetailRepository plannerDetailRepository;
 
     @Mock
     private PlannerDetailService plannerDetailService;
