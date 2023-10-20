@@ -1,5 +1,9 @@
 package com.zero.triptalk.search.service;
 
+import com.zero.triptalk.exception.code.SearchErrorCode;
+import com.zero.triptalk.exception.code.UserErrorCode;
+import com.zero.triptalk.exception.custom.SearchException;
+import com.zero.triptalk.exception.custom.UserException;
 import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
 import com.zero.triptalk.planner.dto.PlannerSearchResponse;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
@@ -39,6 +43,10 @@ public class SearchService {
     public List<PlannerDetailSearchResponse> searchByRegionAnySort(
                                         String region, String searchType, Pageable pageable) {
 
+        if (region.isEmpty() || region.trim().equals("")) {
+            throw new SearchException(SearchErrorCode.INVALID_REQUEST);
+        }
+
         List<PlannerDetailDocument> searchResponses =
                 customPlannerDetailSearchRepository.searchByRegionAndSearchType(
                                                             region, searchType, pageable);
@@ -57,8 +65,11 @@ public class SearchService {
 
     public UserInfoSearchResponse searchByUserId(Long userId) {
 
+        UserDocument userDocument = userSearchRepository.findById(userId).orElseThrow(() ->
+                                                new UserException(UserErrorCode.USER_NOT_FOUND));
+
         List<PlannerDocument> plannerDocuments = plannerSearchRepository.findAllByUser(userId);
 
-        return UserInfoSearchResponse.ofDocument(plannerDocuments);
+        return UserInfoSearchResponse.ofDocument(userDocument, plannerDocuments);
     }
 }
