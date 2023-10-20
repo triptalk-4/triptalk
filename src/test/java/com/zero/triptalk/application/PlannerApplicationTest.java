@@ -204,20 +204,16 @@ class PlannerApplicationTest {
                 .userId(2L)
                 .build();
         List<String> images = List.of("urls");
-        List<ReplyEntity> replies = List.of(ReplyEntity.builder()
-                .replyId(1L).build());
         //when
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
         when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
-        when(replyService.getReplies(plannerDetail)).thenReturn(replies);
-        when(replyService.replyDeleteOk(any(Long.class),any(String.class))).thenReturn(new ReplyResponse());
         plannerApplication.deletePlannerDetail(plannerDetailId, email);
         imageService.deleteFiles(images);
 
         //then
         verify(plannerDetailService).deletePlannerDetail(plannerDetailId);
         verify(imageService).deleteFiles(images);
-        verify(replyService).replyDeleteOk(any(Long.class),any(String.class));
+        verify(replyService).deleteAllByPlannerDetail(plannerDetail);
     }
 
     @Test
