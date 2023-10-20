@@ -169,7 +169,7 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
-//        planner.increaseViews();
+        plannerService.increaseViews(planner);
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
