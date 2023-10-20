@@ -1,12 +1,12 @@
 package com.zero.triptalk.user.service;
 
 import com.google.gson.Gson;
+import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.user.client.FeignClientGoogleAuth;
 import com.zero.triptalk.user.client.FeignClientGoogleUser;
 import com.zero.triptalk.user.dto.GoogleAuthResponse;
 import com.zero.triptalk.user.dto.GoogleRequestToken;
 import com.zero.triptalk.user.dto.GoogleUserInfoResponse;
-import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserLoginRole;
@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,8 +59,6 @@ public class GoogleAuthService {
                                                                 .redirectUri(redirectUri)
                                                                 .build();
 
-        System.out.println("doSocialLogin:::::::::  " + code);
-
         ResponseEntity<String> accessToken = feignClientGoogleAuth.getAccessToken(googleRequestToken);
 
         Gson gson = new Gson();
@@ -89,6 +88,7 @@ public class GoogleAuthService {
     private UserEntity saveGoogleUser(GoogleUserInfoResponse userInfo) {
 
         String uuid = UUID.randomUUID().toString().substring(0,8);
+        LocalDateTime now = LocalDateTime.now();
 
         UserEntity user = UserEntity.builder()
                 .UserType(UserTypeRole.USER)
@@ -99,6 +99,8 @@ public class GoogleAuthService {
                 .nickname("GOOGLE" + uuid)
                 .aboutMe("GOOGLE" + uuid+"님 안녕하세요 자신을 소개해 주세요!")
                 .password(BCrypt.hashpw(uuid, BCrypt.gensalt()))
+                .registerAt(now)
+                .updateAt(now)
                 .build();
 
         userRepository.saveAndFlush(user);

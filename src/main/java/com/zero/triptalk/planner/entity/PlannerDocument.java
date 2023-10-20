@@ -77,4 +77,28 @@ public class PlannerDocument {
 
         return list;
     }
+
+    public static List<PlannerDocument> ofEntity(List<Planner> planners) {
+
+        if(planners.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<PlannerDocument> list = new ArrayList<>();
+        for(Planner x : planners) {
+
+            list.add(PlannerDocument.builder()
+                    .plannerId(x.getPlannerId())
+                    .title(x.getTitle())
+                    .thumbnail(x.getThumbnail())
+                    .user(x.getUser())
+                    .startDate(x.getStartDate())
+                    .endDate(x.getEndDate())
+                    .views(x.getViews())
+                    .likes(0L)
+                    .build());
+        }
+
+        return list;
+    }
 }

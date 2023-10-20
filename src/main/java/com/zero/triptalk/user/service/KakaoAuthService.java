@@ -17,9 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,14 +32,11 @@ import static com.zero.triptalk.exception.code.UserErrorCode.KAKAO_NICKNAME_ERRO
 
 @Service
 public class KakaoAuthService {
-    private final LocalDateTime currentTime = LocalDateTime.now();
-
     private final UserRepository repository;
     private final UserSearchRepository userSearchRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final JavaMailSender mailSender; // Spring MailSender
 
     @Value("${kakao.client.id}")
     private String kakaoClientId;
@@ -52,13 +47,12 @@ public class KakaoAuthService {
     @Value("${cloud.aws.image}")
     private String profile;
 
-    public KakaoAuthService(UserRepository repository, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, JavaMailSender mailSender) throws IOException {
+    public KakaoAuthService(UserRepository repository, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) throws IOException {
         this.repository = repository;
         this.userSearchRepository = userSearchRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
-        this.mailSender = mailSender;
     }
 
     public String generateKakaoAuthorizationUrl() {
@@ -176,7 +170,7 @@ public class KakaoAuthService {
             }
             LocalDateTime currentTime = LocalDateTime.now();
 
-        String aboutMe = nickname+"님 안녕하세요 자신을 소개해 주세요!";
+            String aboutMe = nickname+"님 안녕하세요 자신을 소개해 주세요!";
 
             var user = UserEntity.builder()
                     .name(nickname)

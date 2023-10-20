@@ -222,7 +222,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse UpdateRegister(UpdateRegisterRequest request) {
-        // 요청에서 정보 추출
+
         String email = request.getEmail();
         String newPassword = request.getNewPassword();
         String newNickname = request.getNewNickname();
@@ -230,15 +230,9 @@ public class AuthenticationService {
         String oldImage = request.getOldImage();
         String newImage = request.getNewImage();
 
-        // 이메일로 사용자 찾기
-        Optional<UserEntity> existingUserOptional = repository.findByEmail(email);
+        UserEntity existingUser = repository.findByEmail(email).orElseThrow(() ->
+                                                new UserException(EMAIL_NOT_FOUND_ERROR));
 
-        if (existingUserOptional.isEmpty()){
-            throw new UserException(EMAIL_NOT_FOUND_ERROR);
-        }
-
-        UserEntity existingUser = existingUserOptional.get();
-        // 파일 업로드 및 삭제
         String newProfile = S3FileSaveAndOldImageDeleteAndNewProfile(newImage, oldImage);
 
         // 최종 업데이트 코드
@@ -262,31 +256,16 @@ public class AuthenticationService {
             existingUser.setNickname(newNickname);
             existingUser.setAboutMe(newAboutMe);
             existingUser.setProfile(newProfile);
-
-            repository.save(existingUser);
-
         }
-        return getAuthenticationResponse(existingUser);
-    }
-
-    private AuthenticationResponse getAuthenticationResponse(UserEntity existingUser) {
 
         repository.save(existingUser);
         userSearchRepository.save(UserDocument.ofEntity(existingUser));
 
-        // 업데이트된 사용자를 위한 새로운 JWT 토큰 생성
-        String jwtToken = jwtService.generateToken(existingUser);
-
-        // 새로운 JWT 토큰을 사용한 AuthenticationResponse 생성
-        AuthenticationResponse response = new AuthenticationResponse();
-        response.setToken(jwtToken);
-
         return AuthenticationResponse.builder()
-                .updateOk("업데이트가 완료되었습니다.")
-                .token(jwtToken)
-                .build();
+                                    .updateOk("업데이트가 완료되었습니다.")
+                                    .token(jwtService.generateToken(existingUser))
+                                    .build();
     }
-
 
     public PasswordCheckOkResponse PasswordCheckToken(EmailTokenRequest request) {
         Optional<UserEntity> existingUserOptional = repository.findByEmail(request.getEmail());

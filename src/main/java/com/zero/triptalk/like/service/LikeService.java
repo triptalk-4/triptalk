@@ -18,10 +18,6 @@ import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,7 +26,6 @@ import java.time.LocalDateTime;
 import static com.zero.triptalk.exception.code.LikeErrorCode.*;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class LikeService {
 
@@ -40,30 +35,14 @@ public class LikeService {
     private final UserRepository userRepository;
     private final UserLikeRepository userLikeRepository;
 
-    /**
-     * 토큰 값안의 이메일 불러오기
-     * @return
-     */
-    private String userEmail(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String email = "기본 이메일";
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            email = userDetails.getUsername(); // 사용자 이메일 정보를 추출
-        }
-
-        return email;
-    }
     @Transactional
-    public LikenOnePlusMinusResponse createLikeOrPlusPlanner(Long plannerId) {
+    public LikenOnePlusMinusResponse createLikeOrPlusPlanner(Long plannerId, String email) {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
 
         // DetailPlannerLike 업데이트 또는 생성
         PlannerLike plannerLike = plannerLikeRepository.findByPlanner(planner);
 
-        String email = userEmail(); // 이메일 불러오기
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
 
@@ -83,7 +62,7 @@ public class LikeService {
         if( plannerLike == null){
             plannerLike = PlannerLike.builder()
                     .planner(planner)
-                    .likeCount((long) 1.0)
+                    .likeCount(1L)
                     .likeDt(LocalDateTime.now())
                     .build();
 
@@ -108,7 +87,7 @@ public class LikeService {
     }
 
     @Transactional
-    public LikenOnePlusMinusResponse LikeOneMinus(Long plannerDetailId) {
+    public LikenOnePlusMinusResponse LikeOneMinus(Long plannerDetailId, String email) {
         Planner planner = plannerRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
 
@@ -119,11 +98,9 @@ public class LikeService {
         long newLikeCount = currentDetailLikeCount - 1;
 
         plannerLike.setLikeCount(newLikeCount);
-
         plannerLikeRepository.save(plannerLike);
 
         // 좋아요를 누른 접속자 유저 찾기
-        String email = userEmail(); // 이메일 불러오기
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
 
@@ -139,14 +116,12 @@ public class LikeService {
                 .build();
     }
 
-    public UserSaveAndCancelResponse userSavePlus(Long plannerId) {
+    public UserSaveAndCancelResponse userSavePlus(Long plannerId, String email) {
         // 게시글 찾기
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
 
-        String userEmail = userEmail();
-
-        UserEntity user = userRepository.findByEmail(userEmail)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new LikeException(No_User_Search));
 
         UserSave userSave = userSaveRepository.findByPlannerAndUser(planner,user);
@@ -155,46 +130,40 @@ public class LikeService {
             throw new LikeException(LikeErrorCode.NO_SAVE_DUPLICATE_ERROR);
         }
 
+        UserSave userSaveFin = UserSave.builder()
+                                        .planner(planner)
+                                        .user(user)
+                                        .saveDt(LocalDateTime.now())
+                                        .build();
+        userSaveRepository.save(userSaveFin);
 
-        if(userSave == null){
-            UserSave userSaveFin = UserSave.builder()
-                    .planner(planner)
-                    .user(user)
-                    .saveDt(LocalDateTime.now())
-                    .build();
-
-            userSaveRepository.save(userSaveFin);
-        }
         return UserSaveAndCancelResponse.builder()
                 .ok("저장 추가가 완료되었습니다.")
                 .build();
     }
 
-    public UserSaveAndCancelResponse userCancel(Long plannerId) {
+    public UserSaveAndCancelResponse userCancel(Long plannerId, String email) {
 
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
 
-        String userEmail = userEmail();
-
-        UserEntity user = userRepository.findByEmail(userEmail)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new LikeException(No_User_Search));
 
         UserSave userSaveDelete = userSaveRepository.findByPlannerAndUser(planner,user);
 
         if(userSaveDelete == null) {
             throw new LikeException(NO_SAVE_EXIST_ERROR);
-        }else {
-
-            userSaveRepository.delete(userSaveDelete);
-
-            return UserSaveAndCancelResponse.builder()
-                    .ok("저장함 삭제가 완료되었습니다.")
-                    .build();
         }
+
+        userSaveRepository.delete(userSaveDelete);
+
+        return UserSaveAndCancelResponse.builder()
+                .ok("저장함 삭제가 완료되었습니다.")
+                .build();
     }
 
-    public UserLikeAndSaveYnResponse userCheckYn(Long plannerId) {
+    public UserLikeAndSaveYnResponse userCheckYn(Long plannerId, String email) {
 
         String userSaveYn = "no";
         String userLikeYn = "no";
@@ -202,9 +171,7 @@ public class LikeService {
         Planner planner = plannerRepository.findById(plannerId)
                 .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
 
-        String userEmail = userEmail();
-
-        UserEntity user = userRepository.findByEmail(userEmail)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new LikeException(No_User_Search));
 
         boolean userSaveYnCheck = userSaveRepository.existsByPlannerAndUser(planner,user);
