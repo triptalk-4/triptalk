@@ -1,6 +1,7 @@
 package com.zero.triptalk.user.dto;
 
 import com.zero.triptalk.planner.entity.PlannerDocument;
+import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.response.MyPlannerBoardResponse;
 import lombok.AccessLevel;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,16 +32,19 @@ public class UserInfoSearchResponse {
         this.planners = planners;
     }
 
-    public static UserInfoSearchResponse ofDocument(List<PlannerDocument> plannerDocuments) {
-        List<MyPlannerBoardResponse> list =
-                plannerDocuments.stream().map(MyPlannerBoardResponse::ofDocument).collect(Collectors.toList());
-        UserEntity user = plannerDocuments.get(0).getUser();
+    public static UserInfoSearchResponse ofDocument(UserDocument userDocument, List<PlannerDocument> plannerDocuments) {
+
+        List<MyPlannerBoardResponse> list = Collections.emptyList();
+
+        if (!plannerDocuments.isEmpty()) {
+            list = plannerDocuments.stream().map(MyPlannerBoardResponse::ofDocument).collect(Collectors.toList());
+        }
 
         return UserInfoSearchResponse.builder()
-                                        .userId(user.getUserId())
-                                        .nickname(user.getNickname())
-                                        .aboutMe(user.getAboutMe())
-                                        .profile(user.getProfile())
+                                        .userId(userDocument.getUserId())
+                                        .nickname(userDocument.getNickname())
+                                        .aboutMe(userDocument.getAboutMe())
+                                        .profile(userDocument.getProfile())
                                         .planners(list)
                                         .build();
 
