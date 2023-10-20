@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/likes")
@@ -18,36 +20,37 @@ public class LikeController {
 
     @PostMapping("/plans/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Object> LikeOnePlus(@PathVariable Long plannerId) {
+    public ResponseEntity<Object> LikeOnePlus(@PathVariable Long plannerId, Principal principal) {
 
-            // LikeService에서 던진 예외를 캐치하고 처리합니다.
-            LikenOnePlusMinusResponse response = likeService.createLikeOrPlusPlanner(plannerId);
-            return ResponseEntity.ok(response);
+        LikenOnePlusMinusResponse response = likeService.createLikeOrPlusPlanner(plannerId, principal.getName());
+        return ResponseEntity.ok(response);
     }
     @PostMapping("/minus/plans/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<LikenOnePlusMinusResponse> LikeOneMinus(@PathVariable Long plannerId) {
+    public ResponseEntity<LikenOnePlusMinusResponse> LikeOneMinus(@PathVariable Long plannerId, Principal principal) {
 
-        return ResponseEntity.ok(likeService.LikeOneMinus(plannerId));
+        return ResponseEntity.ok(likeService.LikeOneMinus(plannerId, principal.getName()));
     }
 
     @PostMapping("/plans/user/save/planner/{plannerId}")
     @PreAuthorize("hasAuthority('USER')")
-    public UserSaveAndCancelResponse userSavePlus(@PathVariable Long plannerId) {
+    public UserSaveAndCancelResponse userSavePlus(@PathVariable Long plannerId, Principal principal) {
 
-        return likeService.userSavePlus(plannerId);
+        return likeService.userSavePlus(plannerId, principal.getName());
     }
 
     @DeleteMapping("/plans/user/cancel/planner/{plannerId}")
-    public UserSaveAndCancelResponse userSaveDelete(@PathVariable Long plannerId) {
+    @PreAuthorize("hasAuthority('USER')")
+    public UserSaveAndCancelResponse userSaveDelete(@PathVariable Long plannerId, Principal principal) {
 
-        return likeService.userCancel(plannerId);
+        return likeService.userCancel(plannerId, principal.getName());
     }
 
     @GetMapping("/plans/user/check/save/like/{plannerId}")
-    public UserLikeAndSaveYnResponse userCheckYn(@PathVariable Long plannerId) {
+    @PreAuthorize("hasAuthority('USER')")
+    public UserLikeAndSaveYnResponse userCheckYn(@PathVariable Long plannerId, Principal principal) {
 
-        return likeService.userCheckYn(plannerId);
+        return likeService.userCheckYn(plannerId, principal.getName());
     }
 
 

@@ -32,7 +32,8 @@ public class SearchController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserSearchResponse>> getUserNicknameList(@RequestParam String keyword, Pageable pageable) {
+    public ResponseEntity<List<UserSearchResponse>> getUserNicknameList(
+                                            @RequestParam String keyword, Pageable pageable) {
 
         return ResponseEntity.ok(searchService.getUserNicknameList(keyword, pageable));
     }
