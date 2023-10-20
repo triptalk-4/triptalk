@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class ViewSynchronizer {
+public class ViewsSynchronizer {
 
     private final StringRedisTemplate stringRedisTemplate;
     private final PlannerRepository plannerRepository;
@@ -29,7 +29,7 @@ public class ViewSynchronizer {
      **/
     @Transactional
 //    @Scheduled(cron = "0 0/3 * * * *")
-    public void SynchronizerViews() {
+    public void updateDBFromRedis() {
         Set<String> keys = stringRedisTemplate.keys("planner:views:*");
         assert keys != null;
         for (String key : keys) {
@@ -52,7 +52,7 @@ public class ViewSynchronizer {
 
     @Transactional
     @Scheduled(cron = "0 0/3 * * * *")
-    public void SynchronizerViewsSQL() {
+    public void updateDBFromRedisBySQL() {
         Set<String> keys = stringRedisTemplate.keys("planner:views:*");
         assert keys != null;
         for (String key : keys) {
