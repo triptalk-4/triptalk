@@ -15,13 +15,8 @@ import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,34 +31,20 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private final PlannerDetailRepository plannerDetailRepository;
 
-    private static  String email = "";
-
-    public String userEmail(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            email = userDetails.getUsername(); // 사용자 이메일 정보를 추출
-        }
-
-        return email;
-    }
-
-    public ReplyResponse replyOk(Long plannerDetailId,ReplyRequest request, String email) {
+    public ReplyResponse replyOk(Long plannerDetailId, ReplyRequest request, String email) {
 
 
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
                 .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_PLANNER_DETAIL_BOARD));
 
-        // 접속자 유저 찾기 -> 어떤 유저가 댓글을 달았는지 등록할 수 있다
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
 
         ReplyEntity reply = ReplyEntity.builder()
-                .plannerDetail(plannerDetail)
-                .user(userEntity)
-                .reply(request.getReply())
-                .build();
+                                        .plannerDetail(plannerDetail)
+                                        .user(userEntity)
+                                        .reply(request.getReply())
+                                        .build();
 
         replyRepository.save(reply);
 
@@ -72,7 +53,7 @@ public class ReplyService {
                 .build();
     }
 
-    public ReplyResponse replyUpdateOk(Long replyId,ReplyRequest request, String email) {
+    public ReplyResponse replyUpdateOk(Long replyId, ReplyRequest request, String email) {
 
         ReplyEntity reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new ReplyException(ReplyErrorCode.NO_PLANNER_DETAIL_REPLY_BOARD));
@@ -81,7 +62,7 @@ public class ReplyService {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
         // 쓴 유저가 아닐때 에러
-        if(!(userEntity.equals(reply.getUser()))){
+        if (!(userEntity.equals(reply.getUser()))) {
             throw new ReplyException(ReplyErrorCode.NO_REPLY_OWNER);
         }
 
@@ -102,7 +83,7 @@ public class ReplyService {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
         // 쓴 유저가 아닐때 에러
-        if(!(userEntity.equals(reply.getUser()))){
+        if (!(userEntity.equals(reply.getUser()))) {
             throw new ReplyException(ReplyErrorCode.NO_REPLY_OWNER);
         }
         replyRepository.delete(reply);
@@ -111,6 +92,7 @@ public class ReplyService {
                 .postOk("댓글 삭제가 완료 되었습니다.")
                 .build();
     }
+
     public List<ReplyGetResponse> getRepliesByPlannerDetailId(Long plannerDetailId) {
         // PlannerDetail 번호로 PlannerDetail 조회
         PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
@@ -120,12 +102,10 @@ public class ReplyService {
         List<ReplyEntity> replies = replyRepository.findByPlannerDetail(plannerDetail);
 
         // ReplyEntity를 ReplyGetResponse로 매핑하고 최신순으로 정렬
-        List<ReplyGetResponse> responses = replies.stream()
-                .map(this::mapReplyEntityToResponse)
-                .sorted(Comparator.comparing(ReplyGetResponse::getCreateDt).reversed()) // 최신순으로 정렬
-                .collect(Collectors.toList());
-
-        return responses;
+        return replies.stream()
+                        .map(ReplyGetResponse::ofEntity)
+                        .sorted(Comparator.comparing(ReplyGetResponse::getCreateDt).reversed()) // 최신순으로 정렬
+                        .collect(Collectors.toList());
     }
 
     private ReplyGetResponse mapReplyEntityToResponse(ReplyEntity replyEntity) {
@@ -138,5 +118,8 @@ public class ReplyService {
         response.setCreateDt(replyEntity.getCreatedAt());
         response.setEmail(replyEntity.getUser().getEmail());
         return response;
+      
+    public void deleteAllByPlannerDetail(PlannerDetail plannerDetail){
+        replyRepository.deleteAllByPlannerDetail(plannerDetail);
     }
 }

@@ -24,8 +24,6 @@ public class GoogleController {
     @GetMapping
     public ResponseEntity<AuthenticationResponse> loginGoogle(@RequestParam(value = "code") String code){
 
-        log.debug("controller :::::::::::::::" + code);
-
         return ResponseEntity.ok(googleAuthService.doSocialLogin(code));
     }
 }

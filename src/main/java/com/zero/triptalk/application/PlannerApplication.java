@@ -16,6 +16,7 @@ import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
+import com.zero.triptalk.reply.service.ReplyService;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,11 @@ public class PlannerApplication {
 
     private final LikeService likeService;
 
-    //상세 일정 한개 생성
+    private final ReplyService replyService;
+
+    /**
+     * 상세 일정 한개 생성
+     **/
     @Transactional
     public boolean createPlannerDetail(Long plannerId, List<MultipartFile> files,
                                        PlannerDetailRequest request, String email) {
@@ -66,7 +71,9 @@ public class PlannerApplication {
         return true;
     }
 
-    //일정 생성(일정 정보와 상세일정 리스트 모두 저장)
+    /**
+     * 일정 생성(일정 정보와 상세일정 리스트 모두 저장)
+     **/
     @Transactional
     public boolean createPlanner(PlannerRequest plannerRequest, List<PlannerDetailListRequest> requests, String email) {
 
@@ -93,7 +100,9 @@ public class PlannerApplication {
         return true;
     }
 
-    //상세 일정 삭제
+    /**
+     * 상세 일정 삭제
+     **/
     @Transactional
     public void deletePlannerDetail(Long plannerDetailId, String email) {
 
@@ -103,21 +112,38 @@ public class PlannerApplication {
         if (!user.getUserId().equals(plannerDetail.getUserId())) {
             throw new PlannerDetailException(UNMATCHED_USER_PLANNER);
         }
-        imageService.deleteFiles(plannerDetail.getImages());
 
+        replyService.deleteAllByPlannerDetail(plannerDetail);
         plannerDetailService.deletePlannerDetail(plannerDetailId);
+        imageService.deleteFiles(plannerDetail.getImages());
     }
 
-    // 일정 삭제
+    /**
+     * 일정 삭제
+     **/
     @Transactional
     public void deletePlanner(Long plannerId, String email) {
 
-        //일정이 존재하는지
+        //일정,유저 검증
         Planner planner = plannerService.findById(plannerId);
+        UserEntity user = plannerDetailService.findByEmail(email);
 
         //로그인 유저와 작성자가 일치하는지
         if (!planner.getUser().getEmail().equals(email)) {
             throw new PlannerException(PlannerErrorCode.UNMATCHED_USER_PLANNER);
+        }
+
+        //UserLikeEntity 삭제
+        if (likeService.UserLikeEntityExist(planner)) {
+            likeService.deleteUserLikeEntity(planner);
+        }
+        //PlannerLike 삭제
+        if (likeService.PlannerLikeExist(planner)) {
+            likeService.deletePlannerLike(planner);
+        }
+        // UserSave 삭제
+        if (likeService.UserSaveExist(planner)) {
+            likeService.deleteUserSave(planner);
         }
 
         //일정에 존재하는 상세 일정 모두 조회해서 삭제
@@ -128,7 +154,9 @@ public class PlannerApplication {
         plannerService.deletePlanner(plannerId);
     }
 
-    //일정 상세페이지 조회
+    /**
+     * 일정 상세페이지 조회
+     **/
     @Transactional
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
@@ -141,7 +169,7 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
-        planner.increaseViews();
+//        planner.increaseViews();
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
@@ -149,7 +177,9 @@ public class PlannerApplication {
         return PlannerResponse.of(planner, user, responses, likeCount);
     }
 
-    //일정 수정
+    /**
+     * 일정 수정
+     **/
     @Transactional
     public void updatePlanner(Long plannerId, UpdatePlannerInfo info, String email) {
 

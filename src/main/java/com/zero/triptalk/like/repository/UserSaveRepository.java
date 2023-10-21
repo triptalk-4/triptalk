@@ -22,18 +22,7 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
             "ORDER BY ple.saveDt DESC")
     Page<Object[]> findPlannersLikedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
-//    boolean existsByPlannerDetailAndUser(PlannerDetail plannerDetail, UserEntity userEntity);
-//
-//    Optional<Object> findByPlannerDetailAndUser(PlannerDetail plannerDetail, UserEntity user);
-//
-//    // 다음과 같이 유저가 좋아요 한 플래너만을 가져오는 메서드를 정의합니다.
-//    @Query("SELECT pl.planner, pl.likeCount as likeCount\n" +
-//            "FROM UserLikeEntity ple\n" +
-//            "JOIN PlannerLike pl ON ple.planner = pl.planner\n" +
-//            "WHERE ple.user = :user\n" +
-//            "GROUP BY pl.planner")
-//    Page<Object[]> findPlannersLikedByUserWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
+    boolean existsByPlanner(Planner planner);
 
-
-
+    void deleteAllByPlanner(Planner planner);
 }

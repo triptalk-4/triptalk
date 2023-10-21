@@ -24,4 +24,8 @@ public interface PlannerLikeRepository extends JpaRepository<PlannerLike, Long> 
   
     List<PlannerLike> findAllByLikeDtBetween(LocalDateTime from, LocalDateTime to);
 
+    boolean existsByPlanner(Planner planner);
+
+    void deleteAllByPlanner(Planner planner);
+
 }
