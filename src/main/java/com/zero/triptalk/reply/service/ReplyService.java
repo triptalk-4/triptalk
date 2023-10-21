@@ -118,7 +118,8 @@ public class ReplyService {
         response.setCreateDt(replyEntity.getCreatedAt());
         response.setEmail(replyEntity.getUser().getEmail());
         return response;
-      
+    }
+
     public void deleteAllByPlannerDetail(PlannerDetail plannerDetail){
         replyRepository.deleteAllByPlannerDetail(plannerDetail);
     }

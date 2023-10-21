@@ -41,9 +41,6 @@ public class KakaoAuthService {
     @Value("${kakao.client.id}")
     private String kakaoClientId;
 
-    @Value("${kakao.password}")
-    private String password;
-
     @Value("${kakao.redirect.url}")
     private String kakaoRedirectUrl;
 
@@ -127,6 +124,8 @@ public class KakaoAuthService {
 
     public String loginKakao(String nickname, String email) {
             String nicknameByRandom =  "kakao" + generateRandomNumber();
+
+            String password = "kakaoLogin1!";
 
 
             Optional<UserEntity> existingUser = repository.findByEmail(email);
