@@ -85,4 +85,18 @@ public class PlannerDetail {
                 .build();
     }
 
+    public static PlannerDetail createNewPlannerDetail(
+            UpdatePlannerDetailListRequest request,
+            Planner planner, UserEntity user, Place place
+    ) {
+        return PlannerDetail.builder()
+                .planner(planner)
+                .userId(user.getUserId())
+                .description(request.getDescription())
+                .place(place)
+                .images(request.getImages())
+                .date(request.getDate())
+                .build();
+    }
+
 }

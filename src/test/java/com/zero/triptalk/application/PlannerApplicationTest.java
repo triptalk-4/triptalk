@@ -2,41 +2,40 @@
 package com.zero.triptalk.application;
 
 import com.zero.triptalk.exception.custom.PlannerDetailException;
+import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.place.entity.PlaceRequest;
-import com.zero.triptalk.image.service.ImageService;
 import com.zero.triptalk.place.service.PlaceService;
 import com.zero.triptalk.planner.dto.PlannerDetailListRequest;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.PlannerRequest;
-import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
+import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.enumType.UserTypeRole;
 import com.zero.triptalk.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.inject.Singleton;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PlannerApplicationTest {
@@ -62,11 +61,13 @@ class PlannerApplicationTest {
     @Mock
     private PlannerService plannerService;
 
+    @Spy
     @InjectMocks
     private PlannerApplication plannerApplication;
 
+
     @Test
-    @DisplayName("상세 일정 한개 만들기")
+    @DisplayName("상세 일정 한개 생성 성공")
     void createPlannerDetail() {
 
         //given
@@ -127,7 +128,7 @@ class PlannerApplicationTest {
     }
 
     @Test
-    @DisplayName("일정 생성")
+    @DisplayName("일정 생성 성공")
     void createPlanner() {
         //given
 
@@ -167,7 +168,7 @@ class PlannerApplicationTest {
         String thumbnail = images.get(0);
 
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
-        when(plannerService.createPlanner(plannerRequest,user,thumbnail)).thenReturn(planner);
+        when(plannerService.createPlanner(plannerRequest, user, thumbnail)).thenReturn(planner);
         when(placeService.savePlace(any())).thenReturn(place);
 
 
@@ -183,7 +184,7 @@ class PlannerApplicationTest {
     }
 
     @Test
-    @DisplayName("상세 일정 삭제 - 성공")
+    @DisplayName("상세 일정 삭제 성공")
     void deletePlannerDetail() {
         //given
         Long plannerDetailId = 1L;
@@ -198,7 +199,7 @@ class PlannerApplicationTest {
         //when
         when(plannerDetailService.findByEmail(email)).thenReturn(user);
         when(plannerDetailService.findById(plannerDetailId)).thenReturn(plannerDetail);
-        plannerApplication.deletePlannerDetail(plannerDetailId,email);
+        plannerApplication.deletePlannerDetail(plannerDetailId, email);
         //then
 
         imageService.deleteFiles(images);
@@ -224,7 +225,7 @@ class PlannerApplicationTest {
         //then
         imageService.deleteFiles(images);
         Assertions.assertThrows(PlannerDetailException.class,
-                () -> plannerApplication.deletePlannerDetail(plannerDetailId,email));
+                () -> plannerApplication.deletePlannerDetail(plannerDetailId, email));
     }
 
 }
