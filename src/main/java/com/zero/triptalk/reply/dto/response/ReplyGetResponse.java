@@ -16,5 +16,6 @@ public class ReplyGetResponse {
     private String profile;
     private String reply;
     private LocalDateTime createDt;
+    private String email;
 
 }

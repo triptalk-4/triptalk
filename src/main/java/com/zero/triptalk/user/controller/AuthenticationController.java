@@ -91,8 +91,6 @@ public class AuthenticationController {
 
             String jwtFinalToken  = kakaoAuthService.loginKakao(nickname,email);
 
-            System.out.println("jwtfinalToken = " + jwtFinalToken);
-
             return KakaoResponse.builder()
                     .kakaoLoginOk("로그인이 완료되었습니다")
                     .token(jwtFinalToken)

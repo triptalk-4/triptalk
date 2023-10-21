@@ -46,6 +46,9 @@ public class KakaoAuthService {
     @Value("${kakao.client.id}")
     private String kakaoClientId;
 
+    @Value("${kakao.password}")
+    private String password;
+
     @Value("${kakao.redirect.url}")
     private String kakaoRedirectUrl;
 
@@ -59,16 +62,6 @@ public class KakaoAuthService {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.mailSender = mailSender;
-    }
-
-    public String generateKakaoAuthorizationUrl() {
-
-        StringBuilder url = new StringBuilder();
-        url.append("https://kauth.kakao.com/oauth/authorize?");
-        url.append("client_id=" + kakaoClientId);
-        url.append("&redirect_uri=" + kakaoRedirectUrl);
-        url.append("&response_type=code");
-        return url.toString();
     }
 
     public JsonNode getKakaoAccessToken(String code) {
@@ -89,17 +82,9 @@ public class KakaoAuthService {
             post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
             HttpResponse response = client.execute(post);
-            int responseCode = response.getStatusLine().getStatusCode();
-
-            System.out.println("\nSending 'POST' request to URL : " + requestUrl);
-            System.out.println("Post parameters : " + json);
-            System.out.println("Response Code : " + responseCode);
 
             ObjectMapper mapper = new ObjectMapper();
             String responseBody = EntityUtils.toString(response.getEntity());
-            System.out.println("responseBody = " + responseBody);
-            System.out.println("mapper.readTree(responseBody = " + mapper.readTree(responseBody));
-
             return mapper.readTree(responseBody);
 
         } catch (IOException e) {
@@ -120,13 +105,8 @@ public class KakaoAuthService {
             HttpResponse response = client.execute(get);
             int responseCode = response.getStatusLine().getStatusCode();
 
-            System.out.println("\nSending 'GET' request to URL : " + requestUrl);
-            System.out.println("Response Code : " + responseCode);
-
             ObjectMapper mapper = new ObjectMapper();
             String responseBody = EntityUtils.toString(response.getEntity());
-
-            System.out.println("responseBody1 = " + responseBody);
 
             return mapper.readTree(responseBody);
 
@@ -152,8 +132,7 @@ public class KakaoAuthService {
 
 
     public String loginKakao(String nickname, String email) {
-            String password = "kakaoLogin1!";
-            String nicknameByRandom =  nickname + generateRandomNumber();
+            String nicknameByRandom =  "kakao" + generateRandomNumber();
 
 
             Optional<UserEntity> existingUser = repository.findByEmail(email);
@@ -176,7 +155,7 @@ public class KakaoAuthService {
             }
             LocalDateTime currentTime = LocalDateTime.now();
 
-        String aboutMe = nickname+"님 안녕하세요 자신을 소개해 주세요!";
+        String aboutMe = nicknameByRandom+"님 안녕하세요 자신을 소개해 주세요!";
 
             var user = UserEntity.builder()
                     .name(nickname)

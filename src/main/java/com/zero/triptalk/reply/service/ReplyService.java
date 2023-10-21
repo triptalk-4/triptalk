@@ -136,6 +136,7 @@ public class ReplyService {
         response.setProfile(replyEntity.getUser().getProfile()); // 예시: UserEntity에서 프로필을 가져옴
         response.setReply(replyEntity.getReply());
         response.setCreateDt(replyEntity.getCreatedAt());
+        response.setEmail(replyEntity.getUser().getEmail());
         return response;
     }
 }
