@@ -13,6 +13,7 @@ public class ReplyGetResponse {
     private String profile;
     private String reply;
     private LocalDateTime createDt;
+    private String email;
 
     @Builder
     public ReplyGetResponse(Long replyId, String nickname, String profile, String reply, LocalDateTime createDt) {
