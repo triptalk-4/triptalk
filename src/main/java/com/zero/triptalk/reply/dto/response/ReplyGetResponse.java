@@ -17,12 +17,13 @@ public class ReplyGetResponse {
     private String email;
 
     @Builder
-    public ReplyGetResponse(Long replyId, String nickname, String profile, String reply, LocalDateTime createDt) {
+    public ReplyGetResponse(Long replyId, String nickname, String profile, String reply, LocalDateTime createDt,String email) {
         this.replyId = replyId;
         this.nickname = nickname;
         this.profile = profile;
         this.reply = reply;
         this.createDt = createDt;
+        this.email = email;
     }
 
     public static ReplyGetResponse ofEntity(ReplyEntity reply) {
@@ -32,6 +33,7 @@ public class ReplyGetResponse {
                 .profile(reply.getUser().getProfile())
                 .reply(reply.getReply())
                 .createDt(reply.getCreatedAt())
+                .email(reply.getUser().getEmail())
                 .build();
     }
 }

@@ -14,9 +14,9 @@ public interface UserSaveRepository extends JpaRepository<UserSave, Long> {
 
     Boolean existsByPlannerAndUser(Planner planner, UserEntity user);
 
-    @Query("SELECT pl.planner, pl.likeCount as likeCount\n" +
+    @Query("SELECT pl.planner, COALESCE(pl.likeCount, 0) AS likeCount\n" +
             "FROM UserSave ple\n" +
-            "JOIN PlannerLike pl ON ple.planner = pl.planner\n" +
+            "LEFT JOIN PlannerLike pl ON ple.planner = pl.planner\n" +
             "WHERE ple.user = :user\n" +
             "GROUP BY pl.planner\n" +
             "ORDER BY ple.saveDt DESC")
