@@ -39,9 +39,10 @@ public class SearchController {
     }
 
     @GetMapping("/search/user/{userId}")
-    public ResponseEntity<UserInfoSearchResponse> searchByUserId(@PathVariable Long userId) {
+    public ResponseEntity<UserInfoSearchResponse> searchByUserId(@PathVariable Long userId,
+                                                                        Pageable pageable) {
 
-        return ResponseEntity.ok(searchService.searchByUserId(userId));
+        return ResponseEntity.ok(searchService.searchByUserId(userId, pageable));
     }
 
 }
