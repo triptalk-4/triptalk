@@ -157,7 +157,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/planners/byUser")
-    public Page<MyPlannerBoardResponse> getPlannersByUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
+    public Page<MyPlannerBoardResponse> getPlannersByUser(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "6") int pageSize) {
         UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
         if (user != null) {
             Pageable pageable = PageRequest.of(page, pageSize);
@@ -169,7 +170,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/planners/userSave")
-    public Page<LikePlannerResponse> getPlannersUserLike(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "6") int pageSize) {
+    public Page<LikePlannerResponse> getPlannersUserLike(@RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "6") int pageSize) {
         UserEntity user = service.getUserByEmail(); // 해당 userId에 해당하는 유저 정보를 가져옵니다.
         if (user != null) {
             Pageable pageable = PageRequest.of(page, pageSize);
