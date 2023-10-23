@@ -77,14 +77,12 @@ public class PlannerService {
 
     /**
      * userId를 key 로 하여 방문한 페이지를 set 으로 저장
-     *
-     * @param planner, userId, plannerId
+     * @param views, userId, plannerId
      */
-    public void increaseViewsUser(Planner planner, Long plannerId, Long loginUserId) {
+    public void increaseViewsUser(Long views, Long plannerId, Long loginUserId) {
         String key = "user:" + loginUserId;
         String totalView = "planner:views:" + plannerId;
-        Long views = planner.getViews();
-        long currentTime = System.currentTimeMillis();
+
         if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
             stringRedisTemplate.opsForSet().add(key, String.valueOf(plannerId));
             stringRedisTemplate.expire(key, 24, TimeUnit.HOURS);
@@ -99,5 +97,4 @@ public class PlannerService {
             stringRedisTemplate.expire(totalView, 4L, TimeUnit.MINUTES);
         }
     }
-
 }
