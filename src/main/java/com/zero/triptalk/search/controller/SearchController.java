@@ -6,6 +6,7 @@ import com.zero.triptalk.search.service.SearchService;
 import com.zero.triptalk.user.dto.UserInfoSearchResponse;
 import com.zero.triptalk.user.dto.UserSearchResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,22 +27,36 @@ public class SearchController {
 
     @GetMapping("/search/{region}/{searchType}")
     public ResponseEntity<List<PlannerDetailSearchResponse>> searchByRegionAndSearchType(
-            @PathVariable String region, @PathVariable String searchType, Pageable pageable) {
+                                                        @PathVariable String region,
+                                                        @PathVariable String searchType,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "6") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
      return ResponseEntity.ok(searchService.searchByRegionAnySort(region, searchType, pageable));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<UserSearchResponse>> getUserNicknameList(
-                                            @RequestParam String keyword, Pageable pageable) {
+                                                        @RequestParam String keyword,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "6") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         return ResponseEntity.ok(searchService.getUserNicknameList(keyword, pageable));
     }
 
     @GetMapping("/search/user/{userId}")
-    public ResponseEntity<UserInfoSearchResponse> searchByUserId(@PathVariable Long userId) {
+    public ResponseEntity<UserInfoSearchResponse> searchByUserId(
+                                                        @PathVariable Long userId,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "6") int size) {
 
-        return ResponseEntity.ok(searchService.searchByUserId(userId));
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(searchService.searchByUserId(userId, pageable));
     }
 
 }

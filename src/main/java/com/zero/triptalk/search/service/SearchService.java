@@ -16,6 +16,7 @@ import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.repository.UserSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.NoSuchIndexException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ public class SearchService {
     private final CustomPlannerDetailSearchRepository customPlannerDetailSearchRepository;
     private final UserSearchRepository userSearchRepository;
 
-    public List<PlannerSearchResponse> getTop6PlannersWithLikes() {
+    public List<PlannerSearchResponse> getTop6PlannersWithLikes() throws NoSuchIndexException {
 
         List<PlannerDocument> top6ByOrderByLikeCountDesc =
                 plannerSearchRepository.findTop6ByOrderByLikesDesc();
@@ -41,7 +42,8 @@ public class SearchService {
     }
 
     public List<PlannerDetailSearchResponse> searchByRegionAnySort(
-                                        String region, String searchType, Pageable pageable) {
+                                        String region, String searchType, Pageable pageable)
+                                                                throws NoSuchIndexException {
 
         if (region.isEmpty() || region.trim().equals("")) {
             throw new SearchException(SearchErrorCode.INVALID_REQUEST);
@@ -56,19 +58,22 @@ public class SearchService {
 
     }
 
-    public List<UserSearchResponse> getUserNicknameList(String keyword, Pageable pageable) {
+    public List<UserSearchResponse> getUserNicknameList(String keyword, Pageable pageable)
+                                                                throws NoSuchIndexException {
 
         List<UserDocument> documents = userSearchRepository.findByNicknameContains(keyword, pageable);
 
         return UserSearchResponse.ofDocument(documents);
     }
 
-    public UserInfoSearchResponse searchByUserId(Long userId) {
+    public UserInfoSearchResponse searchByUserId(Long userId,Pageable pageable)
+                                                                throws NoSuchIndexException {
 
         UserDocument userDocument = userSearchRepository.findById(userId).orElseThrow(() ->
                                                 new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        List<PlannerDocument> plannerDocuments = plannerSearchRepository.findAllByUser(userId);
+        List<PlannerDocument> plannerDocuments =
+                                    plannerSearchRepository.findAllByUser(userId, pageable);
 
         return UserInfoSearchResponse.ofDocument(userDocument, plannerDocuments);
     }
