@@ -37,6 +37,8 @@ public class CustomPlannerDetailRepository {
 
         return queryFactory.select(plannerDetail, plannerLike.likeCount)
                 .from(plannerDetail)
+                .join(plannerDetail.images).fetchJoin()
+                .join(plannerDetail.place).fetchJoin()
                 .join(plannerLike)
                 .on(plannerLike.planner.eq(plannerDetail.planner))
                 .where(plannerDetail.planner.plannerId.in(ids))
