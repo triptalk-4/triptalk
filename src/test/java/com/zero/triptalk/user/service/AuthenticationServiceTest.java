@@ -6,10 +6,7 @@ import com.zero.triptalk.user.entity.UserDocument;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import com.zero.triptalk.user.repository.UserSearchRepository;
-import com.zero.triptalk.user.request.AuthenticationRequest;
-import com.zero.triptalk.user.request.EmailTokenRequest;
-import com.zero.triptalk.user.request.NicknameCheckRequest;
-import com.zero.triptalk.user.request.RegisterRequest;
+import com.zero.triptalk.user.request.*;
 import com.zero.triptalk.user.response.AuthenticationResponse;
 import com.zero.triptalk.user.response.NicknameCheckOkResponse;
 import com.zero.triptalk.user.service.AuthenticationService;
@@ -20,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,6 +47,9 @@ public class AuthenticationServiceTest {
 
     @Mock
     private AuthenticationManager authenticationManager;
+
+    @Value("${cloud.aws.image}")
+    private String imagePropertyValue;
 
     @BeforeEach
     public void setUp() {
@@ -148,4 +149,6 @@ public class AuthenticationServiceTest {
         // Act and Assert
         assertThrows(UserException.class, () -> authenticationService.PasswordCheckToken(request));
     }
+
+
 }
