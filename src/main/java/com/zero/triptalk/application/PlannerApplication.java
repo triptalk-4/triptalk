@@ -161,7 +161,7 @@ public class PlannerApplication {
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
         //로그인 유저 검증
-        plannerDetailService.findByEmail(email);
+        UserEntity loginUser = plannerDetailService.findByEmail(email);
 
         PlannerLike plannerLike = likeService.findByPlannerId(plannerId);
         Long likeCount = (plannerLike != null) ? plannerLike.getLikeCount() : 0;
@@ -169,7 +169,7 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
-        plannerService.increaseViews(planner);
+        plannerService.increaseViewsUser(planner.getViews(),plannerId, loginUser.getUserId());
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
