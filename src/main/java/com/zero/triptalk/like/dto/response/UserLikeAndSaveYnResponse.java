@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class UserLikeAndSaveYnResponse {
     private String userSaveYn;
     private String userLikeYn;
+    private Long likeCount;
 
 }
