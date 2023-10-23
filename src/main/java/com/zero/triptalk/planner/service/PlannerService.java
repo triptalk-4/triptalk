@@ -54,8 +54,6 @@ public class PlannerService {
     /**
      * plannerId을 key 로 하여 방문한 사용자들을 set 으로 저장
      *
-     * @param planner
-     * @param userId
      */
 
     public void increaseViews(Planner planner, Long userId) {
@@ -81,7 +79,6 @@ public class PlannerService {
     /**
      * userId를 key 로 하여 방문한 페이지를 set 으로 저장
      *
-     * @param views, userId, plannerId
      */
     public void increaseViewsUser(Long views, Long plannerId, Long loginUserId) {
         String key = "user:" + loginUserId;
