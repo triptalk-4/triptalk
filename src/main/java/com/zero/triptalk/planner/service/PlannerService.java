@@ -70,6 +70,9 @@ public class PlannerService {
             //레디스에 이미 올라가있음, 거기에 set에 아이디가 없으면 아이디 추가, 조회수 1 증가, 만료시간 설정
         } else if (Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(key, user))) {
             stringRedisTemplate.opsForSet().add(key, user);
+            if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(totalViewsKey))) {
+                stringRedisTemplate.opsForValue().set(totalViewsKey, String.valueOf(planner.getViews()));
+            }
             stringRedisTemplate.opsForValue().increment(totalViewsKey);
             stringRedisTemplate.expire(totalViewsKey, 4L, TimeUnit.MINUTES);
         }
@@ -77,6 +80,7 @@ public class PlannerService {
 
     /**
      * userId를 key 로 하여 방문한 페이지를 set 으로 저장
+     *
      * @param views, userId, plannerId
      */
     public void increaseViewsUser(Long views, Long plannerId, Long loginUserId) {
