@@ -176,9 +176,13 @@ public class LikeService {
 
         boolean userSaveYnCheck = userSaveRepository.existsByPlannerAndUser(planner,user);
         boolean userLikeYnCheck = userLikeRepository.existsByPlannerAndUser(planner,user);
-         PlannerLike plannerLike = plannerLikeRepository.findByPlanner(planner);
+        PlannerLike plannerLike = plannerLikeRepository.findByPlanner(planner);
 
-         long likeCount = plannerLike.getLikeCount();
+         long likeCount = 0;
+
+        if(plannerLike != null){
+           likeCount = plannerLike.getLikeCount();
+        }
 
 
         if(userSaveYnCheck){
