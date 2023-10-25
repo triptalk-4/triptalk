@@ -25,4 +25,8 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
             "WHERE p.user = :user\n"  +
             "ORDER BY p.createAt DESC")
     Page<Object[]> findPlannersWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
+
+    @Modifying
+    @Query("update Planner p set p.views = p.views + 1 where p.plannerId = :plannerId")
+    void increaseViews(@Param("plannerId") Long plannerId);
 }
