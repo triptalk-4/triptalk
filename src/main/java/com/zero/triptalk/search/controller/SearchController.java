@@ -1,7 +1,7 @@
 package com.zero.triptalk.search.controller;
 
-import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
-import com.zero.triptalk.planner.dto.PlannerSearchResponse;
+import com.zero.triptalk.planner.dto.response.PlannerDetailSearchResponse;
+import com.zero.triptalk.planner.dto.response.PlannerSearchResponse;
 import com.zero.triptalk.search.service.SearchService;
 import com.zero.triptalk.user.dto.UserInfoSearchResponse;
 import com.zero.triptalk.user.dto.UserSearchResponse;

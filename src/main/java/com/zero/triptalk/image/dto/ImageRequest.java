@@ -1,4 +1,4 @@
-package com.zero.triptalk.image.domain;
+package com.zero.triptalk.image.dto;
 
 
 import lombok.AllArgsConstructor;

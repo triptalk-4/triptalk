@@ -1,4 +1,4 @@
-package com.zero.triptalk.planner.dto;
+package com.zero.triptalk.planner.dto.request;
 
 
 import com.zero.triptalk.planner.entity.Planner;

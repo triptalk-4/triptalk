@@ -2,11 +2,10 @@ package com.zero.triptalk.planner.entity;
 
 import com.zero.triptalk.base.BaseEntity;
 import com.zero.triptalk.place.entity.Place;
-import com.zero.triptalk.planner.dto.PlannerDetailRequest;
-import com.zero.triptalk.planner.dto.UpdatePlannerDetailListRequest;
+import com.zero.triptalk.planner.dto.request.PlannerDetailRequest;
+import com.zero.triptalk.planner.dto.request.UpdatePlannerDetailListRequest;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
