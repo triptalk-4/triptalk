@@ -11,7 +11,6 @@ import com.zero.triptalk.like.repository.UserLikeRepository;
 import com.zero.triptalk.like.repository.UserSaveRepository;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerRepository;
-
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +20,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

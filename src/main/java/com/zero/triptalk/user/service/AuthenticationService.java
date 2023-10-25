@@ -334,7 +334,7 @@ public class AuthenticationService {
                     response.setTitle(planner.getTitle());
                     response.setThumbnail(planner.getThumbnail());
                     response.setViews(planner.getViews());
-                    response.setCreateAt(planner.getCreateAt().toString());
+                    response.setCreateAt(planner.getCreatedAt().toString());
 
                     // LikeCount 설정
                     if (data1 instanceof Long) {
@@ -363,7 +363,7 @@ public class AuthenticationService {
                     response.setTitle(planner.getTitle());
                     response.setThumbnail(planner.getThumbnail());
                     response.setViews(planner.getViews());
-                    response.setCreateAt(planner.getCreateAt().toString());
+                    response.setCreateAt(planner.getCreatedAt().toString());
                     response.setLikeCount(likeCount);
 
                     return response;

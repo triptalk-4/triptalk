@@ -14,6 +14,7 @@ public class PlaceResponse {
     private String placeName;
 
     private String roadAddress;
+
     private String addressName;
 
     private double latitude;

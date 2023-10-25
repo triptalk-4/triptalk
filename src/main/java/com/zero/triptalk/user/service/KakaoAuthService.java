@@ -50,7 +50,7 @@ public class KakaoAuthService {
     @Value("${cloud.aws.image}")
     private String profile;
 
-    public KakaoAuthService(UserRepository repository, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) throws IOException {
+    public KakaoAuthService(UserRepository repository, UserSearchRepository userSearchRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager){
         this.repository = repository;
         this.userSearchRepository = userSearchRepository;
         this.passwordEncoder = passwordEncoder;
