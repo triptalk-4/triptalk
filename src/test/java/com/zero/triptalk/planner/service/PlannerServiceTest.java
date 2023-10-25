@@ -1,6 +1,6 @@
 package com.zero.triptalk.planner.service;
 
-import com.zero.triptalk.planner.dto.PlannerRequest;
+import com.zero.triptalk.planner.dto.request.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;

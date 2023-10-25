@@ -1,4 +1,4 @@
-package com.zero.triptalk.planner.dto;
+package com.zero.triptalk.planner.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdatePlannerInfo {
+public class CreatePlannerInfo {
 
-    private List<UpdatePlannerDetailListRequest> updatePlannerDetailListRequests;
+    private List<PlannerDetailListRequest> plannerDetailListRequests;
     private PlannerRequest plannerRequest;
-    private List<String> deletedUrls;
 }

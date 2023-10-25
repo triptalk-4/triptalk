@@ -1,7 +1,7 @@
 package com.zero.triptalk.image.controller;
 
 
-import com.zero.triptalk.image.domain.ImageRequest;
+import com.zero.triptalk.image.dto.ImageRequest;
 import com.zero.triptalk.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

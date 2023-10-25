@@ -1,14 +1,13 @@
 package com.zero.triptalk.planner.entity;
 
 import com.zero.triptalk.base.BaseEntity;
-import com.zero.triptalk.planner.dto.PlannerRequest;
+import com.zero.triptalk.planner.dto.request.PlannerRequest;
 import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

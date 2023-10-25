@@ -3,7 +3,7 @@ package com.zero.triptalk.image.controller;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zero.triptalk.config.JwtService;
-import com.zero.triptalk.image.domain.ImageRequest;
+import com.zero.triptalk.image.dto.ImageRequest;
 import com.zero.triptalk.image.service.ImageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
