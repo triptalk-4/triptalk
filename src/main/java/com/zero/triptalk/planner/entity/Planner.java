@@ -45,8 +45,8 @@ public class Planner extends BaseEntity {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime endDate;
 
-    public void increaseViews(){
-        this.views++;
+    public void changeThumbnail(String thumbnail){
+        this.thumbnail = thumbnail;
     }
 
     public void updatePlanner(PlannerRequest request){
