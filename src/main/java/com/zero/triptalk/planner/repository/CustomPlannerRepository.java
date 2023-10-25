@@ -35,7 +35,7 @@ public class CustomPlannerRepository {
                         QPlanner.planner.thumbnail,
                         qPlannerLike.likeCount,
                         QPlanner.planner.views,
-                        QPlanner.planner.createAt
+                        QPlanner.planner.createdAt
                 );
 
         final List<PlannerListResponse> result = queryFactory
@@ -69,7 +69,7 @@ public class CustomPlannerRepository {
                 orderSpecifier = qPlannerLike.likeCount.desc();
                 break;
             case RECENT:
-                orderSpecifier = qPlanner.createAt.desc();
+                orderSpecifier = qPlanner.createdAt.desc();
                 break;
             case VIEWS:
                 orderSpecifier = qPlanner.views.desc();

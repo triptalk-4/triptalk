@@ -1,8 +1,9 @@
-package com.zero.triptalk.search.schedule;
+package com.zero.triptalk.component;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.querydsl.core.Tuple;
-import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerDetailRepository;
 import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerSearchRepository;
@@ -22,11 +23,12 @@ import static com.zero.triptalk.planner.entity.QPlanner.planner;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class ElasticScheduler {
+public class ElasticSynchronizer {
 
     private final PlannerSearchRepository plannerSearchRepository;
     private final CustomPlannerDetailRepository customPlannerDetailRepository;
     private final PlannerDetailSearchRepository plannerDetailSearchRepository;
+    private final ElasticsearchClient elasticsearchClient;
 
     @Scheduled(cron = "${scheduler.elasticsearch}")
     public void savePlannersToElasticSearch() {
@@ -34,15 +36,20 @@ public class ElasticScheduler {
         List<LocalDateTime> now = getNow();
         List<Tuple> planners =
                 customPlannerDetailRepository.getPlannerListByLikeAndViewUpdateDt(now.get(0), now.get(1));
-        List<PlannerDocument> plannerDocuments = PlannerDocument.ofTuple(planners);
-        plannerSearchRepository.saveAll(plannerDocuments);
-        log.info(LocalDateTime.now() + "=====================");
-        log.info(now.get(0) + " 부터 " + now.get(1) + " 까지 PlannerDocument 저장완료. 총 : " +
-                                                                 plannerDocuments.size() + "개");
+        if (!planners.isEmpty()) {
 
-        List<Long> ids = planners.stream().map(x -> Objects.requireNonNull(
-                                           x.get(planner)).getPlannerId()).collect(Collectors.toList());
-        savePlannerDetailsToElasticSearch(ids, now.get(0), now.get(1));
+            List<PlannerDocument> plannerDocuments = PlannerDocument.ofTuple(planners);
+            plannerSearchRepository.saveAll(plannerDocuments);
+            log.info(LocalDateTime.now() + "=====================");
+            log.info(now.get(0) + " 부터 " + now.get(1) + " 까지 PlannerDocument 저장완료. 총 : " +
+                    plannerDocuments.size() + "개");
+
+            List<Long> ids = planners.stream().map(x -> Objects.requireNonNull(
+                    x.get(planner)).getPlannerId()).collect(Collectors.toList());
+            savePlannerDetailsToElasticSearch(ids, now.get(0), now.get(1));
+
+
+        }
 
     }
 

@@ -1,11 +1,10 @@
 package com.zero.triptalk.planner.entity;
 
+import com.zero.triptalk.base.BaseEntity;
 import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.type.PlannerStatus;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -17,11 +16,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@EntityListeners(value = {AuditingEntityListener.class})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Planner {
+public class Planner extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,14 +44,6 @@ public class Planner {
     private LocalDateTime startDate;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime endDate;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createAt;
-
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime modifiedAt;
 
     public void increaseViews(){
         this.views++;
