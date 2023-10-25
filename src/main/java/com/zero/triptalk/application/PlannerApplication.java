@@ -169,7 +169,7 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
-        if (!plannerService.checkDuplication(plannerId, loginUser.getUserId())) {
+        if (plannerService.checkDuplication(plannerId,loginUser.getUserId())){
             plannerService.increaseViews(plannerId);
         }
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
