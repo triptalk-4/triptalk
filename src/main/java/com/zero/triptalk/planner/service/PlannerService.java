@@ -1,5 +1,6 @@
 package com.zero.triptalk.planner.service;
 
+import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.custom.PlannerException;
 import com.zero.triptalk.planner.dto.PlannerListResult;
@@ -17,11 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.concurrent.TimeUnit;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -33,6 +30,7 @@ public class PlannerService {
     private final PlannerSearchRepository plannerSearchRepository;
     private final PlannerDetailSearchRepository plannerDetailSearchRepository;
     private final StringRedisTemplate stringRedisTemplate;
+    private final RedisUtil redisUtil;
 
 
     public Planner createPlanner(PlannerRequest request, UserEntity user, String thumbnail) {
@@ -56,50 +54,43 @@ public class PlannerService {
         return customPlannerRepository.PlannerList(pageable, sortType);
     }
 
-    private void getAdd(Long plannerId, String key) {
-        stringRedisTemplate.opsForSet().add(key, String.valueOf(plannerId));
-    }
-
     public void increaseViews(Long plannerId) {
         plannerRepository.increaseViews(plannerId);
     }
 
     public Boolean checkDuplication(Long plannerId, Long loginUserId) {
-        String key = "user:" + loginUserId;
-        if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
-            getAdd(plannerId, key);
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime midnight = LocalDateTime.of(now.toLocalDate().plusDays(1), LocalTime.MIDNIGHT);
-            long secondsUntilMidnight = Duration.between(now, midnight).toSeconds();
-            stringRedisTemplate.expire(key, secondsUntilMidnight, TimeUnit.SECONDS);
+        String userKey = "user:" + loginUserId;
+        if (!redisUtil.hasKey(userKey)) {
+            redisUtil.addUserSet(userKey, plannerId);
+            redisUtil.setExpireMidnight(userKey);
+            return true;
+        }
+        if (redisUtil.isMember(userKey, String.valueOf(plannerId))) {
             return false;
         }
-        if (Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(key, String.valueOf(plannerId)))) {
-            getAdd(plannerId, key);
-            return false;
-        }
+        redisUtil.addUserSet(userKey, plannerId);
         return true;
     }
 
     /**
      * userId를 key 로 하여 방문한 페이지를 set 으로 저장 , 조회수도 캐시로 저장
      */
+    @Transactional
     public void increaseViewsUser(Long views, Long plannerId, Long loginUserId) {
-        String key = "user:" + loginUserId;
-        String totalView = "planner:views:" + plannerId;
+        String userKey = "user:" + loginUserId;
+        String plannerKey = "planner:views:" + plannerId;
 
-        if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(key))) {
-            getAdd(plannerId, key);
-            stringRedisTemplate.expire(key, 24, TimeUnit.HOURS);
-            stringRedisTemplate.opsForValue().set(totalView, String.valueOf(views + 1), 4L, TimeUnit.MINUTES);
-            //user set 이 있고 조회된 적이 없으면
-        } else if (Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(key, String.valueOf(plannerId)))) {
-            getAdd(plannerId, key);
-            if (Boolean.FALSE.equals(stringRedisTemplate.hasKey(totalView))) {
-                stringRedisTemplate.opsForValue().set(totalView, String.valueOf(views));
+        if (!redisUtil.hasKey(userKey)) {
+            redisUtil.addUserSet(userKey, plannerId);
+            redisUtil.setExpireMidnight(userKey);
+            if (redisUtil.getData(plannerKey) == null) {
+                redisUtil.setData(plannerKey, String.valueOf(views + 1));
+            } else {
+                redisUtil.increaseViews(plannerKey);
             }
-            stringRedisTemplate.opsForValue().increment(totalView);
-            stringRedisTemplate.expire(totalView, 4L, TimeUnit.MINUTES);
+        } else if (!redisUtil.isMember(userKey, String.valueOf(plannerId))) {
+            redisUtil.addUserSet(userKey, plannerId);
+            redisUtil.increaseViews(plannerKey);
         }
     }
 }
