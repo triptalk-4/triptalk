@@ -1,7 +1,5 @@
 package com.zero.triptalk.planner.dto.request;
 
-import com.zero.triptalk.planner.dto.request.PlannerRequest;
-import com.zero.triptalk.planner.dto.request.UpdatePlannerDetailListRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

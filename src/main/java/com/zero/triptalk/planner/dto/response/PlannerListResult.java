@@ -1,6 +1,5 @@
 package com.zero.triptalk.planner.dto.response;
 
-import com.zero.triptalk.planner.dto.response.PlannerListResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
