@@ -9,11 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
-    List<Planner> findByUser(UserEntity user);
-    Page<Planner> findByUser(UserEntity user, Pageable pageable);
 
     @Modifying
     @Query("update Planner p set p.views = :view where p.plannerId = :plannerId")
@@ -21,9 +17,9 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
 
     @Query("SELECT p, COALESCE(pll.likeCount, 0) as likeCount\n" +
             "FROM Planner p\n" +
-            "LEFT JOIN PlannerLike pll ON p.id = pll.planner.id\n" +
+            "LEFT JOIN PlannerLike pll ON p.plannerId = pll.planner.plannerId\n" +
             "WHERE p.user = :user\n"  +
-            "ORDER BY p.createAt DESC")
+            "ORDER BY p.createdAt DESC")
     Page<Object[]> findPlannersWithLikeCount(@Param("user") UserEntity user, Pageable pageable);
 
     @Modifying

@@ -1,12 +1,11 @@
 package com.zero.triptalk.planner.entity;
 
+import com.zero.triptalk.base.BaseEntity;
 import com.zero.triptalk.place.entity.Place;
 import com.zero.triptalk.planner.dto.PlannerDetailRequest;
 import com.zero.triptalk.planner.dto.UpdatePlannerDetailListRequest;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,10 +15,9 @@ import java.util.List;
 
 @Entity
 @Getter
-@EntityListeners(value = {AuditingEntityListener.class})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PlannerDetail {
+public class PlannerDetail extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,14 +40,6 @@ public class PlannerDetail {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime modifiedAt;
 
     @Builder
     public PlannerDetail(

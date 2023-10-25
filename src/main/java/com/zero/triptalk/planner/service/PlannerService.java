@@ -5,6 +5,7 @@ import com.zero.triptalk.exception.custom.PlannerException;
 import com.zero.triptalk.planner.dto.PlannerListResult;
 import com.zero.triptalk.planner.dto.PlannerRequest;
 import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerRepository;
 import com.zero.triptalk.planner.repository.PlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerRepository;
@@ -35,7 +36,9 @@ public class PlannerService {
 
 
     public Planner createPlanner(PlannerRequest request, UserEntity user, String thumbnail) {
-        return plannerRepository.save(request.toEntity(user, thumbnail));
+        Planner planner = plannerRepository.save(request.toEntity(user, thumbnail));
+        plannerSearchRepository.save(PlannerDocument.ofEntity(planner));
+        return planner;
     }
 
     public Planner findById(Long plannerId) {

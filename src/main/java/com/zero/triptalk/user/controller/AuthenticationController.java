@@ -34,8 +34,6 @@ public class AuthenticationController {
 
     /**
      * 일반 회원가입
-     * @param request
-     * @return
      */
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
@@ -124,8 +122,6 @@ public class AuthenticationController {
 
     /**
      * 업데이트
-     * @param request
-     * @return
      */
     @PutMapping("/update/profile")
     @PreAuthorize("hasAuthority('USER')")
@@ -146,8 +142,6 @@ public class AuthenticationController {
 
     /**
      * 로그인
-     * @param request
-     * @return
      */
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> register(
