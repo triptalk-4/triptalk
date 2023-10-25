@@ -169,7 +169,9 @@ public class PlannerApplication {
         Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
-        plannerService.increaseViewsUser(planner.getViews(),plannerId, loginUser.getUserId());
+        if (!plannerService.checkDuplication(plannerId, loginUser.getUserId())) {
+            plannerService.increaseViews(plannerId);
+        }
         List<PlannerDetailResponse> responses = plannerDetailService.findByPlannerId(plannerId).stream().map(
                 PlannerDetailResponse::from).collect(Collectors.toList());
 
@@ -204,9 +206,9 @@ public class PlannerApplication {
             for (Long id : deletedId) {
                 plannerDetailService.deletePlannerDetail(id);
             }
-//            plannerDetailService.NotInDbDeletePlannerDetail(updateListId,plannerId);
 
             planner.updatePlanner(info.getPlannerRequest());
+            planner.changeThumbnail(info.getUpdatePlannerDetailListRequests().get(0).getImages().get(0));
             List<PlannerDetail> result = info.getUpdatePlannerDetailListRequests().stream().map(
                     request -> {
 
