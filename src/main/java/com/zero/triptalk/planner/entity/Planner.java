@@ -55,8 +55,8 @@ public class Planner {
     @Column(insertable = false)
     private LocalDateTime modifiedAt;
 
-    public void increaseViews(){
-        this.views++;
+    public void changeThumbnail(String thumbnail){
+        this.thumbnail = thumbnail;
     }
 
     public void updatePlanner(PlannerRequest request){
