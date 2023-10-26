@@ -58,10 +58,10 @@ public class SearchService {
 
     }
 
-    public List<UserSearchResponse> getUserNicknameList(String keyword, Pageable pageable)
+    public List<UserSearchResponse> getUserNicknameList(String keyword)
                                                                 throws NoSuchIndexException {
 
-        List<UserDocument> documents = userSearchRepository.findByNicknameContains(keyword, pageable);
+        List<UserDocument> documents = userSearchRepository.findByNicknameContains(keyword);
 
         return UserSearchResponse.ofDocument(documents);
     }
