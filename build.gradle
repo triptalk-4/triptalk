@@ -48,6 +48,8 @@ dependencies {
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
     //redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation group: 'org.redisson', name: 'redisson', version: '3.23.3'
+
 	//S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
