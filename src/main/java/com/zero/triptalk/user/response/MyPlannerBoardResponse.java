@@ -31,6 +31,7 @@ public class MyPlannerBoardResponse {
                 .thumbnail(plannerDocument.getThumbnail())
                 .views(plannerDocument.getViews())
                 .likeCount(plannerDocument.getLikes())
+                .createAt(plannerDocument.getCreatedAt().toString())
                 .build();
     }
 }

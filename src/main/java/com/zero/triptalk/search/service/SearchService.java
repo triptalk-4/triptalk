@@ -8,7 +8,7 @@ import com.zero.triptalk.planner.dto.PlannerDetailSearchResponse;
 import com.zero.triptalk.planner.dto.PlannerSearchResponse;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import com.zero.triptalk.planner.entity.PlannerDocument;
-import com.zero.triptalk.planner.repository.CustomPlannerDetailSearchRepository;
+import com.zero.triptalk.planner.repository.CustomPlannerSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.user.dto.UserInfoSearchResponse;
 import com.zero.triptalk.user.dto.UserSearchResponse;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class SearchService {
 
     private final PlannerSearchRepository plannerSearchRepository;
-    private final CustomPlannerDetailSearchRepository customPlannerDetailSearchRepository;
+    private final CustomPlannerSearchRepository customPlannerSearchRepository;
     private final UserSearchRepository userSearchRepository;
 
     public List<PlannerSearchResponse> getTop6PlannersWithLikes() throws NoSuchIndexException {
@@ -50,7 +50,7 @@ public class SearchService {
         }
 
         List<PlannerDetailDocument> searchResponses =
-                customPlannerDetailSearchRepository.searchByRegionAndSearchType(
+                customPlannerSearchRepository.searchByRegionAndSearchType(
                                                             region, searchType, pageable);
 
         return searchResponses.stream().map(PlannerDetailSearchResponse::ofEntity)
@@ -73,7 +73,7 @@ public class SearchService {
                                                 new UserException(UserErrorCode.USER_NOT_FOUND));
 
         List<PlannerDocument> plannerDocuments =
-                                    plannerSearchRepository.findAllByUser(userId, pageable);
+                        customPlannerSearchRepository.getAllByUserId(userId, pageable);
 
         return UserInfoSearchResponse.ofDocument(userDocument, plannerDocuments);
     }
