@@ -43,13 +43,9 @@ public class SearchController {
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<UserSearchResponse>> getUserNicknameList(
-                                                        @RequestParam String keyword,
-                                                        @RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "6") int size) {
+                                                        @RequestParam String keyword) {
 
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(searchService.getUserNicknameList(keyword, pageable));
+        return ResponseEntity.ok(searchService.getUserNicknameList(keyword));
     }
 
     @GetMapping("/search/user/{userId}")
