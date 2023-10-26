@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import com.zero.triptalk.exception.code.SearchErrorCode;
 import com.zero.triptalk.exception.custom.SearchException;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.search.type.SearchType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class CustomPlannerDetailSearchRepository {
+public class CustomPlannerSearchRepository {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
@@ -42,6 +43,19 @@ public class CustomPlannerDetailSearchRepository {
             throw new SearchException(SearchErrorCode.RESULT_NOT_FOUND);
         }
 
+    }
+
+    public List<PlannerDocument> getAllByUserId(Long userId, Pageable pageable) {
+
+        Criteria criteria = Criteria.where("user.userId").matchesAll(userId);
+
+        CriteriaQuery query = CriteriaQuery.builder(criteria)
+                .withSort(Sort.by("createdAt").descending())
+                .withPageable(pageable)
+                .build();
+
+        return elasticsearchOperations.search(query, PlannerDocument.class)
+                .stream().map(SearchHit::getContent).collect(Collectors.toList());
     }
 
 }

@@ -39,9 +39,11 @@ public class PlannerDocument {
     private Long views;
     @Field(type = FieldType.Integer)
     private Long likes;
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
+    private LocalDateTime createdAt;
 
     @Builder
-    public PlannerDocument(Long plannerId, String title, String thumbnail, UserEntity user, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likes) {
+    public PlannerDocument(Long plannerId, String title, String thumbnail, UserEntity user, LocalDateTime startDate, LocalDateTime endDate, Long views, Long likes, LocalDateTime createdAt) {
         this.plannerId = plannerId;
         this.title = title;
         this.thumbnail = thumbnail;
@@ -50,6 +52,7 @@ public class PlannerDocument {
         this.endDate = endDate;
         this.views = views;
         this.likes = likes;
+        this.createdAt = createdAt;
     }
 
     public static List<PlannerDocument> ofTuple(List<Tuple> tuples) {
@@ -71,6 +74,7 @@ public class PlannerDocument {
                                     .endDate(xPlanner.getEndDate())
                                     .views(xPlanner.getViews())
                                     .likes(x.get(plannerLike.likeCount))
+                                    .createdAt(xPlanner.getCreatedAt())
                                     .build());
 
         }
@@ -89,6 +93,7 @@ public class PlannerDocument {
                 .endDate(planner.getEndDate())
                 .views(planner.getViews())
                 .likes(0L)
+                .createdAt(planner.getCreatedAt())
                 .build();
     }
 }
