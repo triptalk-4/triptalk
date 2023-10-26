@@ -3,8 +3,8 @@ package com.zero.triptalk.planner.service;
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.exception.code.PlannerErrorCode;
 import com.zero.triptalk.exception.custom.PlannerException;
-import com.zero.triptalk.planner.dto.response.PlannerListResult;
 import com.zero.triptalk.planner.dto.request.PlannerRequest;
+import com.zero.triptalk.planner.dto.response.PlannerListResult;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.repository.CustomPlannerRepository;
@@ -15,10 +15,18 @@ import com.zero.triptalk.planner.type.SortType;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RKeys;
+import org.redisson.api.RLock;
+import org.redisson.api.RSet;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -29,8 +37,8 @@ public class PlannerService {
     private final CustomPlannerRepository customPlannerRepository;
     private final PlannerSearchRepository plannerSearchRepository;
     private final PlannerDetailSearchRepository plannerDetailSearchRepository;
-    private final StringRedisTemplate stringRedisTemplate;
     private final RedisUtil redisUtil;
+    private final RedissonClient redissonClient;
 
 
     public Planner createPlanner(PlannerRequest request, UserEntity user, String thumbnail) {
@@ -60,15 +68,29 @@ public class PlannerService {
 
     public Boolean checkDuplication(Long plannerId, Long loginUserId) {
         String userKey = "user:" + loginUserId;
-        if (!redisUtil.hasKey(userKey)) {
-            redisUtil.addUserSet(userKey, plannerId);
-            redisUtil.setExpireMidnight(userKey);
-            return true;
+        RKeys keys = redissonClient.getKeys();
+
+        RSet<String> userSet = redissonClient.getSet(userKey);
+        RLock lock = redissonClient.getLock(userKey + ":lock");
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime midnight = LocalDateTime.of(now.toLocalDate().plusDays(1), LocalTime.MIDNIGHT);
+        long secondsUntilMidnight = Duration.between(now, midnight).toSeconds();
+
+        lock.lock();
+        try {
+            if (userSet.isEmpty()) {
+                userSet.add(String.valueOf(plannerId));
+                keys.expire(userKey, secondsUntilMidnight, TimeUnit.SECONDS);
+                return true;
+            }
+            if (userSet.contains(String.valueOf(plannerId))) {
+                return false;
+            }
+            userSet.add(String.valueOf(plannerId));
+        } finally {
+            lock.unlock();
         }
-        if (redisUtil.isMember(userKey, String.valueOf(plannerId))) {
-            return false;
-        }
-        redisUtil.addUserSet(userKey, plannerId);
         return true;
     }
 

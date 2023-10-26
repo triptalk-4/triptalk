@@ -162,13 +162,13 @@ public class PlannerApplication {
     @Transactional
     public PlannerResponse getPlanner(Long plannerId, String email) {
 
+        Planner planner = plannerService.findById(plannerId);
         //로그인 유저 검증
         UserEntity loginUser = plannerDetailService.findByEmail(email);
 
         PlannerLike plannerLike = likeService.findByPlannerId(plannerId);
         Long likeCount = (plannerLike != null) ? plannerLike.getLikeCount() : 0;
 
-        Planner planner = plannerService.findById(plannerId);
         UserEntity user = planner.getUser();
 
         if (plannerService.checkDuplication(plannerId,loginUser.getUserId())){
