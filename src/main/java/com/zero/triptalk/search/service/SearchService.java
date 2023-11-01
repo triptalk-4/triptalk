@@ -81,10 +81,19 @@ public class SearchService {
         return UserInfoSearchResponse.ofDocument(userDocument, plannerDocuments);
     }
 
-    public List<PlannerDetailSearchResponse> searchByPlace(GeoPoint point, GeoPoint point2,Pageable pageable) {
+    public List<PlannerDetailSearchResponse> searchByGeoPointBox(GeoPoint topLeft, GeoPoint bottomRight, Pageable pageable) {
 
-        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository.searchByPlace(point, point2, pageable);
+        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository.searchByGeoPointBox(topLeft, bottomRight, pageable);
 
         return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity).collect(Collectors.toList());
+    }
+
+    public List<PlannerDetailSearchResponse> searchByGeoPointDistance(double x, double y, String distance, Pageable pageable) {
+
+        GeoPoint geoPoint = new GeoPoint(y, x);
+        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository.searchByGeoPointDistance(geoPoint, distance, pageable);
+
+        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity).collect(Collectors.toList());
+
     }
 }
