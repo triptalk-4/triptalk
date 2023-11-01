@@ -37,8 +37,8 @@ public class SearchService {
 
     public List<PlannerSearchResponse> getTop6PlannersWithLikes() throws NoSuchIndexException {
 
-        List<PlannerDocument> top6ByOrderByLikeCountDesc =
-                plannerSearchRepository.findTop6ByOrderByLikesDesc();
+        List<PlannerDocument> top6ByOrderByLikeCountDesc = plannerSearchRepository
+                                                            .findTop6ByOrderByLikesDesc();
 
         return top6ByOrderByLikeCountDesc.stream().map(PlannerSearchResponse::ofEntity)
                                                            .collect(Collectors.toList());
@@ -52,9 +52,8 @@ public class SearchService {
             throw new SearchException(SearchErrorCode.INVALID_REQUEST);
         }
 
-        List<PlannerDetailDocument> searchResponses =
-                customPlannerSearchRepository.searchByRegionAndSearchType(
-                                                            region, searchType, pageable);
+        List<PlannerDetailDocument> searchResponses = customPlannerSearchRepository
+                                .searchByRegionAndSearchType(region, searchType, pageable);
 
         return searchResponses.stream().map(PlannerDetailSearchResponse::ofEntity)
                                                             .collect(Collectors.toList());
@@ -75,25 +74,31 @@ public class SearchService {
         UserDocument userDocument = userSearchRepository.findById(userId).orElseThrow(() ->
                                                 new UserException(UserErrorCode.USER_NOT_FOUND));
 
-        List<PlannerDocument> plannerDocuments =
-                        customPlannerSearchRepository.getAllByUserId(userId, pageable);
+        List<PlannerDocument> plannerDocuments = customPlannerSearchRepository
+                                                    .getAllByUserId(userId, pageable);
 
         return UserInfoSearchResponse.ofDocument(userDocument, plannerDocuments);
     }
 
-    public List<PlannerDetailSearchResponse> searchByGeoPointBox(GeoPoint topLeft, GeoPoint bottomRight, Pageable pageable) {
+    public List<PlannerDetailSearchResponse> searchByGeoPointBox(
+                                GeoPoint topLeft, GeoPoint bottomRight, Pageable pageable) {
 
-        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository.searchByGeoPointBox(topLeft, bottomRight, pageable);
+        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository
+                                        .searchByGeoPointBox(topLeft, bottomRight, pageable);
 
-        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity).collect(Collectors.toList());
+        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity)
+                                        .collect(Collectors.toList());
     }
 
-    public List<PlannerDetailSearchResponse> searchByGeoPointDistance(double x, double y, String distance, Pageable pageable) {
+    public List<PlannerDetailSearchResponse> searchByGeoPointDistance(
+                                    Double x, Double y, String distance, Pageable pageable) {
 
         GeoPoint geoPoint = new GeoPoint(y, x);
-        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository.searchByGeoPointDistance(geoPoint, distance, pageable);
+        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository
+                                        .searchByGeoPointDistance(geoPoint, distance, pageable);
 
-        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity).collect(Collectors.toList());
+        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity)
+                                        .collect(Collectors.toList());
 
     }
 }

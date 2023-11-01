@@ -16,20 +16,26 @@ public class PlannerDetailSearchResponse {
 
     private Long plannerDetailId;
     private String nickname;
+    private String profile;
     private String description;
     private String image;
     private String place;
+    private Double lat;
+    private Double lon;
     private LocalDateTime date;
     private Long views;
     private Long likeCount;
 
     @Builder
-    public PlannerDetailSearchResponse(Long plannerDetailId, String nickname, String description, String image, String place, LocalDateTime date, Long views, Long likeCount) {
+    public PlannerDetailSearchResponse(Long plannerDetailId, String nickname, String profile, String description, String image, String place, Double lat, Double lon, LocalDateTime date, Long views, Long likeCount) {
         this.plannerDetailId = plannerDetailId;
         this.nickname = nickname;
+        this.profile = profile;
         this.description = description;
         this.image = image;
         this.place = place;
+        this.lat = lat;
+        this.lon = lon;
         this.date = date;
         this.views = views;
         this.likeCount = likeCount;
@@ -40,9 +46,12 @@ public class PlannerDetailSearchResponse {
         return PlannerDetailSearchResponse.builder()
                 .plannerDetailId(document.getPlannerDetailId())
                 .nickname(document.getNickname())
+                .profile(document.getProfile())
                 .description(document.getDescription())
                 .image(getOneImage(document.getImages()))
                 .place(document.getRoadAddress())
+                .lat(document.getPoint().lat())
+                .lon(document.getPoint().lon())
                 .date(document.getDate())
                 .views(document.getViews())
                 .likeCount(document.getLikes())
