@@ -21,9 +21,9 @@ public class CustomPlannerDetailSearchRepository {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
-    public List<PlannerDetailDocument> searchByPlace(GeoPoint point, GeoPoint point2,Pageable pageable) {
+    public List<PlannerDetailDocument> searchByGeoPointBox(GeoPoint topLeft, GeoPoint bottomRight, Pageable pageable) {
 
-        Criteria criteria = Criteria.where("point").boundedBy(point, point2);
+        Criteria criteria = Criteria.where("point").boundedBy(topLeft, bottomRight);
 
         CriteriaQuery query = CriteriaQuery.builder(criteria)
                 .withPageable(pageable)
@@ -31,7 +31,17 @@ public class CustomPlannerDetailSearchRepository {
 
         return elasticsearchOperations.search(query, PlannerDetailDocument.class)
                                 .stream().map(SearchHit::getContent).collect(Collectors.toList());
+    }
 
+    public List<PlannerDetailDocument> searchByGeoPointDistance(GeoPoint point, String distance, Pageable pageable) {
 
+        Criteria criteria = Criteria.where("point").within(point, distance);
+
+        CriteriaQuery query = CriteriaQuery.builder(criteria)
+                .withPageable(pageable)
+                .build();
+
+        return elasticsearchOperations.search(query, PlannerDetailDocument.class)
+                .stream().map(SearchHit::getContent).collect(Collectors.toList());
     }
 }

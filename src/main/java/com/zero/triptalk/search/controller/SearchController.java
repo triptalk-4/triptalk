@@ -63,14 +63,32 @@ public class SearchController {
 
     @GetMapping("/search/map")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<List<PlannerDetailSearchResponse>> searchByPlace(
-                                                        @RequestBody List<GeoPoint> points,
+    public ResponseEntity<List<PlannerDetailSearchResponse>> searchByGeoPointBox(
+                                                        @RequestParam String point,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "6") int size) {
+
+        String[] points = point.split(";");
+        GeoPoint topLeft = new GeoPoint(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
+        GeoPoint bottomRight = new GeoPoint(Double.parseDouble(points[2]), Double.parseDouble(points[3]));
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(searchService.searchByGeoPointBox(topLeft, bottomRight, pageable));
+    }
+
+    @GetMapping("/search/map2")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<List<PlannerDetailSearchResponse>> searchByGeoPointDistance(
+                                                        @RequestParam Double x,
+                                                        @RequestParam Double y,
+                                                        @RequestParam String distance,
                                                         @RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "6") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(searchService.searchByPlace(points.get(0), points.get(1), pageable));
+        return ResponseEntity.ok(searchService.searchByGeoPointDistance(x, y, distance, pageable));
     }
 
 }
