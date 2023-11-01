@@ -7,10 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ import static com.zero.triptalk.planner.entity.QPlanner.planner;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Document(indexName = "planner")
+@Document(indexName = "planner", writeTypeHint = WriteTypeHint.FALSE)
 public class PlannerDocument {
     @Id
     @Field(type = FieldType.Keyword)
@@ -35,9 +32,9 @@ public class PlannerDocument {
     private LocalDateTime startDate;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime endDate;
-    @Field(type = FieldType.Integer)
+    @Field(type = FieldType.Integer, nullValue = "0")
     private Long views;
-    @Field(type = FieldType.Integer)
+    @Field(type = FieldType.Integer, nullValue = "0")
     private Long likes;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime createdAt;

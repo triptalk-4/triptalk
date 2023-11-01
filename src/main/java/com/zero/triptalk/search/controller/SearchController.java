@@ -8,6 +8,7 @@ import com.zero.triptalk.user.dto.UserSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +59,18 @@ public class SearchController {
         Pageable pageable = PageRequest.of(page, size);
 
         return ResponseEntity.ok(searchService.searchByUserId(userId, pageable));
+    }
+
+    @GetMapping("/search/map")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<List<PlannerDetailSearchResponse>> searchByPlace(
+                                                        @RequestBody List<GeoPoint> points,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "6") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(searchService.searchByPlace(points.get(0), points.get(1), pageable));
     }
 
 }

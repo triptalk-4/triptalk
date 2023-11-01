@@ -8,6 +8,7 @@ import com.zero.triptalk.planner.dto.response.PlannerDetailSearchResponse;
 import com.zero.triptalk.planner.dto.response.PlannerSearchResponse;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import com.zero.triptalk.planner.entity.PlannerDocument;
+import com.zero.triptalk.planner.repository.CustomPlannerDetailSearchRepository;
 import com.zero.triptalk.planner.repository.CustomPlannerSearchRepository;
 import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.user.dto.UserInfoSearchResponse;
@@ -17,6 +18,7 @@ import com.zero.triptalk.user.repository.UserSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.NoSuchIndexException;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ public class SearchService {
 
     private final PlannerSearchRepository plannerSearchRepository;
     private final CustomPlannerSearchRepository customPlannerSearchRepository;
+    private final CustomPlannerDetailSearchRepository customPlannerDetailSearchRepository;
     private final UserSearchRepository userSearchRepository;
 
     public List<PlannerSearchResponse> getTop6PlannersWithLikes() throws NoSuchIndexException {
@@ -76,5 +79,12 @@ public class SearchService {
                         customPlannerSearchRepository.getAllByUserId(userId, pageable);
 
         return UserInfoSearchResponse.ofDocument(userDocument, plannerDocuments);
+    }
+
+    public List<PlannerDetailSearchResponse> searchByPlace(GeoPoint point, GeoPoint point2,Pageable pageable) {
+
+        List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository.searchByPlace(point, point2, pageable);
+
+        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity).collect(Collectors.toList());
     }
 }

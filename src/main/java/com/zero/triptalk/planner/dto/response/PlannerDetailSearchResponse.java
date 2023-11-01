@@ -42,7 +42,7 @@ public class PlannerDetailSearchResponse {
                 .nickname(document.getNickname())
                 .description(document.getDescription())
                 .image(getOneImage(document.getImages()))
-                .place(document.getPlace())
+                .place(document.getRoadAddress())
                 .date(document.getDate())
                 .views(document.getViews())
                 .likeCount(document.getLikes())
