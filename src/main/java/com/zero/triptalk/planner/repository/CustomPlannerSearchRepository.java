@@ -28,7 +28,9 @@ public class CustomPlannerSearchRepository {
 
     public List<PlannerDetailDocument> searchByRegionAndSearchType(String region, String searchType, Pageable pageable) {
 
-        Criteria criteria = Criteria.where("place").contains(region);
+        Criteria criteria = Criteria.where("roadAddress")
+                                        .and("addressName")
+                                    .contains(region);
 
         CriteriaQuery query = CriteriaQuery.builder(criteria)
                 .withSort(Sort.by(SearchType.getSearchType(searchType)).descending())
