@@ -61,7 +61,7 @@ public class SearchController {
         return ResponseEntity.ok(searchService.searchByUserId(userId, pageable));
     }
 
-    @PostMapping("/search/map")
+    @GetMapping("/search/map")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<PlannerDetailSearchResponse>> searchByGeoPointBox(
                                                         @RequestParam String point,
