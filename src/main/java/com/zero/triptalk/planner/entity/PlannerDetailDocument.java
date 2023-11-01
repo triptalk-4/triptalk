@@ -29,6 +29,7 @@ public class PlannerDetailDocument {
     @Field(type = FieldType.Keyword)
     private Long plannerId;
     private String nickname;
+    private String profile;
     private String placeName;
     private String roadAddress;
     private String addressName;
@@ -45,10 +46,11 @@ public class PlannerDetailDocument {
     private Long likes;
 
     @Builder
-    public PlannerDetailDocument(Long plannerDetailId, Long plannerId, String nickname, String placeName, String roadAddress, String addressName, GeoPoint point, Long placeLike, String description, List<String> images, LocalDateTime date, Long views, Long likes) {
+    public PlannerDetailDocument(Long plannerDetailId, Long plannerId, String nickname, String profile, String placeName, String roadAddress, String addressName, GeoPoint point, Long placeLike, String description, List<String> images, LocalDateTime date, Long views, Long likes) {
         this.plannerDetailId = plannerDetailId;
         this.plannerId = plannerId;
         this.nickname = nickname;
+        this.profile = profile;
         this.placeName = placeName;
         this.roadAddress = roadAddress;
         this.addressName = addressName;
@@ -74,6 +76,7 @@ public class PlannerDetailDocument {
             list.add(PlannerDetailDocument.builder()
                                             .plannerDetailId(x.getPlannerDetailId())
                                             .nickname(x.getPlanner().getUser().getNickname())
+                                            .profile(x.getPlanner().getUser().getProfile())
                                             .description(x.getDescription())
                                             .images(x.getImages())
                                             .placeName(place.getPlaceName())
@@ -102,6 +105,7 @@ public class PlannerDetailDocument {
             list.add(PlannerDetailDocument.builder()
                             .plannerDetailId(Objects.requireNonNull(xPlannerDetail).getPlannerDetailId())
                             .nickname(xPlannerDetail.getPlanner().getUser().getNickname())
+                            .profile(xPlannerDetail.getPlanner().getUser().getProfile())
                             .description(xPlannerDetail.getDescription())
                             .images(xPlannerDetail.getImages())
                             .placeName(place.getPlaceName())
