@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +17,7 @@ public class PlannerDetailSearchResponse {
     private String nickname;
     private String profile;
     private String description;
-    private String image;
+    private List<String> image;
     private String place;
     private Double lat;
     private Double lon;
@@ -27,7 +26,7 @@ public class PlannerDetailSearchResponse {
     private Long likeCount;
 
     @Builder
-    public PlannerDetailSearchResponse(Long plannerDetailId, String nickname, String profile, String description, String image, String place, Double lat, Double lon, LocalDateTime date, Long views, Long likeCount) {
+    public PlannerDetailSearchResponse(Long plannerDetailId, String nickname, String profile, String description, List<String> image, String place, Double lat, Double lon, LocalDateTime date, Long views, Long likeCount) {
         this.plannerDetailId = plannerDetailId;
         this.nickname = nickname;
         this.profile = profile;
@@ -48,7 +47,7 @@ public class PlannerDetailSearchResponse {
                 .nickname(document.getNickname())
                 .profile(document.getProfile())
                 .description(document.getDescription())
-                .image(getOneImage(document.getImages()))
+                .image(document.getImages())
                 .place(document.getRoadAddress())
                 .lat(document.getPoint().lat())
                 .lon(document.getPoint().lon())
@@ -56,14 +55,5 @@ public class PlannerDetailSearchResponse {
                 .views(document.getViews())
                 .likeCount(document.getLikes())
                 .build();
-    }
-
-    private static String getOneImage(List<String> images) {
-
-        if(images.isEmpty()) {
-            return StringUtils.EMPTY;
-        }
-
-        return images.get(0);
     }
 }
