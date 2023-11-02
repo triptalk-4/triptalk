@@ -4,11 +4,13 @@ import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,6 +40,7 @@ public class CustomPlannerDetailSearchRepository {
         Criteria criteria = Criteria.where("point").within(point, distance);
 
         CriteriaQuery query = CriteriaQuery.builder(criteria)
+                .withSort(Sort.by(new GeoDistanceOrder("point", point)))
                 .withPageable(pageable)
                 .build();
 
