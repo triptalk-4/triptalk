@@ -23,10 +23,8 @@ public class CustomPlannerDetailRepository {
 
         return queryFactory.select(planner, plannerLike.likeCount)
                 .from(planner)
-                .join(plannerLike)
-                .on(planner.eq(plannerLike.planner))
-                .join(userEntity)
-                .on(userEntity.eq(planner.user))
+                .leftJoin(plannerLike).on(planner.eq(plannerLike.planner))
+                .leftJoin(userEntity).on(userEntity.eq(planner.user))
                 .where(plannerLike.likeDt.between(from, to)
                         .or(planner.modifiedAt.between(from, to)))
                 .groupBy(planner.plannerId)
@@ -39,8 +37,7 @@ public class CustomPlannerDetailRepository {
                 .from(plannerDetail)
                 .join(plannerDetail.images).fetchJoin()
                 .join(plannerDetail.place).fetchJoin()
-                .join(plannerLike)
-                .on(plannerLike.planner.eq(plannerDetail.planner))
+                .leftJoin(plannerLike).on(plannerLike.planner.eq(plannerDetail.planner))
                 .where(plannerDetail.planner.plannerId.in(ids))
                 .fetch();
     }

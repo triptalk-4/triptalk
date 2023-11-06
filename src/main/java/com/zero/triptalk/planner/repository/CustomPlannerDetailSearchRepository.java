@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.GeoDistanceOrder;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +29,11 @@ public class CustomPlannerDetailSearchRepository {
         Criteria criteria = Criteria.where("point").boundedBy(topLeft, bottomRight);
 
         CriteriaQuery query = CriteriaQuery.builder(criteria)
+                .withSourceFilter(new FetchSourceFilter(
+                        new String[]{"plannerDetailId", "nickname",
+                                        "profile", "roadAddress",
+                                            "point", "description",
+                                                "image", "date"}, null))
                 .withPageable(pageable)
                 .build();
 
@@ -40,6 +46,11 @@ public class CustomPlannerDetailSearchRepository {
         Criteria criteria = Criteria.where("point").within(point, distance);
 
         CriteriaQuery query = CriteriaQuery.builder(criteria)
+                .withSourceFilter(new FetchSourceFilter(
+                        new String[]{"plannerDetailId", "nickname",
+                                        "profile", "roadAddress",
+                                            "point", "description",
+                                                "image", "date"}, null))
                 .withSort(Sort.by(new GeoDistanceOrder("point", point)))
                 .withPageable(pageable)
                 .build();

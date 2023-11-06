@@ -61,7 +61,7 @@ public class SearchController {
         return ResponseEntity.ok(searchService.searchByUserId(userId, pageable));
     }
 
-    @GetMapping("/search/map")
+    @GetMapping("/search/bound")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<PlannerDetailSearchResponse>> searchByGeoPointBox(
                                                         @RequestParam String point,
@@ -77,7 +77,7 @@ public class SearchController {
         return ResponseEntity.ok(searchService.searchByGeoPointBox(topLeft, bottomRight, pageable));
     }
 
-    @GetMapping("/search/map2")
+    @GetMapping("/search/distance")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<List<PlannerDetailSearchResponse>> searchByGeoPointDistance(
                                                         @RequestParam Double x,

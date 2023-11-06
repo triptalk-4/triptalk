@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,6 +34,12 @@ public class CustomPlannerSearchRepository {
                                     .contains(region);
 
         CriteriaQuery query = CriteriaQuery.builder(criteria)
+                .withSourceFilter(new FetchSourceFilter(
+                        new String[]{"plannerDetailId", "nickname",
+                                        "profile", "description",
+                                            "image", "roadAddress",
+                                                "point", "date",
+                                                    "views", "likeCounts"}, null))
                 .withSort(Sort.by(SearchType.getSearchType(searchType)).descending())
                 .withPageable(pageable)
                 .build();
@@ -52,6 +59,10 @@ public class CustomPlannerSearchRepository {
         Criteria criteria = Criteria.where("user.userId").matchesAll(userId);
 
         CriteriaQuery query = CriteriaQuery.builder(criteria)
+                .withSourceFilter(new FetchSourceFilter(
+                        new String[]{"plannerId", "title",
+                                        "thumbnail", "views",
+                                            "createdAt", "likeCount"}, null))
                 .withSort(Sort.by("createdAt").descending())
                 .withPageable(pageable)
                 .build();
