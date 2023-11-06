@@ -37,9 +37,9 @@ public class CustomPlannerSearchRepository {
                 .withSourceFilter(new FetchSourceFilter(
                         new String[]{"plannerDetailId", "nickname",
                                         "profile", "description",
-                                            "image", "roadAddress",
+                                            "images", "roadAddress",
                                                 "point", "date",
-                                                    "views", "likeCounts"}, null))
+                                                    "views", "likes"}, null))
                 .withSort(Sort.by(SearchType.getSearchType(searchType)).descending())
                 .withPageable(pageable)
                 .build();
@@ -62,7 +62,7 @@ public class CustomPlannerSearchRepository {
                 .withSourceFilter(new FetchSourceFilter(
                         new String[]{"plannerId", "title",
                                         "thumbnail", "views",
-                                            "createdAt", "likeCount"}, null))
+                                            "createdAt", "likes"}, null))
                 .withSort(Sort.by("createdAt").descending())
                 .withPageable(pageable)
                 .build();

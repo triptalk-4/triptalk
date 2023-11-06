@@ -32,9 +32,9 @@ public class PlannerDocument {
     private LocalDateTime startDate;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime endDate;
-    @Field(type = FieldType.Integer, nullValue = "0")
+    @Field(type = FieldType.Integer)
     private Long views;
-    @Field(type = FieldType.Integer, nullValue = "0")
+    @Field(type = FieldType.Integer)
     private Long likes;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime createdAt;
@@ -47,8 +47,8 @@ public class PlannerDocument {
         this.user = user;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.views = views;
-        this.likes = likes;
+        this.views = views == null ? 0 : views;
+        this.likes = likes == null ? 0 : likes;
         this.createdAt = createdAt;
     }
 

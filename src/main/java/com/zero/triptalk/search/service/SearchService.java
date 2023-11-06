@@ -40,7 +40,7 @@ public class SearchService {
         List<PlannerDocument> top6ByOrderByLikeCountDesc = plannerSearchRepository
                                                             .findTop6ByOrderByLikesDesc();
 
-        return top6ByOrderByLikeCountDesc.stream().map(PlannerSearchResponse::ofEntity)
+        return top6ByOrderByLikeCountDesc.stream().map(PlannerSearchResponse::ofDocument)
                                                            .collect(Collectors.toList());
     }
 
@@ -55,7 +55,7 @@ public class SearchService {
         List<PlannerDetailDocument> searchResponses = customPlannerSearchRepository
                                 .searchByRegionAndSearchType(region, searchType, pageable);
 
-        return searchResponses.stream().map(PlannerDetailSearchResponse::ofEntity)
+        return searchResponses.stream().map(PlannerDetailSearchResponse::ofDocument)
                                                             .collect(Collectors.toList());
 
     }
@@ -86,7 +86,7 @@ public class SearchService {
         List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository
                                         .searchByGeoPointBox(topLeft, bottomRight, pageable);
 
-        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity)
+        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofDocument)
                                         .collect(Collectors.toList());
     }
 
@@ -97,7 +97,7 @@ public class SearchService {
         List<PlannerDetailDocument> detailDocuments = customPlannerDetailSearchRepository
                                         .searchByGeoPointDistance(geoPoint, distance, pageable);
 
-        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofEntity)
+        return detailDocuments.stream().map(PlannerDetailSearchResponse::ofDocument)
                                         .collect(Collectors.toList());
 
     }

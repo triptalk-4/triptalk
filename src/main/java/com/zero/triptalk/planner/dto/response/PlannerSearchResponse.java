@@ -33,7 +33,7 @@ public class PlannerSearchResponse {
         this.likeCount = likeCount;
     }
 
-    public static PlannerSearchResponse ofEntity(PlannerDocument document) {
+    public static PlannerSearchResponse ofDocument(PlannerDocument document) {
 
         return PlannerSearchResponse.builder()
                 .plannerId(document.getPlannerId())

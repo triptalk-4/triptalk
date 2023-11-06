@@ -40,9 +40,9 @@ public class PlannerDetailDocument {
     private List<String> images;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime date;
-    @Field(type = FieldType.Integer, nullValue = "0")
+    @Field(type = FieldType.Integer)
     private Long views;
-    @Field(type = FieldType.Integer, nullValue = "0")
+    @Field(type = FieldType.Integer)
     private Long likes;
 
     @Builder
@@ -55,12 +55,12 @@ public class PlannerDetailDocument {
         this.roadAddress = roadAddress;
         this.addressName = addressName;
         this.point = point;
-        this.placeLike = placeLike;
+        this.placeLike = placeLike == null ? 0 : placeLike;
         this.description = description;
         this.images = images;
         this.date = date;
-        this.views = views;
-        this.likes = likes;
+        this.views = views == null ? 0 : views;
+        this.likes = likes == null ? 0 : likes;
     }
 
     public static List<PlannerDetailDocument> ofEntity(List<PlannerDetail> plannerDetails) {
