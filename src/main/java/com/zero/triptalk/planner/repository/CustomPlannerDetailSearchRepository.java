@@ -33,7 +33,7 @@ public class CustomPlannerDetailSearchRepository {
                         new String[]{"plannerDetailId", "nickname",
                                         "profile", "roadAddress",
                                             "point", "description",
-                                                "image", "date"}, null))
+                                                "images", "date"}, null))
                 .withPageable(pageable)
                 .build();
 
@@ -50,7 +50,7 @@ public class CustomPlannerDetailSearchRepository {
                         new String[]{"plannerDetailId", "nickname",
                                         "profile", "roadAddress",
                                             "point", "description",
-                                                "image", "date"}, null))
+                                                "images", "date"}, null))
                 .withSort(Sort.by(new GeoDistanceOrder("point", point)))
                 .withPageable(pageable)
                 .build();
