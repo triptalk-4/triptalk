@@ -63,8 +63,6 @@ public class LikeService {
                 .build();
         userLikeRepository.save(userLike);
 
-        List<Alert> alertSave = alertRepository.findAllByPlanner(planner);
-
         Alert alert = Alert.builder()
                 .planner(planner)
                 .user(user)
