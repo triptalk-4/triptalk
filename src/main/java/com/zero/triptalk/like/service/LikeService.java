@@ -129,7 +129,6 @@ public class LikeService {
                 .build();
     }
 
-    @Transactional
     public UserSaveAndCancelResponse userSavePlus(Long plannerId, String email) {
         // 게시글 찾기
         Planner planner = plannerRepository.findById(plannerId)
@@ -150,6 +149,8 @@ public class LikeService {
                               .saveDt(LocalDateTime.now())
                               .build();
 
+        userSaveRepository.save(userSaveFin);
+
         Alert alertSaveFin = Alert.builder()
                 .userCheckYn(false)
                 .user(user)
@@ -158,10 +159,6 @@ public class LikeService {
                 .alertContent(user.getNickname() + " 님이" + planner.getTitle() + " 게시물을 저장하였습니다.")
                 .build();
 
-        System.out.println("user.getNickname = " + user.getNickname());
-
-        System.out.println("alertTest = " + alertSaveFin);
-        userSaveRepository.save(userSaveFin);
         alertRepository.save(alertSaveFin);
 
         return UserSaveAndCancelResponse.builder()
