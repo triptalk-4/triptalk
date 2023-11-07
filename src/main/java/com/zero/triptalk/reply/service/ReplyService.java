@@ -70,8 +70,6 @@ public class ReplyService {
 
         alertRepository.save(alertSaveFin);
 
-
-
         return ReplyResponse.builder()
                 .postOk("댓글 등록이 완료 되었습니다!")
                 .build();

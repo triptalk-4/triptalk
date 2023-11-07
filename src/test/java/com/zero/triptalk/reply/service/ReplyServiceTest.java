@@ -1,9 +1,13 @@
 package com.zero.triptalk.reply.service;
 
+import com.zero.triptalk.alert.entity.Alert;
+import com.zero.triptalk.alert.repository.AlertRepository;
 import com.zero.triptalk.exception.custom.ReplyException;
 import com.zero.triptalk.exception.custom.UserException;
+import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.reply.dto.request.ReplyRequest;
 import com.zero.triptalk.reply.dto.response.ReplyResponse;
 import com.zero.triptalk.reply.entity.ReplyEntity;
@@ -15,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -31,27 +36,50 @@ class ReplyServiceTest {
     @Mock private PlannerDetailRepository plannerDetailRepository;
     @Mock private UserRepository userRepository;
 
+    @Mock private AlertRepository alertRepository;
+
+    @Mock private PlannerRepository plannerRepository;
+
     @Test
     @DisplayName("댓글 등록 성공")
     void replySuccess() {
-        //given
+        // Given
+        Long plannerDetailId = 1L;
+        String email = "test@email.com";
+
         PlannerDetail plannerDetail = PlannerDetail.builder()
                 .userId(1L)
+                .planner(Planner.builder().plannerId(2L).description("Test Planner Description").build())
                 .build();
-        when(plannerDetailRepository.findById(any())).thenReturn(Optional.of(plannerDetail));
+        when(plannerDetailRepository.findById(plannerDetailId)).thenReturn(java.util.Optional.of(plannerDetail));
 
-        UserEntity user = UserEntity.builder()
-                .email("test@email.com")
+        UserEntity userEntity = UserEntity.builder()
+                .email(email)
+                .nickname("Test User")
                 .build();
-        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(email)).thenReturn(java.util.Optional.of(userEntity));
 
-        ReplyRequest request = new ReplyRequest("test");
+        Planner planner = Planner.builder()
+                .plannerId(plannerDetail.getPlanner().getPlannerId())
+                .title("Test Planner")
+                .description("Test Planner Description")
+                .build();
+        when(plannerRepository.findById(plannerDetail.getPlanner().getPlannerId())).thenReturn(java.util.Optional.of(planner));
 
-        //when
-        ReplyResponse replyResponse = replyService.replyOk(1L, request, "test@email.com");
+        ReplyRequest request = new ReplyRequest("Test Reply");
 
-        //then
+        // When
+        ReplyResponse replyResponse = replyService.replyOk(plannerDetailId, request, email);
+
+        // Then
         assertEquals("댓글 등록이 완료 되었습니다!", replyResponse.getPostOk());
+
+        // Verify that necessary methods were called
+        Mockito.verify(plannerDetailRepository).findById(plannerDetailId);
+        Mockito.verify(userRepository).findByEmail(email);
+        Mockito.verify(plannerRepository).findById(plannerDetail.getPlanner().getPlannerId());
+        Mockito.verify(replyRepository).save(Mockito.any(ReplyEntity.class));
+        Mockito.verify(alertRepository).save(Mockito.any(Alert.class));
     }
 
     @Test
