@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.zero.triptalk.exception.code.LikeErrorCode.*;
 
@@ -61,6 +62,8 @@ public class LikeService {
                 .user(user)
                 .build();
         userLikeRepository.save(userLike);
+
+        List<Alert> alertSave = alertRepository.findAllByPlanner(planner);
 
         Alert alert = Alert.builder()
                 .planner(planner)
