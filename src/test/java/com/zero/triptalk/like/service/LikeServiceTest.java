@@ -81,6 +81,7 @@ public class LikeServiceTest {
         Mockito.verify(userRepository).findByEmail(email);
         Mockito.verify(userLikeRepository).existsByPlannerAndUser(planner, user);
         Mockito.verify(plannerLikeRepository).findByPlanner(planner);
+        Mockito.verify(alertRepository).save(Mockito.any(Alert.class));
 
         // Verify that save method was called for alertRepository
         Mockito.verify(alertRepository).save(Mockito.any(Alert.class));
