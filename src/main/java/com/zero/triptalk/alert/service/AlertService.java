@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.zero.triptalk.exception.code.LikeErrorCode.No_User_Search;
 
 @Service
@@ -22,9 +24,23 @@ public class AlertService {
 
     private final AlertRepository alertRepository;
 
+    public void markAlertAsChecked(long alertId) {
+        Optional<Alert> alertOptional = alertRepository.findById(alertId);
+
+        if (alertOptional.isPresent()) {
+            Alert alert = alertOptional.get();
+            alert.setUserCheckYn(true); // userCheckYn 값을 true로 설정
+
+            alertRepository.save(alert); // 업데이트된 alert 엔티티를 저장
+        }
+    }
+
     public Page<AlertResponse> getAlertAll(UserEntity user, Pageable pageable) {
 
         Page<Alert> alertPage = alertRepository.findByUser(user, pageable);
+
+        // 알림을 조회하면서 userCheckYn 값을 true로 변경
+        alertPage.forEach(alert -> markAlertAsChecked(alert.getAlertId()));
 
         Page<AlertResponse> alertResponses = alertPage.map(alert -> AlertResponse.builder()
                 .alertId(alert.getAlertId())
@@ -46,20 +62,5 @@ public class AlertService {
 
     }
 
-    public AlertUpdateResponse updateAlert(Long alertId) {
 
-        Alert alert = alertRepository.findById(alertId)
-                .orElseThrow(() -> new AlertException(AlertErrorCode.ALERT_NOT_FOUND));
-
-        alert.setUserCheckYn(true);
-
-        alertRepository.save(alert);
-
-        return AlertUpdateResponse.builder()
-                .updateOk("업데이트 완료")
-                .build();
-
-
-
-    }
 }

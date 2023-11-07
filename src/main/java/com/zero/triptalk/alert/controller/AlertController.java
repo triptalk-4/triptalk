@@ -45,11 +45,5 @@ public class AlertController {
         return alertService.getAlertNewCnt(user);
     }
 
-    @PutMapping("/update/{alertId}")
-    @PreAuthorize("hasAuthority('USER')")
-    public AlertUpdateResponse getNewAlertCnt(@PathVariable long alertId){
-
-        return alertService.updateAlert(alertId);
-    }
 
 }
