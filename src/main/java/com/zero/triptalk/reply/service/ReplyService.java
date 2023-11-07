@@ -1,11 +1,16 @@
 package com.zero.triptalk.reply.service;
 
+import com.zero.triptalk.alert.entity.Alert;
+import com.zero.triptalk.alert.repository.AlertRepository;
 import com.zero.triptalk.exception.code.ReplyErrorCode;
 import com.zero.triptalk.exception.code.UserErrorCode;
+import com.zero.triptalk.exception.custom.LikeException;
 import com.zero.triptalk.exception.custom.ReplyException;
 import com.zero.triptalk.exception.custom.UserException;
+import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
 import com.zero.triptalk.planner.repository.PlannerDetailRepository;
+import com.zero.triptalk.planner.repository.PlannerRepository;
 import com.zero.triptalk.reply.dto.request.ReplyRequest;
 import com.zero.triptalk.reply.dto.response.ReplyGetResponse;
 import com.zero.triptalk.reply.dto.response.ReplyResponse;
@@ -17,9 +22,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.zero.triptalk.exception.code.LikeErrorCode.NO_Planner_Detail_Board;
 
 
 @Service
@@ -30,6 +38,8 @@ public class ReplyService {
     private final UserRepository userRepository;
     private final ReplyRepository replyRepository;
     private final PlannerDetailRepository plannerDetailRepository;
+    private final AlertRepository alertRepository ;
+    private final PlannerRepository plannerRepository;
 
     public ReplyResponse replyOk(Long plannerDetailId, ReplyRequest request, String email) {
 
@@ -40,13 +50,27 @@ public class ReplyService {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(UserErrorCode.EMAIL_NOT_FOUND_ERROR));
 
+        Planner planner = plannerRepository.findById(plannerDetail.getPlanner().getPlannerId())
+                .orElseThrow(() -> new LikeException(NO_Planner_Detail_Board));
+
         ReplyEntity reply = ReplyEntity.builder()
                                         .plannerDetail(plannerDetail)
                                         .user(userEntity)
                                         .reply(request.getReply())
                                         .build();
-
         replyRepository.save(reply);
+
+        Alert alertSaveFin = Alert.builder()
+                .userCheckYn(false)
+                .user(userEntity)
+                .planner(planner)
+                .alertDt(LocalDateTime.now())
+                .alertContent(userEntity.getNickname() + " 님이" + plannerDetail.getDescription() + " 에 댓글을 남겼습니다.")
+                .build();
+
+        alertRepository.save(alertSaveFin);
+
+
 
         return ReplyResponse.builder()
                 .postOk("댓글 등록이 완료 되었습니다!")

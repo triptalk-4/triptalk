@@ -1,5 +1,7 @@
 package com.zero.triptalk.like.service;
 
+import com.zero.triptalk.alert.entity.Alert;
+import com.zero.triptalk.alert.repository.AlertRepository;
 import com.zero.triptalk.exception.code.LikeErrorCode;
 import com.zero.triptalk.exception.code.UserErrorCode;
 import com.zero.triptalk.exception.custom.LikeException;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.zero.triptalk.exception.code.LikeErrorCode.*;
 
@@ -34,6 +37,7 @@ public class LikeService {
     private final PlannerLikeRepository plannerLikeRepository;
     private final UserRepository userRepository;
     private final UserLikeRepository userLikeRepository;
+    private final AlertRepository alertRepository;
 
     @Transactional
     public LikenOnePlusMinusResponse createLikeOrPlusPlanner(Long plannerId, String email) {
@@ -58,6 +62,18 @@ public class LikeService {
                 .user(user)
                 .build();
         userLikeRepository.save(userLike);
+
+        List<Alert> alertSave = alertRepository.findAllByPlanner(planner);
+
+        Alert alert = Alert.builder()
+                .planner(planner)
+                .user(user)
+                .userCheckYn(false)
+                .alertContent(user.getNickname()+" 님이"+planner.getTitle() +" 게시글에 좋아요를 누르셨습니다.")
+                .alertDt(LocalDateTime.now())
+                .build();
+
+        alertRepository.save(alert);
 
         if( plannerLike == null){
             plannerLike = PlannerLike.builder()
@@ -131,17 +147,29 @@ public class LikeService {
         }
 
         UserSave userSaveFin = UserSave.builder()
-                                        .planner(planner)
-                                        .user(user)
-                                        .saveDt(LocalDateTime.now())
-                                        .build();
+                              .planner(planner)
+                              .user(user)
+                              .saveDt(LocalDateTime.now())
+                              .build();
+
         userSaveRepository.save(userSaveFin);
+
+        Alert alertSaveFin = Alert.builder()
+                .userCheckYn(false)
+                .user(user)
+                .planner(planner)
+                .alertDt(LocalDateTime.now())
+                .alertContent(user.getNickname() + " 님이" + planner.getTitle() + " 게시물을 저장하였습니다.")
+                .build();
+
+        alertRepository.save(alertSaveFin);
 
         return UserSaveAndCancelResponse.builder()
                 .ok("저장 추가가 완료되었습니다.")
                 .build();
     }
 
+    @Transactional
     public UserSaveAndCancelResponse userCancel(Long plannerId, String email) {
 
         Planner planner = plannerRepository.findById(plannerId)
