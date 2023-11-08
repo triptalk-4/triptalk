@@ -65,6 +65,7 @@ public class ReplyService {
                 .user(userEntity)
                 .planner(planner)
                 .alertDt(LocalDateTime.now())
+                .nickname(planner.getUser().getNickname())
                 .alertContent(userEntity.getNickname() + " 님이" + plannerDetail.getDescription() + " 에 댓글을 남겼습니다.")
                 .build();
 

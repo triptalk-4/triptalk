@@ -1,5 +1,6 @@
 package com.zero.triptalk.user.service;
 
+import com.zero.triptalk.alert.dto.response.AlertCntResponse;
 import com.zero.triptalk.component.RedisUtil;
 import com.zero.triptalk.config.JwtService;
 import com.zero.triptalk.exception.code.UserErrorCode;

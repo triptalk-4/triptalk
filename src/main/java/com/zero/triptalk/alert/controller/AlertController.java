@@ -2,6 +2,7 @@ package com.zero.triptalk.alert.controller;
 
 import com.zero.triptalk.alert.dto.request.AlertUpdateResponse;
 import com.zero.triptalk.alert.dto.response.AlertCntResponse;
+import com.zero.triptalk.alert.dto.response.AlertDeleteResponse;
 import com.zero.triptalk.alert.dto.response.AlertResponse;
 import com.zero.triptalk.alert.service.AlertService;
 import com.zero.triptalk.user.entity.UserEntity;
@@ -25,7 +26,7 @@ public class AlertController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('USER')")
     public Page<AlertResponse> getAlert(@RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "6") int pageSize){
+                                        @RequestParam(defaultValue = "10") int pageSize){
         UserEntity user = service.getUserByEmail();
 
         if (user != null) {
@@ -44,6 +45,20 @@ public class AlertController {
 
         return alertService.getAlertNewCnt(user);
     }
+
+    @DeleteMapping("/list/alert/delete/one/{alertId}")
+    @PreAuthorize("hasAuthority('USER')")
+    public AlertDeleteResponse deleteOneAlert(@PathVariable long alertId){
+        return alertService.deleteOneAlert(alertId);
+    }
+
+    @DeleteMapping("/list/alert/delete/all")
+    @PreAuthorize("hasAuthority('USER')")
+    public AlertDeleteResponse deleteAllAlert(){
+        UserEntity user = service.getUserByEmail();
+        return alertService.deleteAllAlert(user);
+    }
+
 
 
 }
