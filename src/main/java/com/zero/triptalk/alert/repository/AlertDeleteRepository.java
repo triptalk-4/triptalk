@@ -9,10 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AlertRepository extends JpaRepository<Alert, Long> {
+public interface AlertDeleteRepository extends JpaRepository<Alert, Long> {
 
+    List<Alert> findByUser(UserEntity user);
 
-    Page<Alert> findByNicknameOrderByAlertDtDesc(String user, Pageable pageable);
-
-    Long countByNicknameAndUserCheckYnFalse(String nickname);
+    List<Alert> findByNickname(String nickname);
 }

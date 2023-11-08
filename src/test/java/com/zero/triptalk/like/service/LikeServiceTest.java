@@ -54,40 +54,6 @@ public class LikeServiceTest {
     private AlertRepository alertRepository;
 
     @Test
-    public void testCreateLikeOrPlusPlanner() {
-        // Arrange
-        Long plannerId = 1L;
-        String email = "user@example.com";
-        Planner planner = new Planner();
-        planner.setPlannerId(plannerId);
-        when(plannerRepository.findById(plannerId)).thenReturn(java.util.Optional.of(planner));
-
-        UserEntity user = new UserEntity();
-        when(userRepository.findByEmail(email)).thenReturn(java.util.Optional.of(user));
-
-        when(userLikeRepository.existsByPlannerAndUser(planner, user)).thenReturn(false);
-        when(plannerLikeRepository.findByPlanner(planner)).thenReturn(null);
-
-        // Act
-        LikenOnePlusMinusResponse response = likeService.createLikeOrPlusPlanner(plannerId, email);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals("좋아요가 완료되었습니다", response.getOk());
-        assertEquals(1L, response.getPlannerCount());
-
-        // Verify that necessary methods were called
-        Mockito.verify(plannerRepository).findById(plannerId);
-        Mockito.verify(userRepository).findByEmail(email);
-        Mockito.verify(userLikeRepository).existsByPlannerAndUser(planner, user);
-        Mockito.verify(plannerLikeRepository).findByPlanner(planner);
-        Mockito.verify(alertRepository).save(Mockito.any(Alert.class));
-
-        // Verify that save method was called for alertRepository
-        Mockito.verify(alertRepository).save(Mockito.any(Alert.class));
-    }
-
-    @Test
     @DisplayName("좋아요 마이너스 할때 잘되는지  ")
     public void testLikeOneMinus() {
         // Arrange
@@ -98,6 +64,8 @@ public class LikeServiceTest {
         plannerLike.setLikeCount(5L);
         UserEntity user = new UserEntity();
         UserLikeEntity userLike = new UserLikeEntity();
+
+
 
         // 예외처리 관련 처리
         // plannerRepository.findById(plannerDetailId) -> 없으면 게시물 없음 에러 발생

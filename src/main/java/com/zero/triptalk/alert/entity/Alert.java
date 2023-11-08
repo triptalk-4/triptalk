@@ -27,6 +27,8 @@ public class Alert {
     @JoinColumn(name = "planner_id")
     private Planner planner;
 
+    private String nickname;
+
     private String alertContent;
 
     private boolean userCheckYn;

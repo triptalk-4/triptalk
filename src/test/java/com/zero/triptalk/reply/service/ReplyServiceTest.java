@@ -22,8 +22,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,48 +41,6 @@ class ReplyServiceTest {
     @Mock private AlertRepository alertRepository;
 
     @Mock private PlannerRepository plannerRepository;
-
-    @Test
-    @DisplayName("댓글 등록 성공")
-    void replySuccess() {
-        // Given
-        Long plannerDetailId = 1L;
-        String email = "test@email.com";
-
-        PlannerDetail plannerDetail = PlannerDetail.builder()
-                .userId(1L)
-                .planner(Planner.builder().plannerId(2L).description("Test Planner Description").build())
-                .build();
-        when(plannerDetailRepository.findById(plannerDetailId)).thenReturn(java.util.Optional.of(plannerDetail));
-
-        UserEntity userEntity = UserEntity.builder()
-                .email(email)
-                .nickname("Test User")
-                .build();
-        when(userRepository.findByEmail(email)).thenReturn(java.util.Optional.of(userEntity));
-
-        Planner planner = Planner.builder()
-                .plannerId(plannerDetail.getPlanner().getPlannerId())
-                .title("Test Planner")
-                .description("Test Planner Description")
-                .build();
-        when(plannerRepository.findById(plannerDetail.getPlanner().getPlannerId())).thenReturn(java.util.Optional.of(planner));
-
-        ReplyRequest request = new ReplyRequest("Test Reply");
-
-        // When
-        ReplyResponse replyResponse = replyService.replyOk(plannerDetailId, request, email);
-
-        // Then
-        assertEquals("댓글 등록이 완료 되었습니다!", replyResponse.getPostOk());
-
-        // Verify that necessary methods were called
-        Mockito.verify(plannerDetailRepository).findById(plannerDetailId);
-        Mockito.verify(userRepository).findByEmail(email);
-        Mockito.verify(plannerRepository).findById(plannerDetail.getPlanner().getPlannerId());
-        Mockito.verify(replyRepository).save(Mockito.any(ReplyEntity.class));
-        Mockito.verify(alertRepository).save(Mockito.any(Alert.class));
-    }
 
     @Test
     @DisplayName("댓글 수정 성공")

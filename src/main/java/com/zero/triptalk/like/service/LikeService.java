@@ -68,6 +68,7 @@ public class LikeService {
                 .user(user)
                 .userCheckYn(false)
                 .alertContent(user.getNickname()+" 님이"+planner.getTitle() +" 게시글에 좋아요를 누르셨습니다.")
+                .nickname(planner.getUser().getNickname())
                 .alertDt(LocalDateTime.now())
                 .build();
 
@@ -157,6 +158,7 @@ public class LikeService {
                 .user(user)
                 .planner(planner)
                 .alertDt(LocalDateTime.now())
+                .nickname(planner.getUser().getNickname())
                 .alertContent(user.getNickname() + " 님이" + planner.getTitle() + " 게시물을 저장하였습니다.")
                 .build();
 
