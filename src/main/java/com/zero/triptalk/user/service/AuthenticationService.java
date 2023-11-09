@@ -302,6 +302,13 @@ public class AuthenticationService {
 
         Optional<UserEntity> existingUserOptional = repository.findByNickname(request.getNickname());
 
+        if(request.getNickname().equals("")){
+            return NicknameCheckOkResponse.builder()
+                    .nicknameCheckOkOrNotOk("해당 닉네임에 값을 넣어 주세요")
+                    .build();
+
+        }
+
         if (existingUserOptional.isEmpty()) {
             return NicknameCheckOkResponse.builder()
                     .nicknameCheckOkOrNotOk("해당 닉네임("+request.getNickname()+")은 사용이 가능합니다")
