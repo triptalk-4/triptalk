@@ -55,7 +55,6 @@ public class PlannerService {
     public void deletePlanner(Long plannerId) {
         plannerRepository.deleteById(plannerId);
         plannerSearchRepository.deleteById(plannerId);
-        plannerDetailSearchRepository.deleteAllByPlannerId(plannerId);
     }
 
     public PlannerListResult getPlanners(Pageable pageable, SortType sortType) {

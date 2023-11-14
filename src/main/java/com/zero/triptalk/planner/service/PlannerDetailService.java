@@ -61,8 +61,8 @@ public class PlannerDetailService {
     }
 
     public void savePlannerDetailList(List<PlannerDetail> plannerDetailList) {
-        plannerDetailRepository.saveAll(plannerDetailList);
-        plannerDetailSearchRepository.saveAll(PlannerDetailDocument.ofEntity(plannerDetailList));
+        List<PlannerDetail> plannerDetails = plannerDetailRepository.saveAll(plannerDetailList);
+        plannerDetailSearchRepository.saveAll(PlannerDetailDocument.ofEntity(plannerDetails));
     }
 
     public PlannerDetail findById(Long plannerDetailId) {

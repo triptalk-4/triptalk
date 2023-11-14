@@ -16,6 +16,8 @@ import com.zero.triptalk.planner.dto.response.PlannerDetailResponse;
 import com.zero.triptalk.planner.dto.response.PlannerResponse;
 import com.zero.triptalk.planner.entity.Planner;
 import com.zero.triptalk.planner.entity.PlannerDetail;
+import com.zero.triptalk.planner.entity.PlannerDocument;
+import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.planner.service.PlannerDetailService;
 import com.zero.triptalk.planner.service.PlannerService;
 import com.zero.triptalk.reply.service.ReplyService;
@@ -49,6 +51,8 @@ public class PlannerApplication {
     private final LikeService likeService;
 
     private final ReplyService replyService;
+
+    private final PlannerSearchRepository plannerSearchRepository;
 
     /**
      * 상세 일정 한개 생성
@@ -211,6 +215,7 @@ public class PlannerApplication {
 
             planner.updatePlanner(info.getPlannerRequest());
             planner.changeThumbnail(info.getUpdatePlannerDetailListRequests().get(0).getImages().get(0));
+            plannerSearchRepository.save(PlannerDocument.ofEntity(planner));
             List<PlannerDetail> result = info.getUpdatePlannerDetailListRequests().stream().map(
                     request -> {
 
