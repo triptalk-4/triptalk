@@ -1,6 +1,5 @@
 package com.zero.triptalk.component;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.querydsl.core.Tuple;
 import com.zero.triptalk.planner.entity.PlannerDetailDocument;
 import com.zero.triptalk.planner.entity.PlannerDocument;
@@ -28,9 +27,8 @@ public class ElasticSynchronizer {
     private final PlannerSearchRepository plannerSearchRepository;
     private final CustomPlannerDetailRepository customPlannerDetailRepository;
     private final PlannerDetailSearchRepository plannerDetailSearchRepository;
-    private final ElasticsearchClient elasticsearchClient;
 
-    @Scheduled(cron = "${scheduler.elasticsearch}")
+//    @Scheduled(cron = "${scheduler.elasticsearch}")
     public void savePlannersToElasticSearch() {
 
         List<LocalDateTime> now = getNow();
