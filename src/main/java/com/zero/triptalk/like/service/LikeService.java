@@ -16,7 +16,9 @@ import com.zero.triptalk.like.repository.PlannerLikeRepository;
 import com.zero.triptalk.like.repository.UserLikeRepository;
 import com.zero.triptalk.like.repository.UserSaveRepository;
 import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.repository.PlannerRepository;
+import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class LikeService {
     private final UserRepository userRepository;
     private final UserLikeRepository userLikeRepository;
     private final AlertRepository alertRepository;
+    private final PlannerSearchRepository plannerSearchRepository;
 
     @Transactional
     public LikenOnePlusMinusResponse createLikeOrPlusPlanner(Long plannerId, String email) {
@@ -93,6 +96,7 @@ public class LikeService {
         long newPlannerLikeCount = currentPlannerLikeCount + 1;
         plannerLike.setLikeCount(newPlannerLikeCount);
 
+        plannerSearchRepository.save(PlannerDocument.ofPlannerLikeEntity(plannerLike));
         plannerLikeRepository.save(plannerLike);
 
         return LikenOnePlusMinusResponse.builder()
@@ -113,6 +117,8 @@ public class LikeService {
         long newLikeCount = currentDetailLikeCount - 1;
 
         plannerLike.setLikeCount(newLikeCount);
+
+        plannerSearchRepository.save(PlannerDocument.ofPlannerLikeEntity(plannerLike));
         plannerLikeRepository.save(plannerLike);
 
         // 좋아요를 누른 접속자 유저 찾기
