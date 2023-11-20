@@ -12,7 +12,9 @@ import com.zero.triptalk.like.repository.PlannerLikeRepository;
 import com.zero.triptalk.like.repository.UserLikeRepository;
 import com.zero.triptalk.like.repository.UserSaveRepository;
 import com.zero.triptalk.planner.entity.Planner;
+import com.zero.triptalk.planner.entity.PlannerDocument;
 import com.zero.triptalk.planner.repository.PlannerRepository;
+import com.zero.triptalk.planner.repository.PlannerSearchRepository;
 import com.zero.triptalk.user.entity.UserEntity;
 import com.zero.triptalk.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -53,6 +55,9 @@ public class LikeServiceTest {
     @Mock
     private AlertRepository alertRepository;
 
+    @Mock
+    private PlannerSearchRepository plannerSearchRepository;
+
     @Test
     @DisplayName("좋아요 마이너스 할때 잘되는지  ")
     public void testLikeOneMinus() {
@@ -62,9 +67,9 @@ public class LikeServiceTest {
         Planner planner = new Planner();
         PlannerLike plannerLike = new PlannerLike();
         plannerLike.setLikeCount(5L);
+        plannerLike.setPlanner(planner);
         UserEntity user = new UserEntity();
         UserLikeEntity userLike = new UserLikeEntity();
-
 
 
         // 예외처리 관련 처리
@@ -77,6 +82,8 @@ public class LikeServiceTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         // userLike -> 좋아요를 등록하지 않은 사람이 등록한다면 -> 좋아요를 찾을 수 없다는 에러 발생
         when(userLikeRepository.findByPlannerAndUser(planner, user)).thenReturn(Optional.of(userLike));
+
+
 
         // Act
         LikenOnePlusMinusResponse response = likeService.LikeOneMinus(plannerDetailId, email);
