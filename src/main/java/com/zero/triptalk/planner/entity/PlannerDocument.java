@@ -1,6 +1,7 @@
 package com.zero.triptalk.planner.entity;
 
 import com.querydsl.core.Tuple;
+import com.zero.triptalk.like.entity.PlannerLike;
 import com.zero.triptalk.user.entity.UserEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -91,6 +92,23 @@ public class PlannerDocument {
                 .views(planner.getViews())
                 .likes(0L)
                 .createdAt(planner.getCreatedAt())
+                .build();
+    }
+
+    public static PlannerDocument ofPlannerLikeEntity(PlannerLike plannerLike) {
+
+        Planner plannerEntity = plannerLike.getPlanner();
+
+        return PlannerDocument.builder()
+                .plannerId(plannerEntity.getPlannerId())
+                .title(plannerEntity.getTitle())
+                .thumbnail(plannerEntity.getThumbnail())
+                .user(plannerEntity.getUser())
+                .startDate(plannerEntity.getStartDate())
+                .endDate(plannerEntity.getEndDate())
+                .views(plannerEntity.getViews())
+                .likes(plannerLike.getLikeCount())
+                .createdAt(plannerEntity.getCreatedAt())
                 .build();
     }
 }
