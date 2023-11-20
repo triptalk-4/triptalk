@@ -215,7 +215,7 @@ public class PlannerApplication {
 
             planner.updatePlanner(info.getPlannerRequest());
             planner.changeThumbnail(info.getUpdatePlannerDetailListRequests().get(0).getImages().get(0));
-            plannerSearchRepository.save(PlannerDocument.ofEntity(planner));
+            updatePlannerOfElastic(planner);
             List<PlannerDetail> result = info.getUpdatePlannerDetailListRequests().stream().map(
                     request -> {
 
@@ -252,5 +252,15 @@ public class PlannerApplication {
         return place.orElseGet(
                 () -> placeService.savePlace(request)
         );
+    }
+
+    private void updatePlannerOfElastic(Planner planner) {
+
+        try {
+            PlannerLike plannerLike = likeService.findByPlannerId(planner.getPlannerId());
+            plannerSearchRepository.save(PlannerDocument.ofPlannerLikeEntity(plannerLike));
+        } catch (NullPointerException e) {
+            plannerSearchRepository.save(PlannerDocument.ofEntity(planner));
+        }
     }
 }
