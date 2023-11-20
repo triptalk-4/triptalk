@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 
-import java.net.InetSocketAddress;
-
 @Configuration
 public class ElasticSearchConfig extends ElasticsearchConfiguration {
 
@@ -14,9 +12,15 @@ public class ElasticSearchConfig extends ElasticsearchConfiguration {
     private String hostname;
     @Value("${spring.elasticsearch.port}")
     private Integer port;
+    @Value("${spring.elasticsearch.username}")
+    private String userName;
+    @Value("${spring.elasticsearch.password}")
+    private String password;
 
     @Override
     public ClientConfiguration clientConfiguration() {
-        return ClientConfiguration.create(InetSocketAddress.createUnresolved(hostname, port));
+        return ClientConfiguration.builder().connectedTo(hostname + ":" + port)
+                .withBasicAuth(userName, password)
+                .build();
     }
 }
